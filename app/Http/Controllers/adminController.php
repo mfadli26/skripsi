@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use App\Upload;
 
 use App\Models\User;
 
@@ -30,6 +33,16 @@ class adminController extends Controller
             return redirect('admin/menu/all_user/1/');
         } else {
             return redirect('admin/menu/user/' . $search . '/1');
+        }
+    }
+
+    public function cari_arsip(Request $request)
+    {
+        $search = $request->search;
+        if ($search == "") {
+            return redirect('admin/menu/archive_all/1/');
+        } else {
+            return redirect('admin/menu/archive/' . $search . '/1');
         }
     }
 
@@ -63,6 +76,34 @@ class adminController extends Controller
         return view('admin.user')->with('data', $data);
     }
 
+    public function archive($search, $page)
+    {
+        $archive = DB::table('archive')
+            ->where('nomor_arsip', 'like', '%' . $search . '%')
+            ->orWhere('nomor_surat', 'like', '%' . $search . '%')
+            ->orWhere('kode_klasifikasi', 'like', '%' . $search . '%')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $jumlah = DB::table('archive')
+            ->where('nomor_arsip', 'like', '%' . $search . '%')
+            ->orWhere('nomor_surat', 'like', '%' . $search . '%')
+            ->orWhere('kode_klasifikasi', 'like', '%' . $search . '%')
+            ->count();
+
+        $data = (object) [
+            'sidebar' => 'archive', 
+            'breadcrumb' => 'Archive', 
+            'archive' => $archive, 
+            'page' => $page, 
+            'search' => $search, 
+            'jumlah' => $jumlah
+        ];
+
+        return view('admin.archive')->with('data', $data);
+    }
+
     public function user($search, $page)
     {
         $users = DB::table('users')
@@ -79,7 +120,14 @@ class adminController extends Controller
             ->orWhere('email', 'like', '%' . $search . '%')
             ->count();
 
-        $data = (object) ['sidebar' => 'user', 'breadcrumb' => 'User', 'user' => $users, 'page' => $page, 'search' => $search, 'jumlah' => $jumlah];
+        $data = (object) [
+            'sidebar' => 'user', 
+            'breadcrumb' => 'User', 
+            'user' => $users, 
+            'page' => $page, 
+            'search' => $search, 
+            'jumlah' => $jumlah
+        ];
 
         return view('admin.user')->with('data', $data);
     }
@@ -101,6 +149,44 @@ class adminController extends Controller
         } else {
             return redirect()->back()->with('fail', 'gagal');
         }
+    }
+
+    public function tambah_archive_baru(Request $request)
+    {
+        $messages = [
+            'required' => ':attribute wajib diisi',
+            'numeric' => ':attribute hanya boleh pakai angka'
+        ];
+
+        $this->validate($request, [
+            'nomor_arsip' => 'required',
+            'nomor_surat' => 'required',
+            'nama_pencipta' => 'required',
+            'petugas_registrasi' => 'required',
+            'kode_klasifikasi' => 'required',
+            'jumlah_arsip' => 'required|numeric',
+            'type' => 'required',
+            'keterangan' => 'required',
+            'file' => 'required'  
+        ], $messages);
+
+        DB::table('archive')->insert([
+            'id' => (string) Str::orderedUuid(),
+            'nomor_arsip' => $request->nomor_arsip,
+            'nomor_surat' => $request->nomor_surat,
+            'nama_pencipta' => $request->nama_pencipta,
+            'petugas_registrasi' => $request->petugas_registrasi,
+            'kode_klasifikasi' => $request->kode_klasifikasi,
+            'jumlah_arsip' => $request->jumlah_arsip,
+            'type' => $request->type,
+            'keterangan' => $request->keterangan,
+            'file' => $request->file
+        ]);
+
+        $file = $request->file('file');
+        $file->move(base_path('\storage\app\public\file_arsip'), $file->getClientOriginalName());     
+
+        return redirect()->back()->with('success', 'berhasil');
     }
 
     /**

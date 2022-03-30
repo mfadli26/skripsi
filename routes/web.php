@@ -58,6 +58,12 @@ Route::get('/admin/menu/all_user/{page}', [adminController::class, 'user_all'])-
 
 Route::get('/admin/menu/user/{search}/{page}', [adminController::class, 'user'])->middleware('admin');
 
+Route::get('/admin/menu/archive/{search}/{page}', [adminController::class, 'archive'])->middleware('admin');
+
 Route::get('/admin/menu/archive_all/{page}', [adminController::class, 'archive_all'])->middleware('admin');
+
+Route::post('/admin/menu/archive/tambah_archive', [adminController::class, 'tambah_archive_baru'])->middleware('admin');
+
+Route::post('/admin/menu/archive/cari', [adminController::class, 'cari_arsip'])->middleware('admin');
 
 Route::post('/masuk_admin', [adminController::class, 'login_check'])->middleware('admin');

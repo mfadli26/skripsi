@@ -16,13 +16,15 @@ class CreateArchiveTable extends Migration
         Schema::dropIfExists('archive');
         Schema::create('archive', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('archive_number');
-            $table->string('serial_number');
+            $table->string('nomor_arsip');
+            $table->string('nomor_surat');
+            $table->string('nama_pencipta');
+            $table->string('petugas_registrasi');
+            $table->string('kode_klasifikasi');
+            $table->string('jumlah_arsip');
+            $table->string('keterangan');
+            $table->string('file');
             $table->string('type');
-            $table->timestamp('archive_date');
-            $table->string('title');
-            $table->string('owner_address');
-            $table->string('building_address');
             $table->timestamps();
         });
     }
