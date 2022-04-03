@@ -25,7 +25,10 @@ class CreateArchiveTable extends Migration
             $table->string('keterangan');
             $table->string('file');
             $table->string('type');
-            $table->timestamps();
+            $table->createat();
+            $table->createby();
+            $table->updateat();
+            $table->updateby();
         });
     }
 

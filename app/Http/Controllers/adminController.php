@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Upload;
+use Illuminate\Support\Facades\File;
+use Response;
 
 use App\Models\User;
 
@@ -170,6 +172,12 @@ class adminController extends Controller
             'file' => 'required'  
         ], $messages);
 
+        $user = Auth::user();
+        
+        $file = $request->file('file');
+        $filename = time()."_".$request->nomor_arsip.".".$request->file->getClientOriginalExtension();
+        $file->move(base_path('\storage\app\public\file_arsip'), $filename);   
+
         DB::table('archive')->insert([
             'id' => (string) Str::orderedUuid(),
             'nomor_arsip' => $request->nomor_arsip,
@@ -180,13 +188,32 @@ class adminController extends Controller
             'jumlah_arsip' => $request->jumlah_arsip,
             'type' => $request->type,
             'keterangan' => $request->keterangan,
-            'file' => $request->file
+            'file' => $filename,
+            'created_by' => $user->id
         ]);
-
-        $file = $request->file('file');
-        $file->move(base_path('\storage\app\public\file_arsip'), $file->getClientOriginalName());     
+          
 
         return redirect()->back()->with('success', 'berhasil');
+    }
+
+    public function getDownload(Request $request)
+    {
+        $file = $request->query("file");
+        $file_location = public_path('storage\file_arsip\\'.$file);
+        return response()->download($file_location);
+    }
+
+    public function delete_arsip(Request $request){
+        $id = $request->query("id");
+        $query = DB::table('archive')
+        ->where('id', '=', $id);
+
+        $filename = $query->first()->file;
+
+        File::delete(public_path('storage\file_arsip\\'.$filename));
+        $query->delete();
+        return redirect()->back()->with('success', 'berhasil');
+
     }
 
     /**

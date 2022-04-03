@@ -7,6 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.83.1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Admin</title>
 
     {{ Html::style('css/app.css') }}
@@ -111,7 +112,7 @@
                                                 </div>
                                                 <div>
                                                     <label for="deskripsi-arsip" class="col-form-label">Upload File:</label>
-                                                    <input class="form-control" type="file" id="formFile" name="file" value="{{ old('file') }}">
+                                                    <input class="form-control" type="file" id="formFile" name="file">
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -164,11 +165,11 @@
                                             <td>{{$archive->jumlah_arsip}}</td>
                                             <td>
                                                 <a data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" href="#"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                <i class="fas fa-trash-alt text-danger fs-5"></i>
+                                                <a data-bs-toggle="modal" data-bs-target="#modal_delete_{{$loop->index}}"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                             </td>
                                         </tr>
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="modal_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
+                                    <!-- Modal Info -->
+                                        <div class="modal fade" id="modal_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -216,7 +217,7 @@
                                                                 <span class="form-label m-0">Jumlah (Lembar)</span>
                                                             </div>
                                                             <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->jumlah_arsip}}</span>
+                                                            <span class="form-label m-0 col-md-8">{{$archive->jumlah_arsip}} Lembar</span>
                                                         </div>
                                                         <div class="row mb-3">
                                                             <div class="col-md-3 d-flex align-items-center">
@@ -227,15 +228,44 @@
                                                         </div>
                                                         <div class="row mb-3">
                                                             <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Tipe Arsip</span>
+                                                                <span class="form-label m-0">Tipe Arsip </span>
                                                             </div>
                                                             <span class="form-label m-0 col-md-1">:</span>
                                                             <span class="form-label m-0 col-md-8">{{$archive->type}}</span>
+                                                        </div>
+                                                        <div>
+                                                            
+                                                            <!-- <form action="/admin/menu/archive/getDownload" method="post"> -->
+                                                                <a href="/admin/menu/archive/getDownload?file={{$archive->file}}" class="btn-download"><i class="fa fa-download"></i> Download</a>
+                                                            <!-- </from>               -->
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Edit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Modal Delete -->
+                                        <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_delete_{{$loop->index}}" tabindex="-1" aria-labelledby="label_delete_{{$loop->index}}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-md">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title text-center">Apakah Anda Yakin Menghapus Data Arsip?</h5>
+                                                    </div>
+                                                    <div class="modal-body row">
+                                                        <div class="col-md-6">
+                                                            
+                                                            <a href="/admin/menu/archive/delete_arsip?id={{$archive->id}}" class="btn btn-secondary float-end">Hapus</a>
+                                                
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button> 
+                                                        </div> 
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        
                                                     </div>
                                                 </div>
                                             </div>

@@ -66,4 +66,8 @@ Route::post('/admin/menu/archive/tambah_archive', [adminController::class, 'tamb
 
 Route::post('/admin/menu/archive/cari', [adminController::class, 'cari_arsip'])->middleware('admin');
 
+Route::get('/admin/menu/archive/getDownload', [adminController::class, 'getDownload']);
+
+Route::get('/admin/menu/archive/delete_arsip', [adminController::class, 'delete_arsip'])->middleware('admin');
+
 Route::post('/masuk_admin', [adminController::class, 'login_check'])->middleware('admin');
