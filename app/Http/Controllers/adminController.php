@@ -179,7 +179,6 @@ class adminController extends Controller
         $file->move(base_path('\storage\app\public\file_arsip'), $filename);   
 
         DB::table('archive')->insert([
-            'id' => (string) Str::orderedUuid(),
             'nomor_arsip' => $request->nomor_arsip,
             'nomor_surat' => $request->nomor_surat,
             'nama_pencipta' => $request->nama_pencipta,

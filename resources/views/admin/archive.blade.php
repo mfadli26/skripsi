@@ -242,6 +242,85 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        <a class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal_edit_{{$loop->index}}">Edit</i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                         <!-- Modal Edit -->
+                                         <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_edit_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="label_{{$loop->index}}">Pembaruan Detail Arsip</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                <span class="form-label m-0">Nomor Arsip</span>
+                                                            </div>
+                                                            <span class="form-label m-0 col-md-1">:</span>
+                                                            <input type="text" class="col-md-3" id="nomor-surat" name="nomor_surat" value="{{ old('nomor_surat') }}">
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                <span class="form-label m-0">Nomor Surat</span>
+                                                            </div>
+                                                            <span class="form-label m-0 col-md-1">:</span>
+                                                            <span class="form-label m-0 col-md-8">{{$archive->nomor_surat}}</span>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                <span class="form-label m-0">Nama Pencipta Arsip</span>
+                                                            </div>
+                                                            <span class="form-label m-0 col-md-1">:</span>
+                                                            <span class="form-label m-0 col-md-8">{{$archive->nama_pencipta}}</span>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                <span class="form-label m-0">Petugas Registrasi</span>
+                                                            </div>
+                                                            <span class="form-label m-0 col-md-1">:</span>
+                                                            <span class="form-label m-0 col-md-8">{{$archive->petugas_registrasi}}</span>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                <span class="form-label m-0">Kode Klasifikasi</span>
+                                                            </div>
+                                                            <span class="form-label m-0 col-md-1">:</span>
+                                                            <span class="form-label m-0 col-md-8">{{$archive->kode_klasifikasi}}</span>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                <span class="form-label m-0">Jumlah (Lembar)</span>
+                                                            </div>
+                                                            <span class="form-label m-0 col-md-1">:</span>
+                                                            <span class="form-label m-0 col-md-8">{{$archive->jumlah_arsip}} Lembar</span>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                <span class="form-label m-0">Deskripsi</span>
+                                                            </div>
+                                                            <span class="form-label m-0 col-md-1">:</span>
+                                                            <span class="form-label m-0 col-md-8">{{$archive->keterangan}}</span>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                <span class="form-label m-0">Tipe Arsip </span>
+                                                            </div>
+                                                            <span class="form-label m-0 col-md-1">:</span>
+                                                            <span class="form-label m-0 col-md-8">{{$archive->type}}</span>
+                                                        </div>
+                                                        <div>
+                                                            
+                                                            <!-- <form action="/admin/menu/archive/getDownload" method="post"> -->
+                                                                <a href="/admin/menu/archive/getDownload?file={{$archive->file}}" class="btn-download"><i class="fa fa-download"></i> Download</a>
+                                                            <!-- </from>               -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Edit</button>
                                                     </div>
                                                 </div>

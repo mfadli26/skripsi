@@ -12,11 +12,27 @@
                         Beranda
                     </a>
                 </li>
+                @auth
                 <li class="text-center px-4 border-end">
-                    <a href="/archive" class="nav-link text-dark fs-6 btn-hover {{$data->menu == 'search' ? 'link-active' : ''}}">
+                    <div class="dropdown">
+                        <a class="nav-link text-dark fs-6 btn-hover dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            Kearsipan
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="/archive">Pencarian Arsip</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Peminjaman Arsip</a></li>
+                        </ul>
+                    </div>
+                </li>
+                @endauth
+                @guest
+                <li class="text-center px-4 border-end">
+                    <a href="/archive" class="nav-link text-dark fs-6 btn-hover">
                         Kearsipan
                     </a>
                 </li>
+                @endguest
                 @auth
                 <li class="text-center px-4 border-end">
                     <a href="/profile" class="nav-link text-dark fs-6 btn-hover {{$data->menu == 'profile' ? 'link-active' : ''}}">

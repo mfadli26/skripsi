@@ -30,6 +30,8 @@ Route::post('/daftar/baru', [homeController::class, 'tambah_akun']);
 
 Route::get('/masuk', [homeController::class, 'login']);
 
+Route::get('/archive_pinjam', [homeController::class, 'peminjaman_page']);
+
 Route::post('/masuk', [homeController::class, 'login_check']);
 
 Route::get('/profile', [homeController::class, 'profile']);
@@ -41,6 +43,8 @@ Route::post('/update_password', [homeController::class, 'update_password']);
 Route::get('/archive', [homeController::class, 'search_home']);
 
 Route::post('/archive/main', [homeController::class, 'archive_main']);
+
+Route::post('/archive/pinjam', [homeController::class, 'peminjaman_arsip']);
 
 Route::get('/all_archive/{page}', [homeController::class, 'archive_all']);
 

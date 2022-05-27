@@ -108,7 +108,7 @@
                                                     </div>
                                                     <div class="row mb-3">
                                                         <div class="col-md-3 d-flex align-items-center">
-                                                            <span class="form-label m-0">Kode Klarisikasi</span>
+                                                            <span class="form-label m-0">Kode Klasifikasi</span>
                                                         </div>
                                                         <span class="form-label m-0 col-md-1">:</span>
                                                         <span class="form-label m-0 col-md-8">{{$archive->kode_klasifikasi}}</span>
@@ -120,9 +120,36 @@
                                                         <span class="form-label m-0 col-md-1">:</span>
                                                         <span class="form-label m-0 col-md-8">{{$archive->jumlah_arsip}}</span>
                                                     </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-3 d-flex align-items-center">
+                                                            <span class="form-label m-0">Jenis Arsip</span>
+                                                        </div>
+                                                        <span class="form-label m-0 col-md-1">:</span>
+                                                        @if($archive->type == 1)
+                                                            <span class="form-label m-0 col-md-8">Harus Dengan Surat Pengantar</span>
+                                                            
+                                                        @else
+                                                            <span class="form-label m-0 col-md-8">Tidak Memerlukan Surat Pengantar</span>
+                                                        
+                                                        @endif
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-3 d-flex align-items-center">
+                                                            <span class="form-label m-0">Deskripsi Arsip</span>
+                                                        </div>
+                                                        <span class="form-label m-0 col-md-1">:</span>
+                                                        <span class="form-label m-0 col-md-8">{{$archive->keterangan}}</span>
+                                                    </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    <form action="/archive/pinjam" method="post">
+                                                    {{ csrf_field() }}           
+                                                        <button class="btn btn-primary" type="submit">Pinjam</button>
+                                                        <input type="hidden" value="{{$archive->id}}" name="id_archive">
+                                                        <input type="hidden" value="{{$data->user->id}}" name="id_users">
+                                                        <input type="hidden" value="1" name="status">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

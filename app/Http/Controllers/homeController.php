@@ -32,6 +32,11 @@ class homeController extends Controller
         return view('client.archive')->with('data', $data);
     }
 
+    public function peminjaman_page()
+    {
+
+    }
+
     public function archive_main(Request $request)
     {
         $search = $request->search;
@@ -61,8 +66,8 @@ class homeController extends Controller
             ->get();
 
         $jumlah = $archive->count();
-
-        $data = (object) ['search' => $search, 'breadcrumb' => 'Penelusuran ' . $search, 'menu' => 'search', 'page' => $page, 'archive' => $archive, 'jumlah' => $jumlah];
+        $user = Auth::user();
+        $data = (object) ['search' => $search, 'breadcrumb' => 'Penelusuran ' . $search, 'menu' => 'search', 'page' => $page, 'archive' => $archive, 'jumlah' => $jumlah, 'user' =>$user];
 
         return view('client.search')->with('data', $data);
     }
@@ -162,6 +167,18 @@ class homeController extends Controller
         return redirect('/masuk');
     }
 
+    public function peminjaman_arsip(Request $request)
+    {
+        DB::table('peminjaman_arsip')->insert([
+            'id_users' => $request->id_users,
+            'id_archive' => $request->id_archive,
+            'status' => $request->status,
+            'created_at' => Carbon::now()
+        ]);
+
+        return redirect()->back()->with('success', 'berhasil');
+    }
+
     public function tambah_akun(Request $request)
     {
 
@@ -193,7 +210,6 @@ class homeController extends Controller
         ], $messages);
 
         DB::table('users')->insert([
-            'id' => (string) Str::orderedUuid(),
             'name' => $request->name,
             'ktp_number' => $request->ktp_number,
             'phone_number' => $request->phone_number,
