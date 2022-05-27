@@ -63,7 +63,7 @@
                                 </div>
                             </div>
                             <form action="/admin/menu/archive/tambah_archive" method="post" enctype="multipart/form-data">
-                            {{ csrf_field() }}
+                                {{ csrf_field() }}
                                 <div class="modal fade" id="Modal2" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="Modal2Label" tabindex="-1">
                                     <div class="modal-dialog modal-dialog-scrollable ">
                                         <div class="modal-content">
@@ -122,7 +122,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </from>
+                            </form>
                             <div class="modal fade" id="Modal3" aria-hidden="true" aria-labelledby="Modal3Label" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
@@ -164,168 +164,138 @@
                                             <td>{{$archive->kode_klasifikasi}}</td>
                                             <td>{{$archive->jumlah_arsip}}</td>
                                             <td>
-                                                <a data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" href="#"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
+                                                <a data-bs-toggle="modal" data-bs-target="#modal_edit_{{$loop->index}}" href="#"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
                                                 <a data-bs-toggle="modal" data-bs-target="#modal_delete_{{$loop->index}}"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                             </td>
                                         </tr>
-                                    <!-- Modal Info -->
-                                        <div class="modal fade" id="modal_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Arsip</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Nomor Arsip</span>
+                                        <!-- Modal Edit -->
+                                        <form action="/admin/menu/archive/update_arsip" method="post" enctype="multipart/form-data">
+                                            {{ csrf_field() }}
+                                            <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_edit_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="label_{{$loop->index}}">Pembaruan Detail Arsip</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3">
+                                                                    <span class="form-label m-0">Nomor Arsip</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input type="text" class="form-control" id="nomor-surat" name="nomor_arsip" value="{{$archive->nomor_arsip}}">
+                                                                </div>  
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->nomor_arsip}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Nomor Surat</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Nomor Surat</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input type="text" class="form-control" id="nomor-surat" name="nomor_surat" value="{{$archive->nomor_surat}}">
+                                                                </div>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->nomor_surat}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Nama Pencipta Arsip</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Nama Pencipta Arsip</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input type="text" class="form-control" id="nomor-surat" name="nama_pencipta" value="{{$archive->nama_pencipta}}">
+                                                                </div>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->nama_pencipta}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Petugas Registrasi</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Petugas Registrasi</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input type="text" class="form-control" id="nomor-surat" name="petugas_registrasi" value="{{$archive->petugas_registrasi}}">
+                                                                </div>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->petugas_registrasi}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Kode Klasifikasi</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Kode Klasifikasi</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input type="text" class="form-control" id="nomor-surat" name="kode_klasifikasi" value="{{$archive->kode_klasifikasi}}">
+                                                                </div>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->kode_klasifikasi}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Jumlah (Lembar)</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Jumlah (Lembar)</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input type="number" class="form-control" id="nomor-surat" name="jumlah_arsip" value="{{$archive->jumlah_arsip}}">
+                                                                </div>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->jumlah_arsip}} Lembar</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Deskripsi</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Deskripsi</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label m-0 col-md-1">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <textarea type="text" class="form-control" id="nomor-surat" name="keterangan" >{{$archive->keterangan}}</textarea>
+                                                                </div>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->keterangan}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Tipe Arsip </span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Tipe Arsip </span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <select class="form-control" aria-label="Default select example" name="type" value="{{ old('type') }}">
+                                                                    @if($archive->type == 1)
+                                                                        <option selected value="1">Harus Dengan Surat Pengantar</option>
+                                                                        <option value="2">Tidak Memerlukan Surat Pengantar</option>
+                                                                    @else
+                                                                        <option value="1">Harus Dengan Surat Pengantar</option>
+                                                                        <option selected value="2">Tidak Memerlukan Surat Pengantar</option>
+                                                                    @endif
+                                                                    </select>
+                                                                </div>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->type}}</span>
-                                                        </div>
-                                                        <div>
-                                                            
-                                                            <!-- <form action="/admin/menu/archive/getDownload" method="post"> -->
-                                                                <a href="/admin/menu/archive/getDownload?file={{$archive->file}}" class="btn-download"><i class="fa fa-download"></i> Download</a>
-                                                            <!-- </from>               -->
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                        <a class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal_edit_{{$loop->index}}">Edit</i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                         <!-- Modal Edit -->
-                                         <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_edit_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="label_{{$loop->index}}">Pembaruan Detail Arsip</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Nomor Arsip</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">File Arsip</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label m-0 col-md-1">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input class="form col-md-5" type="file" id="formFile" name="file" value="1">
+                                                                </div>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <input type="text" class="col-md-3" id="nomor-surat" name="nomor_surat" value="{{ old('nomor_surat') }}">
+                                                            <input type="hidden" name="id" value="{{$archive->id}}">
                                                         </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Nomor Surat</span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->nomor_surat}}</span>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}">Back</i></a>
+                                                            <button type="submit" class="btn btn-primary">Save</button>
                                                         </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Nama Pencipta Arsip</span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->nama_pencipta}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Petugas Registrasi</span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->petugas_registrasi}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Kode Klasifikasi</span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->kode_klasifikasi}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Jumlah (Lembar)</span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->jumlah_arsip}} Lembar</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Deskripsi</span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->keterangan}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Tipe Arsip </span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$archive->type}}</span>
-                                                        </div>
-                                                        <div>
-                                                            
-                                                            <!-- <form action="/admin/menu/archive/getDownload" method="post"> -->
-                                                                <a href="/admin/menu/archive/getDownload?file={{$archive->file}}" class="btn-download"><i class="fa fa-download"></i> Download</a>
-                                                            <!-- </from>               -->
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Edit</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </form>
                                         <!-- Modal Delete -->
                                         <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_delete_{{$loop->index}}" tabindex="-1" aria-labelledby="label_delete_{{$loop->index}}" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered modal-md">

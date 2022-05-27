@@ -191,7 +191,7 @@ class adminController extends Controller
             'created_by' => $user->id
         ]);
           
-
+        
         return redirect()->back()->with('success', 'berhasil');
     }
 
@@ -213,6 +213,28 @@ class adminController extends Controller
         $query->delete();
         return redirect()->back()->with('success', 'berhasil');
 
+    }
+
+    public function update_arsip(Request $request){
+        $id = $request->id;
+        $archive = DB::table('archive')
+        ->where('id', '=', $id);
+
+        $user = Auth::user();
+        $archive->update([
+            'nomor_arsip' => $request->nomor_arsip,
+            'nomor_surat' => $request->nomor_surat,
+            'nama_pencipta' => $request->nama_pencipta,
+            'petugas_registrasi' => $request->petugas_registrasi,
+            'kode_klasifikasi' => $request->kode_klasifikasi,
+            'jumlah_arsip' => $request->jumlah_arsip,
+            'type' => $request->type,
+            'keterangan' => $request->keterangan,
+            'file' => 'asds',
+            'updated_by' => $user->id
+        ]);
+
+        return redirect()->back()->with('success', 'berhasil');
     }
 
     /**
