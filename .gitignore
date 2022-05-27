@@ -11,7 +11,7 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-/staorage
+/storage
 
 # Laravel 4 specific
 bootstrap/compiled.php
