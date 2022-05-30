@@ -283,7 +283,8 @@
                                                                     <span class="form-label m-0 col-md-1">:</span>
                                                                 </div>
                                                                 <div class="col-md-8">
-                                                                    <input class="form col-md-5" type="file" id="formFile" name="file" value="1">
+                                                                    <input class="form col-md-5" type="file" id="formFile" name="file">
+                                                                    <input type="hidden" name="old_file" value="{{$archive->file}}">
                                                                 </div>
                                                             </div>
                                                             <input type="hidden" name="id" value="{{$archive->id}}">

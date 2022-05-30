@@ -34,7 +34,16 @@ class homeController extends Controller
 
     public function peminjaman_page()
     {
+        $user = Auth::user();
+        $data_peminjaman = DB::table('peminjaman_arsip') 
+        ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+        ->where('id_users', '=', $user->id)
+        ->get();
+        // $data_peminjaman = peminjaman_arsip::join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+        // ->get();
+        $data = (object) ['breadcrumb' => 'Data Peminjaman Arsip Pengguna', 'menu' => 'Peminjaman Arsip', 'user' => $user, 'data_arsip' => $data_peminjaman];
 
+        return view('client.peminjaman')->with('data', $data);
     }
 
     public function archive_main(Request $request)
@@ -169,14 +178,24 @@ class homeController extends Controller
 
     public function peminjaman_arsip(Request $request)
     {
-        DB::table('peminjaman_arsip')->insert([
-            'id_users' => $request->id_users,
-            'id_archive' => $request->id_archive,
-            'status' => $request->status,
-            'created_at' => Carbon::now()
-        ]);
+        $check =  DB::table('peminjaman_arsip')
+        ->where('id_users', '=', $request->id_users)
+        ->where('id_archive', '=', $request->id_archive)
+        ->count();
 
-        return redirect()->back()->with('success', 'berhasil');
+        if($check > 0){
+            return redirect()->back()->with('alert', 'anda telah meminjam arsip ini');
+        }else{
+            DB::table('peminjaman_arsip')->insert([
+                'id_users' => $request->id_users,
+                'id_archive' => $request->id_archive,
+                'status' => $request->status,
+                'created_at' => Carbon::now()
+            ]);
+            return redirect()->back()->with('success', 'berhasil');
+        }
+        
+        
     }
 
     public function tambah_akun(Request $request)

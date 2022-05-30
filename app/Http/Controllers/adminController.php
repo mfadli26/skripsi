@@ -221,20 +221,39 @@ class adminController extends Controller
         ->where('id', '=', $id);
 
         $user = Auth::user();
-        $archive->update([
-            'nomor_arsip' => $request->nomor_arsip,
-            'nomor_surat' => $request->nomor_surat,
-            'nama_pencipta' => $request->nama_pencipta,
-            'petugas_registrasi' => $request->petugas_registrasi,
-            'kode_klasifikasi' => $request->kode_klasifikasi,
-            'jumlah_arsip' => $request->jumlah_arsip,
-            'type' => $request->type,
-            'keterangan' => $request->keterangan,
-            'file' => 'asds',
-            'updated_by' => $user->id
-        ]);
+        if (empty($request->file)){
+            $archive->update([
+                'nomor_arsip' => $request->nomor_arsip,
+                'nomor_surat' => $request->nomor_surat,
+                'nama_pencipta' => $request->nama_pencipta,
+                'petugas_registrasi' => $request->petugas_registrasi,
+                'kode_klasifikasi' => $request->kode_klasifikasi,
+                'jumlah_arsip' => $request->jumlah_arsip,
+                'type' => $request->type,
+                'keterangan' => $request->keterangan,
+                'updated_by' => $user->id
+            ]);
+        }else{
+            File::delete(public_path('storage\file_arsip\\'.$request->old_file));
+            $file = $request->file('file');
+            $filename = time()."_".$request->nomor_arsip.".".$request->file->getClientOriginalExtension();
+            $file->move(base_path('\storage\app\public\file_arsip'), $filename); 
 
+            $archive->update([
+                'nomor_arsip' => $request->nomor_arsip,
+                'nomor_surat' => $request->nomor_surat,
+                'nama_pencipta' => $request->nama_pencipta,
+                'petugas_registrasi' => $request->petugas_registrasi,
+                'kode_klasifikasi' => $request->kode_klasifikasi,
+                'jumlah_arsip' => $request->jumlah_arsip,
+                'type' => $request->type,
+                'file' => $filename,
+                'keterangan' => $request->keterangan,
+                'updated_by' => $user->id
+            ]);
+        }
         return redirect()->back()->with('success', 'berhasil');
+        
     }
 
     /**

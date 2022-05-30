@@ -21,7 +21,7 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <li><a class="dropdown-item" href="/archive">Pencarian Arsip</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Peminjaman Arsip</a></li>
+                            <li><a class="dropdown-item" href="/archive_pinjam">Peminjaman Arsip</a></li>
                         </ul>
                     </div>
                 </li>

@@ -31,6 +31,11 @@
 
 <body class="antialiased d-flex flex-column h-100">
     <main class="flex-shrink-0">
+        @if (session('alert'))
+            <div class="alert alert-success">
+                {{ session('alert') }}
+            </div>
+        @endif
         @include('client.layout.header_arsip')
         @include('client.layout.breadcrumb_arsip')
         <div class="container-fluid">
@@ -59,7 +64,7 @@
                                     <tr>
                                         <th scope="col">Nomor</th>
                                         <th scope="col">Judul</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col" class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,7 +72,7 @@
                                     <tr>
                                         <th scope="row">{{$archive->nomor_surat}}</th>
                                         <td>{{$archive->petugas_registrasi}}</td>
-                                        <td><button class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Pilih</button></td>
+                                        <td class="text-center"><button class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Pilih</button></td>
                                     </tr>
                                     <!-- Modal -->
                                     <div class="modal fade" id="modal_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
