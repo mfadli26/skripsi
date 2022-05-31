@@ -35,8 +35,8 @@ class homeController extends Controller
     public function peminjaman_page()
     {
         $user = Auth::user();
-        $data_peminjaman = DB::table('peminjaman_arsip') 
-        ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+        $data_peminjaman = DB::table('archive') 
+        ->join('peminjaman_arsip', 'archive.id', '=', 'peminjaman_arsip.id_archive')
         ->where('id_users', '=', $user->id)
         ->get();
         $data = (object) ['breadcrumb' => 'Data Peminjaman Arsip Pengguna', 'menu' => 'Peminjaman Arsip', 'user' => $user, 'data_arsip' => $data_peminjaman];
@@ -63,6 +63,23 @@ class homeController extends Controller
         $data = (object) ['search' => "", 'breadcrumb' => 'Lihat Semua Dokumen', 'menu' => 'search', 'page' => $page, 'archive' => $archive, 'jumlah' => $jumlah];
 
         return view('client.search')->with('data', $data);
+    }
+
+    public function unggah_file(Request $request)
+    {
+        $query = DB::table('peminjaman_arsip')
+        ->where('id', '=', $request->id);
+
+        $file = $request->file('file');
+        $filename = time()."_File Arsip.".$request->file->getClientOriginalExtension();
+        $file->move(base_path('\storage\app\public\bukti_izin'), $filename);
+        
+        $query->update([
+            'file_izin' => $filename,
+            'status' => 'Menunggu Konfirmasi'
+        ]);
+
+        return redirect()->back()->with('success', 'berhasil');
     }
 
     public function search($search, $page)
@@ -251,6 +268,8 @@ class homeController extends Controller
 
         return redirect()->back()->with('success', 'berhasil');
     }
+
+    
 
     /**
      * Show the form for creating a new resource.

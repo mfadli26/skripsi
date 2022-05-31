@@ -202,7 +202,8 @@ class adminController extends Controller
         return response()->download($file_location);
     }
 
-    public function delete_arsip(Request $request){
+    public function delete_arsip(Request $request)
+    {
         $id = $request->query("id");
         $query = DB::table('archive')
         ->where('id', '=', $id);

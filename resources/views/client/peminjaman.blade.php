@@ -154,23 +154,44 @@
                                                                 <span class="form-label">{{$archive->keterangan}}</span>
                                                             </div>
                                                         </div>
-                                                        @if($archive->type == 1)
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <span class="form-label m-0">File Izin Peminjaman Dari Dinas Terkait</span>
+                                                        <form action="/unggah_file" method="post" enctype="multipart/form-data">
+                                                            {{ csrf_field() }}
+                                                            @if($archive->type == 1)
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <span class="form-label m-0">File Izin Peminjaman Dari Dinas Terkait</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input type="file" class="form-control-sm" name="file">
+                                                                    <input type="hidden" name="id" value="{{$archive->id}}">
+                                                                </div>
                                                             </div>
-                                                            <div class="col-md-1">
-                                                                <span class="form-label">:</span>
+                                                            @endif
+                                                            <div class="text-right">
+                                                                <button class="btn btn-success text-white float-end" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Unggah</button>
                                                             </div>
-                                                            <div class="col-md-8">
-                                                                <input type="file" class="form-control-sm" name="file_izin">
-                                                            </div>
-                                                        </div>
-                                                        @endif
-                                                        <div class="text-right">
-                                                            <button class="btn btn-primary float-end" type="submit">Upload</button>
+                                                            <!-- Modal Konfirmasi Upload File -->
+                                                            <div class="modal" id="modal_{{$loop->index}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered modal-md">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title text-center" id="label_{{$loop->index}}">Apakah Anda Yakin Menggunggah File?</h5>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body text-center">
+                                                                            <button type="button" class="btn btn-secondary col-3">Batal</button>
+                                                                            <button type="submit" class="btn btn-success text-white col-3">Unggah</button>
+                                                                        </div>
+                                                                        <div class="modal-footer">
 
-                                                        </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>

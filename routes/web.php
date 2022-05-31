@@ -34,6 +34,8 @@ Route::get('/archive_pinjam', [homeController::class, 'peminjaman_page']);
 
 Route::post('/masuk', [homeController::class, 'login_check']);
 
+Route::post('/unggah_file', [homeController::class, 'unggah_file']);
+
 Route::get('/profile', [homeController::class, 'profile']);
 
 Route::post('/profile', [homeController::class, 'update_profile']);
