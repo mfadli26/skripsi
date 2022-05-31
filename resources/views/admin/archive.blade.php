@@ -101,9 +101,9 @@
                                                 <div class="mb-3">
                                                     <label for="tipe_arsip" class="col-form-label">Tipe Arsip:</label>
                                                     <select class="form-select" aria-label="Default select example" name="type" value="{{ old('type') }}">
-                                                        <option selected>Open this select menu</option>
+                                                        <option selected disabled>Open this select menu</option>
                                                         <option value="1">Harus Dengan Surat Pengantar</option>
-                                                        <option value="2">Tidak Memerlukan Surat Pengantar</option>
+                                                        <option value="0">Tidak Memerlukan Surat Pengantar</option>
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">

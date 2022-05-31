@@ -39,8 +39,6 @@ class homeController extends Controller
         ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
         ->where('id_users', '=', $user->id)
         ->get();
-        // $data_peminjaman = peminjaman_arsip::join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
-        // ->get();
         $data = (object) ['breadcrumb' => 'Data Peminjaman Arsip Pengguna', 'menu' => 'Peminjaman Arsip', 'user' => $user, 'data_arsip' => $data_peminjaman];
 
         return view('client.peminjaman')->with('data', $data);
@@ -183,13 +181,22 @@ class homeController extends Controller
         ->where('id_archive', '=', $request->id_archive)
         ->count();
 
+        if($request->type == '1'){
+            $status = "Unggah Izin";
+        }else{
+            $status = "Menunggu Konfirmasi";
+        }
+
+        $biaya = $request->jumlah*200;
+
         if($check > 0){
             return redirect()->back()->with('alert', 'anda telah meminjam arsip ini');
         }else{
             DB::table('peminjaman_arsip')->insert([
                 'id_users' => $request->id_users,
                 'id_archive' => $request->id_archive,
-                'status' => $request->status,
+                'status' => $status,
+                'biaya' => $biaya,
                 'created_at' => Carbon::now()
             ]);
             return redirect()->back()->with('success', 'berhasil');

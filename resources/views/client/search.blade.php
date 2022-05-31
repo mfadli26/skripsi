@@ -152,8 +152,9 @@
                                                     {{ csrf_field() }}           
                                                         <button class="btn btn-primary" type="submit">Pinjam</button>
                                                         <input type="hidden" value="{{$archive->id}}" name="id_archive">
+                                                        <input type="hidden" value="{{$archive->type}}" name="type">
                                                         <input type="hidden" value="{{$data->user->id}}" name="id_users">
-                                                        <input type="hidden" value="1" name="status">
+                                                        <input type="hidden" value="{{$archive->jumlah_arsip}}" name="jumlah">
                                                     </form>
                                                 </div>
                                             </div>

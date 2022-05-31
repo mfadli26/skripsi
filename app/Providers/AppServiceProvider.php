@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('pwdvalidation', function($field, $value, $parameters, $validator)
         {
             return Hash::check($value, Auth::user()->password);
+        });
+
+        Blade::directive('convert', function ($money) {
+            return "<?php echo number_format($money, 2); ?>";
         });
     }
 }
