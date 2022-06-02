@@ -54,6 +54,10 @@ Route::get('/archive/{search}/{page}', [homeController::class, 'search']);
 
 Route::get('/keluar', [homeController::class, 'logout']);
 
+Route::get('/login_admin_page', [adminController::class, 'login_admin_page']);
+
+Route::post('/login_admin', [adminController::class, 'login_admin']);
+
 Route::get('/admin', [adminController::class, 'index'])->middleware('admin');
 
 Route::get('/admin/menu', [adminController::class, 'index'])->middleware('admin');

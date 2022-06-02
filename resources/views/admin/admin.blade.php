@@ -16,6 +16,7 @@
 </head>
 
 <body>
+    {{Auth::user()}}
     <main>
         <div class="container-fluid overflow-hidden">
             <div class="row vh-100 overflow-auto">

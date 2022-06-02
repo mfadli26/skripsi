@@ -224,7 +224,6 @@ class homeController extends Controller
 
     public function tambah_akun(Request $request)
     {
-
         $messages = [
             'required' => ':attribute wajib diisi',
             'min' => ':attribute harus punya minimal :min karakter',

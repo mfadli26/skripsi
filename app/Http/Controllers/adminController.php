@@ -22,10 +22,29 @@ class adminController extends Controller
      */
     public function index()
     {
-
         $data = (object) ['sidebar' => 'home', 'breadcrumb' => 'Dashboard'];
 
         return view('admin.admin')->with('data', $data);
+    }
+
+    public function login_admin_page()
+    {
+        return view('admin.login_admin');
+    }
+
+    public function login_admin(Request $request)
+    {
+        $data = [
+            'email'     => $request->email,
+            'password'  => $request->password
+        ];
+        Auth::attempt($data);
+        if (Auth::check()) {
+            $data = (object) ['sidebar' => 'home', 'breadcrumb' => 'Dashboard'];
+            return view('admin.admin')->with('data', $data);
+        } else {
+            return redirect()->back()->with('fail', 'gagal');
+        }
     }
 
     public function users_main(Request $request)
@@ -95,11 +114,11 @@ class adminController extends Controller
             ->count();
 
         $data = (object) [
-            'sidebar' => 'archive', 
-            'breadcrumb' => 'Archive', 
-            'archive' => $archive, 
-            'page' => $page, 
-            'search' => $search, 
+            'sidebar' => 'archive',
+            'breadcrumb' => 'Archive',
+            'archive' => $archive,
+            'page' => $page,
+            'search' => $search,
             'jumlah' => $jumlah
         ];
 
@@ -123,11 +142,11 @@ class adminController extends Controller
             ->count();
 
         $data = (object) [
-            'sidebar' => 'user', 
-            'breadcrumb' => 'User', 
-            'user' => $users, 
-            'page' => $page, 
-            'search' => $search, 
+            'sidebar' => 'user',
+            'breadcrumb' => 'User',
+            'user' => $users,
+            'page' => $page,
+            'search' => $search,
             'jumlah' => $jumlah
         ];
 
@@ -169,14 +188,14 @@ class adminController extends Controller
             'jumlah_arsip' => 'required|numeric',
             'type' => 'required',
             'keterangan' => 'required',
-            'file' => 'required'  
+            'file' => 'required'
         ], $messages);
 
         $user = Auth::user();
-        
+
         $file = $request->file('file');
-        $filename = time()."_".$request->nomor_arsip.".".$request->file->getClientOriginalExtension();
-        $file->move(base_path('\storage\app\public\file_arsip'), $filename);   
+        $filename = time() . "_" . $request->nomor_arsip . "." . $request->file->getClientOriginalExtension();
+        $file->move(base_path('\storage\app\public\file_arsip'), $filename);
 
         DB::table('archive')->insert([
             'nomor_arsip' => $request->nomor_arsip,
@@ -190,15 +209,15 @@ class adminController extends Controller
             'file' => $filename,
             'created_by' => $user->id
         ]);
-          
-        
+
+
         return redirect()->back()->with('success', 'berhasil');
     }
 
     public function getDownload(Request $request)
     {
         $file = $request->query("file");
-        $file_location = public_path('storage\file_arsip\\'.$file);
+        $file_location = public_path('storage\file_arsip\\' . $file);
         return response()->download($file_location);
     }
 
@@ -206,23 +225,23 @@ class adminController extends Controller
     {
         $id = $request->query("id");
         $query = DB::table('archive')
-        ->where('id', '=', $id);
+            ->where('id', '=', $id);
 
         $filename = $query->first()->file;
 
-        File::delete(public_path('storage\file_arsip\\'.$filename));
+        File::delete(public_path('storage\file_arsip\\' . $filename));
         $query->delete();
         return redirect()->back()->with('success', 'berhasil');
-
     }
 
-    public function update_arsip(Request $request){
+    public function update_arsip(Request $request)
+    {
         $id = $request->id;
         $archive = DB::table('archive')
-        ->where('id', '=', $id);
+            ->where('id', '=', $id);
 
         $user = Auth::user();
-        if (empty($request->file)){
+        if (empty($request->file)) {
             $archive->update([
                 'nomor_arsip' => $request->nomor_arsip,
                 'nomor_surat' => $request->nomor_surat,
@@ -234,11 +253,11 @@ class adminController extends Controller
                 'keterangan' => $request->keterangan,
                 'updated_by' => $user->id
             ]);
-        }else{
-            File::delete(public_path('storage\file_arsip\\'.$request->old_file));
+        } else {
+            File::delete(public_path('storage\file_arsip\\' . $request->old_file));
             $file = $request->file('file');
-            $filename = time()."_".$request->nomor_arsip.".".$request->file->getClientOriginalExtension();
-            $file->move(base_path('\storage\app\public\file_arsip'), $filename); 
+            $filename = time() . "_" . $request->nomor_arsip . "." . $request->file->getClientOriginalExtension();
+            $file->move(base_path('\storage\app\public\file_arsip'), $filename);
 
             $archive->update([
                 'nomor_arsip' => $request->nomor_arsip,
@@ -254,7 +273,6 @@ class adminController extends Controller
             ]);
         }
         return redirect()->back()->with('success', 'berhasil');
-        
     }
 
     /**
