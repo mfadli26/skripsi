@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\homeController;
+use App\Http\Controllers\ApiLoginController;
+use App\Http\Controllers\ApiHomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/masuk', [homeController::class, 'login_check']);
+// Login
+Route::post('/login/check', [ApiLoginController::class, 'login_check']);
+Route::get('/profile/{id}', [ApiHomeController::class, 'get_user_profile']);
