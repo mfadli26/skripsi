@@ -49,6 +49,7 @@
                                             <th scope="col">Nama Lengkap</th>
                                             <th scope="col">Alamat Email</th>
                                             <th scope="col">Nomor Ktp</th>
+                                            <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -59,6 +60,11 @@
                                             <td>{{$user->name}}</td>
                                             <td>{{$user->email}}</td>
                                             <td>{{$user->ktp_number}}</td>
+                                            @if($user->admin == 0)
+                                            <td>Pengunjung</td>
+                                            @else
+                                            <td>Admin</td>
+                                            @endif
                                             <td>
                                                 <a data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" href="#"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
                                                 <i class="fas fa-trash-alt text-danger fs-5"></i>
@@ -107,18 +113,6 @@
                                                             </div>
                                                             <span class="form-label m-0 col-md-1">:</span>
                                                             <span class="form-label m-0 col-md-8">{{$user->address}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Admin</span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <div class="m-0 col-md-8">
-                                                                <div class="form-check form-switch">
-                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" {{$user->admin ? 'checked' : ''}}>
-                                                                    <label class="form-check-label" for="flexSwitchCheckChecked">Admin</label>
-                                                                </div>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

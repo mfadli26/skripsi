@@ -40,8 +40,16 @@ class adminController extends Controller
         ];
         Auth::attempt($data);
         if (Auth::check()) {
-            $data = (object) ['sidebar' => 'home', 'breadcrumb' => 'Dashboard'];
+            if (Auth::user()->admin == 0){
+                $user = Auth::user();
+                $data = (object) ['user' => $user];
+
+            return view('client.home')->with('data', $data);
+            }else{
+                $data = (object) ['sidebar' => 'home', 'breadcrumb' => 'Dashboard'];
             return view('admin.admin')->with('data', $data);
+            }
+            
         } else {
             return redirect()->back()->with('fail', 'gagal');
         }

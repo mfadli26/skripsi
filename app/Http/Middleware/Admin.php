@@ -21,10 +21,5 @@ class Admin
         } else {
             return redirect('login_admin_page');
         }
-        // if (Auth::user()->admin == 1) {
-        //     return $next($request);
-        // }
-
-        // return redirect('home')->with('error', "Only admin can access!");
     }
 }

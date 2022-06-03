@@ -61,7 +61,7 @@
                                     @endif
                                     <form action="/masuk" method="post">
                                         {{ csrf_field() }}
-                                        <div class="row mb-3 d-flex justify-content-center align-items-center">
+                                        <div class="row mb-3 mt-4 d-flex justify-content-center align-items-center">
                                             <div class="col-md-3 d-flex align-items-center">
                                                 <span class="form-label m-0">Alamat Email :</span>
                                             </div>
@@ -77,8 +77,12 @@
                                                 <input type="password" class="form-control" placeholder="kata sandi" name="password">
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary text-white col-md-3 mt-3">Masuk</button>
+                                        <div>
+                                            <button type="submit" class="btn btn-primary text-white col-md-3 mt-5">Masuk</button>
                                     </form>
+                                    <div class="mt-4">
+                                        <span>Belum memiliki akun? <a href="/daftar">Daftar</a></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

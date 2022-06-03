@@ -24,10 +24,18 @@
                 </a>
             </li>
             <li class="nav-item custom-w-100">
-                <a href="/admin/menu/category" class="nav-link px-2 text-white {{$data->sidebar == 'category' ? 'active' : ''}}">
+                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-2 text-white {{$data->sidebar == 'category' ? 'active' : ''}}">
                     <i class="fas fa-archive me-2"></i>
                     <span class="ms-1 d-none d-sm-inline">Category</span>
                 </a>
+                <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                    <li class="w-100">
+                        <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 1 </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 2 </a>
+                    </li>
+                </ul>
             </li>
         </ul>
         <hr class="custom-w-100">

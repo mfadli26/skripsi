@@ -20,9 +20,7 @@ Route::get('/', function () {
     return view('client/home');
 });
 
-Route::get('/home', function () {
-    return view('client/home');
-});
+Route::get('/home', [homeController::class, 'home_page']);
 
 Route::get('/daftar', [homeController::class, 'register']);
 

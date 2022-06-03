@@ -21,8 +21,17 @@ class homeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function home_page()
     {
+        if (Auth::check()){
+            $user = Auth::user();
+
+            $data = (object) ['user' => $user];
+
+            return view('client.home')->with('data', $data);
+        }else{
+            return view('client.home');
+        }
     }
 
     public function search_home()
@@ -56,7 +65,8 @@ class homeController extends Controller
 
     public function archive_all($page)
     {
-        $archive = DB::table('archive')->get();
+        $archive = DB::table('archive')
+        ->get();
 
         $jumlah = $archive->count();
 
