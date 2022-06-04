@@ -1,39 +1,94 @@
+<style>
+    .btn-hover-1 {
+        color: #fff;
+        background-color: #0495c9;
+        border-color: #357ebd;
+        /*set the color you want here*/
+    }
+
+    .btn-hover-1:hover,
+    .btn-hover-1:focus,
+    .btn-hover-1:active,
+    .open>.dropdown-toggle.btn-hover-1 {
+        color: #fff;
+        background-color: #3490DC;
+        border-color: #285e8e;
+        /*set the color you want here*/
+    }
+</style>
 <div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 bg-dark d-flex sticky-top">
     <div class="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start px-3 pt-2 text-white">
         <a href="/" class="d-flex align-items-center pb-sm-3 mb-md-0 me-md-auto text-white text-decoration-none text-center mx-auto pb-md-0">
             <span class="fs-4">D<span class="d-none d-sm-inline">ispusip Admin</span></span>
         </a>
         <hr class="custom-w-100">
-        <ul class="nav nav-pills flex-sm-column flex-row flex-nowrap w-100 flex-shrink-1 flex-sm-grow-0 flex-grow-1 mb-sm-auto mb-0 justify-content-center align-items-center align-items-sm-start" id="menu">
-            <li class="nav-item active custom-w-100">
-                <a href="/admin/menu" class="nav-link px-2 text-white {{$data->sidebar == 'home' ? 'active' : ''}}">
-                    <i class="fas fa-home me-2"></i>
+        <ul class="nav navbar nav-pills flex-sm-column flex-row flex-nowrap w-100 flex-shrink-1 flex-sm-grow-0 flex-grow-1 mb-sm-auto mb-0 justify-content-center align-items-center align-items-sm-start" id="menu">
+            <li class="nav-item custom-w-100 border-bottom">
+                <a href="/admin/menu" class="btn-hover-1 nav-link px-2 text-white {{$data->sidebar == 'home' ? 'active' : ''}}">
+                    <i class="bi bi-house-fill"></i>
                     <span class="ms-1 d-none d-sm-inline">Home</span>
                 </a>
             </li>
-            <li class="nav-item custom-w-100">
-                <a href="/admin/menu/all_user/1/" class="nav-link px-2 text-white {{$data->sidebar == 'user' ? 'active' : ''}}">
-                    <i class="fas fa-user me-2"></i>
+            <li class="nav-item custom-w-100 border-bottom">
+                <a href="/admin/menu/all_user/1/" class="btn-hover-1 nav-link px-2 text-white {{$data->sidebar == 'user' ? 'active' : ''}}">
+                    <i class="bi bi-people-fill"></i>
                     <span class="ms-1 d-none d-sm-inline">User</span>
                 </a>
             </li>
-            <li class="nav-item custom-w-100">
-                <a href="/admin/menu/archive_all/1/" class="nav-link px-2 text-white {{$data->sidebar == 'archive' ? 'active' : ''}}">
+            <!-- <li class="nav-item custom-w-100 border-bottom">
+                <a href="/admin/menu/archive_all/1/" class="btn-hover-1 nav-link px-2 text-white {{$data->sidebar == 'archive' ? 'active' : ''}}">
                     <i class="fas fa-book me-2"></i>
                     <span class="ms-1 d-none d-sm-inline">Archive</span>
                 </a>
-            </li>
-            <li class="nav-item custom-w-100">
-                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-2 text-white {{$data->sidebar == 'category' ? 'active' : ''}}">
-                    <i class="fas fa-archive me-2"></i>
-                    <span class="ms-1 d-none d-sm-inline">Category</span>
+            </li> -->
+            <li class="nav-item custom-w-100 border-bottom">
+                <a href="#sub-pelayanan" data-bs-toggle="collapse" class="btn-hover-1 nav-link px-2 text-white {{$data->sidebar == 'pelayanan' ? 'active' : ''}}">
+                    <i class="bi bi-flag-fill"></i>
+                    <span class="ms-1 d-none d-sm-inline">Pelayanan</span>
                 </a>
-                <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                <ul class="collapse nav flex-column {{$data->sidebar == 'pelayanan' ? 'show' : ''}}" id="sub-pelayanan">
                     <li class="w-100">
-                        <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 1 </a>
+                        <a href="/admin/menu/archive_all/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->sidebar == 'pelayanan' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data Arsip</a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 2 </a>
+                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data E-Book</a>
+                    </li>
+                    <li>
+                        <a href="/admin/menu/peminjaman_arsip/1/" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman Arsip</a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman E-Book</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item custom-w-100 border-bottom">
+                <a href="#sub-infoterkini" data-bs-toggle="collapse" class="btn-hover-1 nav-link px-2 text-white ">
+                    <i class="bi bi-newspaper"></i>
+                    <span class="ms-1 d-none d-sm-inline">Info Terkini</span>
+                </a>
+                <ul class="collapse nav flex-column ms-1" id="sub-infoterkini">
+                    <li class="w-100">
+                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Berita</a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Info Kegiatan</a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Foto dan Video</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item custom-w-100 border-bottom">
+                <a href="#sub-forumsaran" data-bs-toggle="collapse" class="btn-hover-1 nav-link px-2 text-white">
+                    <i class="bi bi-chat-right-dots-fill"></i>
+                    <span class="ms-1 d-none d-sm-inline">Forum/Saran</span>
+                </a>
+                <ul class="collapse nav flex-column ms-1" id="sub-forumsaran">
+                    <li class="w-100">
+                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Forum</a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Saran</a>
                     </li>
                 </ul>
             </li>

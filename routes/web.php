@@ -70,6 +70,8 @@ Route::get('/admin/menu/archive/{search}/{page}', [adminController::class, 'arch
 
 Route::get('/admin/menu/archive_all/{page}', [adminController::class, 'archive_all'])->middleware('admin');
 
+Route::get('/admin/menu/peminjaman_arsip/{page}', [adminController::class, 'peminjaman_arsip'])->middleware('admin');
+
 Route::post('/admin/menu/archive/tambah_archive', [adminController::class, 'tambah_archive_baru']);
 
 Route::post('/admin/menu/archive/cari', [adminController::class, 'cari_arsip'])->middleware('admin');

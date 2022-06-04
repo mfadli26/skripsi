@@ -22,7 +22,7 @@ class adminController extends Controller
      */
     public function index()
     {
-        $data = (object) ['sidebar' => 'home', 'breadcrumb' => 'Dashboard'];
+        $data = (object) ['sidebar' => 'home', 'breadcrumb' => 'Dashboard', 'breadcrumbsub' => '1'];
 
         return view('admin.admin')->with('data', $data);
     }
@@ -85,9 +85,24 @@ class adminController extends Controller
         $jumlah = DB::table('archive')
             ->count();
 
-        $data = (object) ['sidebar' => "archive", 'breadcrumb' => 'archive', 'archive' => $archive, 'page' => $page, 'search' => "", 'jumlah' => $jumlah];
+        $data = (object) ['sidebar' => "pelayanan",'breadcrumbsub' => 'Data Arsip', 'breadcrumb' => 'Pelayanan', 'archive' => $archive, 'page' => $page, 'search' => "", 'jumlah' => $jumlah];
 
         return view('admin.archive')->with('data', $data);
+    }
+
+    public function peminjaman_arsip($page)
+    {
+        $peminjaman = DB::table('peminjaman_arsip')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $jumlah = DB::table('peminjaman_arsip')
+            ->count();
+
+        $data = (object) ['sidebar' => "pelayanan",'breadcrumbsub' => 'Peminjaman Arsip', 'breadcrumb' => 'Pelayanan', 'peminjaman' => $peminjaman, 'page' => $page, 'search' => "", 'jumlah' => $jumlah];
+
+        return view('admin.peminjaman_arsip')->with('data', $data);
     }
 
     public function user_all($page)
@@ -100,7 +115,7 @@ class adminController extends Controller
         $jumlah = DB::table('users')
             ->count();
 
-        $data = (object) ['sidebar' => "user", 'breadcrumb' => 'User', 'user' => $users, 'page' => $page, 'search' => "", 'jumlah' => $jumlah];
+        $data = (object) ['sidebar' => "user", 'breadcrumb' => 'User', 'breadcrumbsub' => '1', 'user' => $users, 'page' => $page, 'search' => "", 'jumlah' => $jumlah];
 
         return view('admin.user')->with('data', $data);
     }
