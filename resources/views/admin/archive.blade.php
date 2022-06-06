@@ -267,10 +267,10 @@
                                                                     <select class="form-control" aria-label="Default select example" name="type" value="{{ old('type') }}">
                                                                     @if($archive->type == 1)
                                                                         <option selected value="1">Harus Dengan Surat Pengantar</option>
-                                                                        <option value="2">Tidak Memerlukan Surat Pengantar</option>
+                                                                        <option value="0">Tidak Memerlukan Surat Pengantar</option>
                                                                     @else
                                                                         <option value="1">Harus Dengan Surat Pengantar</option>
-                                                                        <option selected value="2">Tidak Memerlukan Surat Pengantar</option>
+                                                                        <option selected value="0">Tidak Memerlukan Surat Pengantar</option>
                                                                     @endif
                                                                     </select>
                                                                 </div>

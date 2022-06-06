@@ -16,9 +16,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('client/home');
-});
+
+Route::get('/', [homeController::class, 'home_page']);
 
 Route::get('/home', [homeController::class, 'home_page']);
 
@@ -83,3 +82,5 @@ Route::get('/admin/menu/archive/delete_arsip', [adminController::class, 'delete_
 Route::post('/admin/menu/archive/update_arsip', [adminController::class, 'update_arsip'])->middleware('admin');
 
 Route::post('/masuk_admin', [adminController::class, 'login_check'])->middleware('admin');
+
+Route::get('/admin/menu/archive/bacaSurat', [adminController::class, 'bacaSurat'])->middleware('admin');

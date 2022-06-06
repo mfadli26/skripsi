@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Storage;
 use App\Upload;
 use Illuminate\Support\Facades\File;
 use Response;
+use Illuminate\Contracts\Routing\ResponseFactory;
 
 use App\Models\User;
+use Laravel\Ui\Presets\React;
 
 class adminController extends Controller
 {
@@ -22,7 +24,10 @@ class adminController extends Controller
      */
     public function index()
     {
-        $data = (object) ['sidebar' => 'home', 'breadcrumb' => 'Dashboard', 'breadcrumbsub' => '1'];
+        $data = (object) [
+            'sidebar' => 'home', 
+            'breadcrumb' => 'Dashboard', 
+            'breadcrumbsub' => '1'];
 
         return view('admin.admin')->with('data', $data);
     }
@@ -30,6 +35,13 @@ class adminController extends Controller
     public function login_admin_page()
     {
         return view('admin.login_admin');
+    }
+
+    public function bacaSurat(Request $request)
+    {
+        $file = $request->query("file");
+        $file_location = public_path('storage\bukti_izin\\' . $file);
+        return response()->download($file_location);
     }
 
     public function login_admin(Request $request)
@@ -40,16 +52,14 @@ class adminController extends Controller
         ];
         Auth::attempt($data);
         if (Auth::check()) {
-            if (Auth::user()->admin == 0){
+            if (Auth::user()->admin == 0) {
                 $user = Auth::user();
                 $data = (object) ['user' => $user];
 
-            return view('client.home')->with('data', $data);
-            }else{
-                $data = (object) ['sidebar' => 'home', 'breadcrumb' => 'Dashboard'];
-            return view('admin.admin')->with('data', $data);
+                return view('client.home')->with('data', $data);
+            } else {
+                return $this->index();;
             }
-            
         } else {
             return redirect()->back()->with('fail', 'gagal');
         }
@@ -85,7 +95,14 @@ class adminController extends Controller
         $jumlah = DB::table('archive')
             ->count();
 
-        $data = (object) ['sidebar' => "pelayanan",'breadcrumbsub' => 'Data Arsip', 'breadcrumb' => 'Pelayanan', 'archive' => $archive, 'page' => $page, 'search' => "", 'jumlah' => $jumlah];
+        $data = (object) [
+            'sidebar' => "pelayanan", 
+            'breadcrumbsub' => 'Data Arsip', 
+            'breadcrumb' => 'Pelayanan', 
+            'archive' => $archive, 
+            'page' => $page, 
+            'search' => "", 
+            'jumlah' => $jumlah];
 
         return view('admin.archive')->with('data', $data);
     }
@@ -93,6 +110,10 @@ class adminController extends Controller
     public function peminjaman_arsip($page)
     {
         $peminjaman = DB::table('peminjaman_arsip')
+            ->select('archive.*', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin')
+            ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+            ->join('users', 'peminjaman_arsip.id_users', '=', 'users.id')
+            ->leftjoin('users AS users_admin', 'peminjaman_arsip.id_admin', '=', 'users_admin.id')
             ->skip(($page - 1) * 20)
             ->take(20)
             ->get();
@@ -100,7 +121,15 @@ class adminController extends Controller
         $jumlah = DB::table('peminjaman_arsip')
             ->count();
 
-        $data = (object) ['sidebar' => "pelayanan",'breadcrumbsub' => 'Peminjaman Arsip', 'breadcrumb' => 'Pelayanan', 'peminjaman' => $peminjaman, 'page' => $page, 'search' => "", 'jumlah' => $jumlah];
+        $data = (object) [
+            'sidebar' => "pelayanan",
+            'breadcrumbsub' => 'Peminjaman Arsip',
+            'breadcrumb' => 'Pelayanan',
+            'peminjaman' => $peminjaman,
+            'page' => $page,
+            'search' => "",
+            'jumlah' => $jumlah
+        ];
 
         return view('admin.peminjaman_arsip')->with('data', $data);
     }
@@ -115,7 +144,14 @@ class adminController extends Controller
         $jumlah = DB::table('users')
             ->count();
 
-        $data = (object) ['sidebar' => "user", 'breadcrumb' => 'User', 'breadcrumbsub' => '1', 'user' => $users, 'page' => $page, 'search' => "", 'jumlah' => $jumlah];
+        $data = (object) [
+            'sidebar' => "user", 
+            'breadcrumb' => 'User', 
+            'breadcrumbsub' => '1', 
+            'user' => $users, 
+            'page' => $page, 
+            'search' => "", 
+            'jumlah' => $jumlah];
 
         return view('admin.user')->with('data', $data);
     }
