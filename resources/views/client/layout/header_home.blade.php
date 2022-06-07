@@ -1,3 +1,4 @@
+@include('sweetalert::alert')
 <div class="header">
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between border-bottom row" >
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: white">
@@ -10,7 +11,7 @@
                 <div class="collapse justify-content-end navbar-collapse col-md-9 " id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item text-center px-6 border-end">
-                            <a class="nav-link btn-hover" aria-current="page" href="#">Beranda</a>
+                            <a class="nav-link btn-hover" aria-current="page" href="/home">Beranda</a>
                         </li>
                         <li class="nav-item dropdown text-center px-6 border-end">
                             <a class="nav-link dropdown-toggle btn-hover" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -20,8 +21,8 @@
                                 <li><a class="dropdown-item" href="#">E-Book</a></li> 
                                 <li><a class="dropdown-item" href="#">Layanan Umum Perpustakaan</a></li>
                                 <li><a class="dropdown-item" href="#">Layanan Umum Kearsipan</a></li>
-                                <li><a class="dropdown-item" href="#">Pencarian Arsip</a></li>
-                                <li><a class="dropdown-item" href="#">Peminjaman Arsip</a></li>
+                                <li><a class="dropdown-item" href="/archive">Pencarian Arsip</a></li>
+                                <li><a class="dropdown-item" href="/archive_pinjam">Peminjaman Arsip</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown text-center px-6 border-end">

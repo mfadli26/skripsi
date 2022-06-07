@@ -32,9 +32,9 @@
 <body class="antialiased d-flex flex-column h-100">
     <main class="flex-shrink-0">
         @if (session('alert'))
-            <div class="alert alert-success">
-                {{ session('alert') }}
-            </div>
+        <div class="alert alert-success">
+            {{ session('alert') }}
+        </div>
         @endif
         @include('client.layout.header_arsip')
         @include('client.layout.breadcrumb_arsip')
@@ -52,29 +52,35 @@
                                         {{ csrf_field() }}
                                         <div class="input-group">
                                             <input type="text" class="form-control rounded-0" name="search" value="{{$data->search}}" placeholder="Masukkan Nama atau Nomor Arsip">
-                                            <button class="btn btn-success text-white rounded-0" type="submit">Cari Arsip</button>
+                                            <button class="btn btn-primary text-white rounded-0" type="submit">Cari Arsip</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <table class="table table-bordered table-striped">
+                            <table class="table table-bordered table-striped text-center">
                                 <thead>
                                     <tr>
                                         <th scope="col">Nomor</th>
                                         <th scope="col">Judul</th>
-                                        <th scope="col" class="text-center">Action</th>
+                                        <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($data->archive as $archive)
                                     <tr>
                                         <th scope="row">{{$archive->nomor_surat}}</th>
-                                        <td>{{$archive->petugas_registrasi}}</td>
-                                        <td class="text-center"><button class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Pilih</button></td>
+                                        <td scope="row">{{$archive->petugas_registrasi}}</td>
+                                        @auth
+                                        <td><button class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Pilih</button></td>
+                                        @endauth
+                                        @guest
+                                        <td scope="row"><a href="/masuk" class="text-decoration-none">Masuk</a> Untuk Melakukan Peminjaman</td>
+                                        @endguest
                                     </tr>
                                     <!-- Modal -->
+                                    @auth
                                     <div class="modal fade" id="modal_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                                             <div class="modal-content">
@@ -131,11 +137,11 @@
                                                         </div>
                                                         <span class="form-label m-0 col-md-1">:</span>
                                                         @if($archive->type == 1)
-                                                            <span class="form-label m-0 col-md-8">Harus Dengan Surat Pengantar</span>
-                                                            
+                                                        <span class="form-label m-0 col-md-8">Harus Dengan Surat Pengantar</span>
+
                                                         @else
-                                                            <span class="form-label m-0 col-md-8">Tidak Memerlukan Surat Pengantar</span>
-                                                        
+                                                        <span class="form-label m-0 col-md-8">Tidak Memerlukan Surat Pengantar</span>
+
                                                         @endif
                                                     </div>
                                                     <div class="row mb-3">
@@ -149,8 +155,8 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                                     <form action="/archive/pinjam" method="post">
-                                                    {{ csrf_field() }}           
-                                                        <button class="btn btn-primary" type="submit">Pinjam</button>
+                                                        {{ csrf_field() }}
+                                                        <button class="btn btn-primary text-white" type="submit">Pinjam</button>
                                                         <input type="hidden" value="{{$archive->id}}" name="id_archive">
                                                         <input type="hidden" value="{{$archive->type}}" name="type">
                                                         <input type="hidden" value="{{$data->user->id}}" name="id_users">
@@ -160,6 +166,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endauth
                                     @endforeach
                                 </tbody>
                             </table>

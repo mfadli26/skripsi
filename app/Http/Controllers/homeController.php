@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
-
+use RealRashid\SweetAlert\Facades\Alert;
 // setlocale(LC_TIME, 'Indonesia');
 
 class homeController extends Controller
@@ -23,34 +23,49 @@ class homeController extends Controller
      */
     public function home_page()
     {
-        if (Auth::check()){
+        if (Auth::check()) {
             $user = Auth::user();
 
             $data = (object) ['user' => $user];
 
             return view('client.home')->with('data', $data);
-        }else{
+        } else {
             return view('client.home');
         }
     }
 
     public function search_home()
     {
-        $data = (object) ['menu' => 'search'];
+        $user = Auth::user();
+        $data = (object) [
+            'menu' => 'search',
+            'user' => $user
+        ];
 
         return view('client.archive')->with('data', $data);
     }
 
     public function peminjaman_page()
     {
-        $user = Auth::user();
-        $data_peminjaman = DB::table('archive') 
-        ->join('peminjaman_arsip', 'archive.id', '=', 'peminjaman_arsip.id_archive')
-        ->where('id_users', '=', $user->id)
-        ->get();
-        $data = (object) ['breadcrumb' => 'Data Peminjaman Arsip Pengguna', 'menu' => 'Peminjaman Arsip', 'user' => $user, 'data_arsip' => $data_peminjaman];
+        if (Auth::check()) {
+            $user = Auth::user();
+            $data_peminjaman = DB::table('archive')
+                ->join('peminjaman_arsip', 'archive.id', '=', 'peminjaman_arsip.id_archive')
+                ->where('id_users', '=', $user->id)
+                ->get();
 
-        return view('client.peminjaman')->with('data', $data);
+            $data = (object) [
+                'breadcrumb' => 'Data Peminjaman Arsip Pengguna',
+                'menu' => 'Peminjaman Arsip',
+                'user' => $user,
+                'data_arsip' => $data_peminjaman
+            ];
+
+            return view('client.peminjaman')->with('data', $data);
+        } else {
+            Alert::warning('Perhatian', 'Anda Harus Masuk Terlebih Dahulu');
+            return redirect()->back();
+        }
     }
 
     public function archive_main(Request $request)
@@ -66,30 +81,45 @@ class homeController extends Controller
     public function archive_all($page)
     {
         $archive = DB::table('archive')
-        ->get();
+            ->get();
 
+        $user = Auth::user();
         $jumlah = $archive->count();
 
-        $data = (object) ['search' => "", 'breadcrumb' => 'Lihat Semua Dokumen', 'menu' => 'search', 'page' => $page, 'archive' => $archive, 'jumlah' => $jumlah];
+        $data = (object) [
+            'search' => "",
+            'breadcrumb' => 'Lihat Semua Dokumen',
+            'menu' => 'search',
+            'user' => $user,
+            'page' => $page,
+            'archive' => $archive,
+            'jumlah' => $jumlah
+        ];
 
         return view('client.search')->with('data', $data);
     }
 
     public function unggah_file(Request $request)
     {
-        $query = DB::table('peminjaman_arsip')
-        ->where('id', '=', $request->id);
+        if ($request->file('file') == NULL) {
+            Alert::warning('Unggah File Gagal!', 'Form File Tidak Boleh Kosong');
+            return redirect()->back();
+        } else {
+            $query = DB::table('peminjaman_arsip')
+                ->where('id', '=', $request->id);
 
-        $file = $request->file('file');
-        $filename = time()."_File Arsip.".$request->file->getClientOriginalExtension();
-        $file->move(base_path('\storage\app\public\bukti_izin'), $filename);
-        
-        $query->update([
-            'file_izin' => $filename,
-            'status' => 'Menunggu Konfirmasi'
-        ]);
+            $file = $request->file('file');
+            $filename = time() . "_File Arsip." . $request->file->getClientOriginalExtension();
+            $file->move(base_path('\storage\app\public\bukti_izin'), $filename);
 
-        return redirect()->back()->with('success', 'berhasil');
+            $query->update([
+                'file_izin' => $filename,
+                'status' => 'Menunggu Konfirmasi'
+            ]);
+
+            Alert::success('Berhasil!', 'File Berhasil Diunggah');
+            return redirect()->back();
+        }
     }
 
     public function search($search, $page)
@@ -101,7 +131,15 @@ class homeController extends Controller
 
         $jumlah = $archive->count();
         $user = Auth::user();
-        $data = (object) ['search' => $search, 'breadcrumb' => 'Penelusuran ' . $search, 'menu' => 'search', 'page' => $page, 'archive' => $archive, 'jumlah' => $jumlah, 'user' =>$user];
+        $data = (object) [
+            'search' => $search,
+            'breadcrumb' => 'Penelusuran ' . $search,
+            'menu' => 'search',
+            'page' => $page,
+            'archive' => $archive,
+            'jumlah' => $jumlah,
+            'user' => $user
+        ];
 
         return view('client.search')->with('data', $data);
     }
@@ -171,7 +209,6 @@ class homeController extends Controller
     {
 
         $data = (object) ['breadcrumb' => 'Masuk', 'menu' => 'login'];
-
         return view('client.login')->with('data', $data);
     }
 
@@ -201,24 +238,38 @@ class homeController extends Controller
         return redirect('/masuk');
     }
 
+    public function batal_pinjam_user($id)
+    {
+        $batal_pinjam = DB::table('peminjaman_arsip')
+            ->where('id', '=', $id);
+
+        $batal_pinjam
+            ->update([
+                'status' => 'Dibatalkan Oleh Pengguna'
+            ]);
+
+        alert::success('Berhasil', 'Peminjaman Berhasil dibatalkan');
+        return redirect()->back();
+    }
+
     public function peminjaman_arsip(Request $request)
     {
         $check =  DB::table('peminjaman_arsip')
-        ->where('id_users', '=', $request->id_users)
-        ->where('id_archive', '=', $request->id_archive)
-        ->count();
+            ->where('id_users', '=', $request->id_users)
+            ->where('id_archive', '=', $request->id_archive)
+            ->count();
 
-        if($request->type == '1'){
+        if ($request->type == '1') {
             $status = "Unggah Izin";
-        }else{
+        } else {
             $status = "Menunggu Konfirmasi";
         }
 
-        $biaya = $request->jumlah*200;
+        $biaya = $request->jumlah * 200;
 
-        if($check > 0){
+        if ($check > 0) {
             return redirect()->back()->with('alert', 'anda telah meminjam arsip ini');
-        }else{
+        } else {
             DB::table('peminjaman_arsip')->insert([
                 'id_users' => $request->id_users,
                 'id_archive' => $request->id_archive,
@@ -228,8 +279,6 @@ class homeController extends Controller
             ]);
             return redirect()->back()->with('success', 'berhasil');
         }
-        
-        
     }
 
     public function tambah_akun(Request $request)
@@ -278,7 +327,7 @@ class homeController extends Controller
         return redirect()->back()->with('success', 'berhasil');
     }
 
-    
+
 
     /**
      * Show the form for creating a new resource.

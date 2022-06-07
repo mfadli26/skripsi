@@ -12,7 +12,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}">
     <link href="/css/app.css" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css"> -->
     <!-- Styles -->
 
     <style>
@@ -32,11 +31,7 @@
 
 <body class="antialiased d-flex flex-column h-100">
     <main class="flex-shrink-0">
-        @if (session('alert'))
-        <div class="alert alert-success">
-            {{ session('alert') }}
-        </div>
-        @endif
+        @include('sweetalert::alert')
         @include('client.layout.header_arsip')
         @include('client.layout.breadcrumb_arsip')
         <div class="container-fluid">
@@ -75,104 +70,102 @@
                                                 @if($archive->start_at == null)
                                                 <td>-</td>
                                                 @else
-                                                <td>{{$star_at}}</td>
+                                                <td>{{$archive->start_at}}</td>
                                                 @endif
 
                                                 @if($archive->expired_at == null)
                                                 <td>-</td>
                                                 @else
-                                                <td>{{$expired_a}}</td>
+                                                <td>{{$archive->expired_at}}</td>
                                                 @endif
-                                                @if($archive->status == 'Pengambilan Arsip' or $archive->status == 'Selesai')
-                                                <td>Rp.@convert($archive->biaya)</td>
-                                                @else
                                                 <td>Rp.@convert($archive->biaya),-</td>
-                                                @endif
                                                 @if($archive->status == 'Unggah Izin')
                                                 <td><span class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Anda Harus Menggungah File Izin Dari Pihak Dinas Terkait Sebelum Dapat Dikonfirmasi Oleh Admin!"></span> {{$archive->status}}</td>
+                                                @elseif($archive->status == 'File Izin Ditolak')
+                                                <td><span class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Silahkan Lakukan Pengunggahan File Ulang!"></span> {{$archive->status}}</td>
                                                 @else
                                                 <td>{{$archive->status}}</td>
                                                 @endif
                                                 <td><i class="fa-solid fa-chevron-down"></i></td>
                                             </tr>
-                                            <tr class="collapse accordion-collapse" style="background-color : #00000013;" id="r1_{{$archive->id}}" data-bs-parent=".table">
-                                                <td colspan="7" class="px-4">
-                                                    <h6>Detail Peminjaman</h6>
-                                                    <div class="container">
+                                            <tr class="collapse accordion-collapse" style="background-color : #00000013; border-top: solid black;" id="r1_{{$archive->id}}" data-bs-parent=".table">
+                                                <td colspan="8" class="px-4">
+                                                    <h4 class="fw-bold text-center">Detail Peminjaman</h4>
+                                                    <div class="container" style="width : 60%;">
                                                         <div class="row">
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-5">
                                                                 <span class="form-label m-0">Nama Pencipta</span>
                                                             </div>
                                                             <div class="col-md-1">
                                                                 <span class="form-label">:</span>
                                                             </div>
-                                                            <div class="col-md-8">
+                                                            <div class="col-md-6">
                                                                 <span class="form-label">{{$archive->nama_pencipta}}</span>
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-5">
                                                                 <span class="form-label m-0">Petugas Registrasi</span>
                                                             </div>
                                                             <div class="col-md-1">
                                                                 <span class="form-label">:</span>
                                                             </div>
-                                                            <div class="col-md-8">
+                                                            <div class="col-md-6">
                                                                 <span class="form-label">{{$archive->petugas_registrasi}}</span>
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-5">
                                                                 <span class="form-label m-0">Kode Klasifikasi</span>
                                                             </div>
                                                             <div class="col-md-1">
                                                                 <span class="form-label">:</span>
                                                             </div>
-                                                            <div class="col-md-8">
+                                                            <div class="col-md-6">
                                                                 <span class="form-label">{{$archive->kode_klasifikasi}}</span>
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-5">
                                                                 <span class="form-label m-0">Jumlah Arsip</span>
                                                             </div>
                                                             <div class="col-md-1">
                                                                 <span class="form-label">:</span>
                                                             </div>
-                                                            <div class="col-md-8">
+                                                            <div class="col-md-6">
                                                                 <span class="form-label">{{$archive->jumlah_arsip}}</span>
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-md-3">
-                                                                <span class="form-label m-0">Keterangan</span>
+                                                            <div class="col-md-5">
+                                                                <span class="form-label m-0">Keterangan Arsip</span>
                                                             </div>
                                                             <div class="col-md-1">
                                                                 <span class="form-label">:</span>
                                                             </div>
-                                                            <div class="col-md-8">
+                                                            <div class="col-md-6">
                                                                 <span class="form-label">{{$archive->keterangan}}</span>
                                                             </div>
                                                         </div>
+
+
+                                                        @if($archive->status == 'Unggah Izin' || $archive->status == 'File Izin Ditolak')
                                                         <form action="/unggah_file" method="post" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
                                                             @if($archive->type == 1)
                                                             <div class="row">
-                                                                <div class="col-md-3">
+                                                                <div class="col-md-5">
                                                                     <span class="form-label m-0">File Izin Peminjaman Dari Dinas Terkait</span>
                                                                 </div>
                                                                 <div class="col-md-1">
                                                                     <span class="form-label">:</span>
                                                                 </div>
-                                                                <div class="col-md-8">
+                                                                <div class="col-md-6">
                                                                     <input type="file" class="form-control-sm" name="file">
                                                                     <input type="hidden" name="id" value="{{$archive->id}}">
                                                                 </div>
                                                             </div>
                                                             @endif
-                                                            <div class="text-right">
-                                                                <button class="btn btn-success text-white float-end" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Unggah</button>
-                                                            </div>
                                                             <!-- Modal Konfirmasi Upload File -->
                                                             <div class="modal" id="modal_{{$loop->index}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
                                                                 <div class="modal-dialog modal-dialog-centered modal-md">
@@ -183,7 +176,7 @@
                                                                         </div>
                                                                         <div class="modal-body text-center">
                                                                             <button type="button" class="btn btn-secondary col-3">Batal</button>
-                                                                            <button type="submit" class="btn btn-success text-white col-3">Unggah</button>
+                                                                            <button type="submit" class="btn btn-primary text-white col-3">Unggah</button>
                                                                         </div>
                                                                         <div class="modal-footer">
 
@@ -192,6 +185,36 @@
                                                                 </div>
                                                             </div>
                                                         </form>
+                                                        @endif
+                                                        <div class="row">
+                                                            <div class="col-md-5">
+                                                                <span class="form-label m-0">Komentar Admin</span>
+                                                            </div>
+                                                            <div class="col-md-1">
+                                                                <span class="form-label">:</span>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                @if($archive->komentar == NULL)
+                                                                <span class="form-label">-</span>
+                                                                @else
+                                                                <span class="form-label">{{$archive->komentar}}</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-5">
+                                                            <span>Klik <a href="">Link</a> Berikut Untuk Melihat Panduan Pengambilan Arsip</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ms-3 mt-3">
+
+                                                        <div class="float-end">
+                                                            @if($archive->status == 'Menunggu Konfirmasi' || $archive->status == 'Pengambilan Arsip' || $archive->status == 'File Izin Ditolak' || $archive->status == 'Unggah Izin')
+                                                            <a href="/batal_pinjam_user/{{$archive->id}}" class="batal_pinjam btn btn-danger text-white">Batal</a>
+                                                            @endif
+                                                            @if($archive->status == 'Unggah Izin' || $archive->status == 'File Izin Ditolak')
+                                                            <button class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Unggah</button>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -213,12 +236,28 @@
     @include('client.layout.footer_arsip')
     <script src="/js/app.js">
     </script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+
+        $('.batal_pinjam').on('click', function(event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Apakah Anda Yakin Membatalkan Peminjaman?',
+                text: 'Data dan detailnya akan dihapus secara permanent!',
+                icon: 'warning',
+                buttons: ["Cancel", "Yes!"],
+            }).then(function(value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
     </script>
 </body>
 

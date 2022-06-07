@@ -13,7 +13,9 @@ use Response;
 use Illuminate\Contracts\Routing\ResponseFactory;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Laravel\Ui\Presets\React;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class adminController extends Controller
 {
@@ -25,9 +27,10 @@ class adminController extends Controller
     public function index()
     {
         $data = (object) [
-            'sidebar' => 'home', 
-            'breadcrumb' => 'Dashboard', 
-            'breadcrumbsub' => '1'];
+            'sidebar' => 'home',
+            'breadcrumb' => 'Dashboard',
+            'breadcrumbsub' => '1'
+        ];
 
         return view('admin.admin')->with('data', $data);
     }
@@ -96,13 +99,14 @@ class adminController extends Controller
             ->count();
 
         $data = (object) [
-            'sidebar' => "pelayanan", 
-            'breadcrumbsub' => 'Data Arsip', 
-            'breadcrumb' => 'Pelayanan', 
-            'archive' => $archive, 
-            'page' => $page, 
-            'search' => "", 
-            'jumlah' => $jumlah];
+            'sidebar' => "pelayanan",
+            'breadcrumbsub' => 'Data Arsip',
+            'breadcrumb' => 'Pelayanan',
+            'archive' => $archive,
+            'page' => $page,
+            'search' => "",
+            'jumlah' => $jumlah
+        ];
 
         return view('admin.archive')->with('data', $data);
     }
@@ -110,9 +114,9 @@ class adminController extends Controller
     public function peminjaman_arsip($page)
     {
         $peminjaman = DB::table('peminjaman_arsip')
-            ->select('archive.*', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin')
-            ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+            ->select('archive.*', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin', 'peminjaman_arsip.id AS id_peminjaman')
             ->join('users', 'peminjaman_arsip.id_users', '=', 'users.id')
+            ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
             ->leftjoin('users AS users_admin', 'peminjaman_arsip.id_admin', '=', 'users_admin.id')
             ->skip(($page - 1) * 20)
             ->take(20)
@@ -145,13 +149,14 @@ class adminController extends Controller
             ->count();
 
         $data = (object) [
-            'sidebar' => "user", 
-            'breadcrumb' => 'User', 
-            'breadcrumbsub' => '1', 
-            'user' => $users, 
-            'page' => $page, 
-            'search' => "", 
-            'jumlah' => $jumlah];
+            'sidebar' => "user",
+            'breadcrumb' => 'User',
+            'breadcrumbsub' => '1',
+            'user' => $users,
+            'page' => $page,
+            'search' => "",
+            'jumlah' => $jumlah
+        ];
 
         return view('admin.user')->with('data', $data);
     }
@@ -175,6 +180,7 @@ class adminController extends Controller
         $data = (object) [
             'sidebar' => 'archive',
             'breadcrumb' => 'Archive',
+            'breadcrumb' => 'Data Arsip',
             'archive' => $archive,
             'page' => $page,
             'search' => $search,
@@ -332,6 +338,56 @@ class adminController extends Controller
             ]);
         }
         return redirect()->back()->with('success', 'berhasil');
+    }
+
+    public function konfirmasi_peminjaman_arsip(Request $request)
+    {
+        $id = $request->id;
+        $peminjaman = DB::table('peminjaman_arsip')
+            ->where('id', '=', $id);
+        $konfirm = $request->konfirm;
+
+        if ($konfirm == 1) {
+            $status = 'Pengambilan Arsip';
+        } elseif ($konfirm == 2) {
+            $status = 'Dibatalkan Oleh Admin';
+        } elseif ($konfirm == 3) {
+            $status = 'File Izin Ditolak';
+        };
+
+        $peminjaman
+            ->update([
+                'status' => $status,
+                'start_at' => Carbon::today(),
+                'expired_at' => Carbon::today()->addDay(6),
+                'komentar' => $request->komentar,
+                'id_admin' => $request->id_admin
+            ]);
+
+        Alert::success('Berhasil', 'Data Peminjaman Pengguna Berhasil Dikonfirmasi');
+        return redirect()->back();
+    }
+
+    public function konfirmasi_selesai($id)
+    {
+        // $batal_pinjam = DB::table('peminjaman_arsip')
+        //     ->where('id', '=', $id);
+
+        // $batal_pinjam
+        //     ->update([
+        //         'status' => 'Selesai'
+        //     ]);
+
+        $konfirm = DB::table('peminjaman_arsip')
+            ->where('id', '=', $id);
+
+        $konfirm
+            ->update([
+                'status' => 'Selesai'
+            ]);
+
+        Alert::success('Berhasil', 'Status Peminjaman Berhasil Diubah');
+        return redirect()->back();
     }
 
     /**

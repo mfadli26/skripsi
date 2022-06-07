@@ -51,6 +51,8 @@ Route::get('/archive/{search}/{page}', [homeController::class, 'search']);
 
 Route::get('/keluar', [homeController::class, 'logout']);
 
+Route::get('/batal_pinjam_user/{id}', [homeController::class, 'batal_pinjam_user']);
+
 Route::get('/login_admin_page', [adminController::class, 'login_admin_page']);
 
 Route::post('/login_admin', [adminController::class, 'login_admin']);
@@ -84,3 +86,7 @@ Route::post('/admin/menu/archive/update_arsip', [adminController::class, 'update
 Route::post('/masuk_admin', [adminController::class, 'login_check'])->middleware('admin');
 
 Route::get('/admin/menu/archive/bacaSurat', [adminController::class, 'bacaSurat'])->middleware('admin');
+
+Route::post('/admin/menu/archive/konfirmasi_peminjaman_arsip', [adminController::class, 'konfirmasi_peminjaman_arsip'])->middleware('admin');
+
+Route::get('/admin/konfirmasi_selesai/{id}', [adminController::class, 'konfirmasi_selesai'])->middleware('admin');

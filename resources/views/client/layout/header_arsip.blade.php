@@ -1,3 +1,4 @@
+@include('sweetalert::alert')
 <div class="header bg-white">
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between border-bottom roww">
     <nav class="navbar navbar-expand-lg" style="background-color: white">
@@ -21,8 +22,8 @@
                         <li><a class="dropdown-item" href="#">E-Book</a></li>
                         <li><a class="dropdown-item" href="#">Layanan Umum Perpustakaan</a></li>
                         <li><a class="dropdown-item" href="#">Layanan Umum Kearsipan</a></li>
-                        <li><a class="dropdown-item" href="#">Pencarian Arsip</a></li>
-                        <li><a class="dropdown-item" href="#">Peminjaman Arsip</a></li>
+                        <li><a class="dropdown-item" href="/archive">Pencarian Arsip</a></li>
+                        <li><a class="dropdown-item" href="/archive_pinjam">Peminjaman Arsip</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown text-center px-4 border-end">

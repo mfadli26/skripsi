@@ -42,7 +42,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <a class="btn btn-primary float-end" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Tambah Data Arsip</a>
+                                        <a class="btn btn-primary float-end text-white" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Tambah Data Arsip</a>
                                     </div>
                                 </div>
                             </div>
@@ -116,8 +116,8 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                <button class="btn btn-secondary text-white" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
+                                                <button type="submit" class="btn btn-primary text-white">Save</button>
                                             </div>
                                         </div>
                                     </div>
@@ -290,8 +290,8 @@
                                                             <input type="hidden" name="id" value="{{$archive->id}}">
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <a class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}">Back</i></a>
-                                                            <button type="submit" class="btn btn-primary">Save</button>
+                                                            <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}">Back</i></a>
+                                                            <button type="submit" class="btn btn-primary text-white">Save</button>
                                                         </div>
                                                     </div>
                                                 </div>

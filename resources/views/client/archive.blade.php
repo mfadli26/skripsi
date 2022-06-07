@@ -31,6 +31,7 @@
 
 <body class="antialiased d-flex flex-column h-100">
     <main class="flex-shrink-0">
+        @include('sweetalert::alert')
         @include('client.layout.header_arsip')
         <div class="container-fluid">
             <div class="wrapper py-3 pt-5" style="padding-bottom: 100px !important;">
@@ -43,8 +44,7 @@
                             {{ csrf_field() }}
                             <div class="input-group input-group-lg">
                                 <input type="text" class="form-control" name="search" placeholder="Masukkan Nama atau Nomor Arsip">
-                                <button class="btn btn-success text-white" type="submit">Cari Arsip</button>
-                                <!-- <a class="btn btn-success text-white" href="/archive/buku/1">Cari Arsip</a> -->
+                                <button class="btn btn-primary text-white" type="submit">Cari Arsip</button>
                             </div>
                         </form>
                     </div>

@@ -4,12 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.83.1">
+
+    <title>Admin</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
-    <title>Admin</title>
+    <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <link href="/css/app.css" rel="stylesheet">
 
     {{ Html::style('css/app.css') }}
     {{ Html::style('css/admin.css') }}
@@ -20,7 +21,9 @@
     <main>
         <div class="container-fluid overflow-hidden">
             <div class="row vh-100 overflow-auto">
+                @include('sweetalert::alert')
                 @include('admin.layout.sidebar')
+
                 <div class="col d-flex flex-column h-sm-100 p-0">
                     @include('admin.layout.navbar')
                     @include('admin.layout.breadcrumb')
@@ -37,7 +40,7 @@
                                 <table class="table text-center">
                                     <thead>
                                         <tr>
-                                            <th scope="col"><span class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Total Biaya Berdasarkan Jumlah Lembar Arsip"></span>No</th>
+                                            <th scope="col">No</th>
                                             <th scope="col">Nama Pengguna</th>
                                             <th scope="col">Nomor Arsip</th>
                                             <th scope="col">Tanggal</th>
@@ -92,11 +95,21 @@
                                             </td>
                                             @endif
                                             <td>
-                                                <span class="badge bg-primary fs-6">{{$peminjaman->status}}</span>
+                                                <span class="badge {{$peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin' ? 'bg-danger' : 'bg-primary'}} fs-6">
+                                                    @if($peminjaman->status == 'Pengambilan Arsip')
+                                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Arsip Dapat Didownload Pada Info Detail Arsip">
+                                                        @endif
+                                                        {{$peminjaman->status}}
+                                                </span>
                                             </td>
                                             <td>
-                                                <a href="/admin/menu/archive/bacaSurat"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                <a data-bs-toggle="modal" data-bs-target="#modal_delete_{{$loop->index}}"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                @if($peminjaman->status == 'Pengambilan Arsip')
+                                                <a class="selesai-confirm" href="/admin/konfirmasi_selesai/{{$peminjaman->id_peminjaman}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
+                                                @elseif($peminjaman->status != 'Dibatalkan Oleh Pengguna' && $peminjaman->status != 'Dibatalkan Oleh Admin' && $peminjaman->status != 'Selesai')
+                                                <a data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}" href=""><i class="fas fa-edit text-success me-2 fs-5"></i></a>
+
+                                                @endif
+                                                <a href="" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                             </td>
                                         </tr>
 
@@ -215,7 +228,7 @@
                                                             </div>
                                                             <span class="form-label m-0 col-md-1">:</span>
                                                             @if ($peminjaman->status == 'Pengambilan Arsip')
-                                                            <span class="form-label m-0 col-md-8"><a class="badge bg-primary text-decoration-none fs-6 text-white" href=""><i class="bi bi-download"></i>  Link Download</a></span>
+                                                            <span class="form-label m-0 col-md-8"><a class="badge bg-primary text-decoration-none fs-6 text-white" href=""><i class="bi bi-download"></i> Link Download</a></span>
                                                             @else
                                                             <span class="form-label m-0 col-md-3 badge bg-danger fs-6 text-white">Link Tidak Tersedia</span>
                                                             @endif
@@ -228,8 +241,58 @@
                                             </div>
                                         </div>
                                         <!-- Modal Konfirmasi -->
-
-                                        <!-- Modal Hapus Data -->
+                                        <form action="/admin/menu/archive/konfirmasi_peminjaman_arsip" method="post">
+                                            {{ csrf_field() }}
+                                            <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$loop->index}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-md">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title text-center">Tentukan Aksi Yang Ingin Anda Pilih</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body ">
+                                                            <div class="form-check mt-1">
+                                                                <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                                    Konfirmasi Peminjaman
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input name="konfirm" value="2" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                                                <label class="form-check-label" for="flexRadioDefault2">
+                                                                    Tolak Peminjaman
+                                                                </label>
+                                                                <a data-bs-toggle="tooltip" data-bs-placement="right" title="Silahkan Tambahkan Alasan Penolakan Peminjaman Pada Kolom Komentar">
+                                                                    <span class="bi bi-info-circle"></span>
+                                                                </a>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input name="konfirm" value="3" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                                                <label class="form-check-label" for="flexRadioDefault2">
+                                                                    Tolak File Izin Peminjaman
+                                                                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="Silahkan Tambahkan Alasan Penolakan File Izin Pada Kolom Komentar">
+                                                                        <span class="bi bi-info-circle"></span>
+                                                                    </a>
+                                                                </label>
+                                                            </div>
+                                                            <div class="mb-3 mt-4">
+                                                                <label for="exampleFormControlTextarea1" class="form-label">
+                                                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Kolom Komentar Boleh Kosong">
+                                                                        <span class="bi bi-info-circle"></span>
+                                                                    </a> Tambah Komentar :</label>
+                                                                <textarea name="komentar" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                                            </div>
+                                                            <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
+                                                            <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}">Back</i></a>
+                                                            <button class="btn btn-primary text-white">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -260,8 +323,41 @@
         </div>
 
     </main>
+    <script src="/js/app.js">
+    </script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
+        $('.delete-confirm').on('click', function(event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Apakah Anda Yakin Menghapus Data Peminjaman?',
+                text: 'Data dan detailnya akan dihapus secara permanent!',
+                icon: 'warning',
+                buttons: ["Cancel", "Yes!"],
+            }).then(function(value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        $('.selesai-confirm').on('click', function(event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Apakah Anda Yakin Mengubah Status Arsip Menjadi Selesai?',
+                text: 'Pastikan Pengguna Telah Mendapatkan Hardcopy Arsip!',
+                icon: 'warning',
+                buttons: ["Cancel", "Yes!"],
+            }).then(function(value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
+
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)

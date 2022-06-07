@@ -48,13 +48,13 @@
                 </a>
                 <ul class="collapse nav flex-column {{$data->sidebar == 'pelayanan' ? 'show' : ''}}" id="sub-pelayanan">
                     <li class="w-100">
-                        <a href="/admin/menu/archive_all/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->sidebar == 'pelayanan' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data Arsip</a>
+                        <a href="/admin/menu/archive_all/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Data Arsip' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data Arsip</a>
                     </li>
                     <li>
                         <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data E-Book</a>
                     </li>
                     <li>
-                        <a href="/admin/menu/peminjaman_arsip/1/" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman Arsip</a>
+                        <a href="/admin/menu/peminjaman_arsip/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Peminjaman Arsip' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman Arsip</a>
                     </li>
                     <li>
                         <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman E-Book</a>
