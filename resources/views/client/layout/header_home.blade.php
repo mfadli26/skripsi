@@ -1,8 +1,8 @@
 @include('sweetalert::alert')
 <div class="header">
-    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between border-bottom row" >
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between border-bottom row">
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: white">
-            <div class="container-fluid" >
+            <div class="container-fluid">
                 <div class="col-md-2">
                     <a href="#" class="nav-link text-secondary">
                         <img class="mw-100" src="{{url('/img/logo.jpg')}}" alt="Image" />
@@ -11,18 +11,19 @@
                 <div class="collapse justify-content-end navbar-collapse col-md-9 " id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item text-center px-6 border-end">
-                            <a class="nav-link btn-hover" aria-current="page" href="/home">Beranda</a>
+                            <a class="nav-link btn-hover {{$data->menu == 'beranda' ? 'link-active' :''}}" aria-current="page" href="/home">Beranda</a>
                         </li>
                         <li class="nav-item dropdown text-center px-6 border-end">
                             <a class="nav-link dropdown-toggle btn-hover" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Layanan
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item" href="#">E-Book</a></li> 
+                                <li><a class="dropdown-item {{$data->submenu == 'pencarian buku' ? 'link-active' : ''}}" href="/layanan/pencarian buku">E-Book</a></li>
+                                <li><a class="dropdown-item {{$data->submenu == 'pencarian arsip' ? 'link-active' : ''}}" href="/layanan/pencarian arsip">E-Archive</a></li>
                                 <li><a class="dropdown-item" href="#">Layanan Umum Perpustakaan</a></li>
                                 <li><a class="dropdown-item" href="#">Layanan Umum Kearsipan</a></li>
-                                <li><a class="dropdown-item" href="/archive">Pencarian Arsip</a></li>
-                                <li><a class="dropdown-item" href="/archive_pinjam">Peminjaman Arsip</a></li>
+                                <li><a class="dropdown-item" href="#">Peminjaman E-Book</a></li>
+                                <li><a class="dropdown-item {{$data->submenu == 'peminjaman arsip' ? 'link-active' : ''}}" href="/archive_pinjam">Peminjaman E-Archive</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown text-center px-6 border-end">
@@ -61,7 +62,7 @@
                         </li>
                         @guest
                         <li class="nav-item text-center px-6 border-end">
-                            <a class="nav-link btn-hover aria-current="page" href="/masuk">Masuk</a>
+                            <a class="nav-link btn-hover aria-current=" page" href="/masuk">Masuk</a>
                         </li>
                         @endguest
                         @auth

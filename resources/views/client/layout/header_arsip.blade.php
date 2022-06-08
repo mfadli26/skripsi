@@ -15,15 +15,16 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown text-center px-4 border-end">
-                    <a class="nav-link dropdown-toggle text-dark btn-hover" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle text-dark btn-hover {{$data->menu == 'layanan' ? 'link-active' : ''}}" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Layanan
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">E-Book</a></li>
+                    <li><a class="dropdown-item {{$data->submenu == 'pencarian buku' ? 'link-active' : ''}}" href="/layanan/pencarian buku">E-Book</a></li>
+                        <li><a class="dropdown-item {{$data->submenu == 'pencarian arsip' ? 'link-active' : ''}}" href="/layanan/pencarian arsip">E-Archive</a></li>
                         <li><a class="dropdown-item" href="#">Layanan Umum Perpustakaan</a></li>
                         <li><a class="dropdown-item" href="#">Layanan Umum Kearsipan</a></li>
-                        <li><a class="dropdown-item" href="/archive">Pencarian Arsip</a></li>
-                        <li><a class="dropdown-item" href="/archive_pinjam">Peminjaman Arsip</a></li>
+                        <li><a class="dropdown-item" href="#">Peminjaman E-Book</a></li>
+                        <li><a class="dropdown-item {{$data->submenu == 'peminjaman arsip' ? 'link-active' : ''}}" href="/archive_pinjam">Peminjaman E-Archive</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown text-center px-4 border-end">
@@ -62,16 +63,16 @@
                 </li>
                 @guest
                 <li class="nav-item text-center px-4 border-end">
-                    <a class="nav-link text-dark btn-hover" aria-current="page" href="/masuk">Masuk</a>
+                    <a class="nav-link text-dark btn-hover {{$data->submenu == 'masuk' ? 'link-active' : ''}}" aria-current="page" href="/masuk">Masuk</a>
                 </li>
                 @endguest
                 @auth
                 <li class="nav-item dropdown text-center px-4 border-end">
-                    <a class="nav-link dropdown-toggle text-dark btn-hover" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle text-dark btn-hover {{$data->menu == 'profile' ? 'link-active' : ''}}" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Hi, {{$data->user->name}}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="/profile">Setting</a></li>
+                        <li><a class="dropdown-item {{$data->submenu == 'settings' ? 'link-active' : ''}}" href="/profile">Setting</a></li>
                         <li><a class="dropdown-item" href="/keluar">Logout</a></li>
                     </ul>
                 </li>

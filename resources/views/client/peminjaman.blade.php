@@ -54,9 +54,9 @@
                                                 <th scope="col">No</th>
                                                 <th scope="col">Nomor Arsip</th>
                                                 <th scope="col">Nomor Surat</th>
-                                                <th scope="col"><span class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Tanggal Mulai Pengambilan Dimulai Setelah Mendapatkan Konfirmasi Dari Admin"></span> Tanggal Mulai Pengambilan</th>
+                                                <th scope="col"><span class="bi bi-info-circle" data-bs-toggle="tooltip1" data-bs-placement="top" title="Tanggal Mulai Pengambilan Dimulai Setelah Mendapatkan Konfirmasi Dari Admin"></span> Tanggal Mulai Pengambilan</th>
                                                 <th scope="col">Tanggal Berakhir Pengambilan</th>
-                                                <th scope="col"><span class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Total Biaya Berdasarkan Jumlah Lembar Arsip"></span> Biaya</th>
+                                                <th scope="col"><span class="bi bi-info-circle" data-bs-toggle="tooltip1" data-bs-placement="top" title="Total Biaya Berdasarkan Jumlah Lembar Arsip"></span> Biaya</th>
                                                 <th scope="col">Status Peminjaman</th>
                                                 <th></th>
                                             </tr>
@@ -80,9 +80,9 @@
                                                 @endif
                                                 <td>Rp.@convert($archive->biaya),-</td>
                                                 @if($archive->status == 'Unggah Izin')
-                                                <td><span class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Anda Harus Menggungah File Izin Dari Pihak Dinas Terkait Sebelum Dapat Dikonfirmasi Oleh Admin!"></span> {{$archive->status}}</td>
+                                                <td><span class="bi bi-info-circle" data-bs-toggle="tooltip1" data-bs-placement="top" title="Anda Harus Menggungah File Izin Dari Pihak Dinas Terkait Sebelum Dapat Dikonfirmasi Oleh Admin!"></span> {{$archive->status}}</td>
                                                 @elseif($archive->status == 'File Izin Ditolak')
-                                                <td><span class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Silahkan Lakukan Pengunggahan File Ulang!"></span> {{$archive->status}}</td>
+                                                <td><span class="bi bi-info-circle" data-bs-toggle="tooltip1" data-bs-placement="top" title="Silahkan Lakukan Pengunggahan File Ulang!"></span> {{$archive->status}}</td>
                                                 @else
                                                 <td>{{$archive->status}}</td>
                                                 @endif
@@ -234,12 +234,8 @@
         </div>
     </main>
     @include('client.layout.footer_arsip')
-    <script src="/js/app.js">
-    </script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip1"]'))
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
@@ -258,6 +254,8 @@
                 }
             });
         });
+    </script>
+    <script src="/js/app.js">
     </script>
 </body>
 

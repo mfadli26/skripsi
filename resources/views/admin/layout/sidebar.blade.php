@@ -16,6 +16,7 @@
         /*set the color you want here*/
     }
 </style>
+@include('sweetalert::alert')
 <div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 bg-dark d-flex sticky-top">
     <div class="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start px-3 pt-2 text-white">
         <a href="/" class="d-flex align-items-center pb-sm-3 mb-md-0 me-md-auto text-white text-decoration-none text-center mx-auto pb-md-0">
@@ -51,13 +52,16 @@
                         <a href="/admin/menu/archive_all/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Data Arsip' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data Arsip</a>
                     </li>
                     <li>
-                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data E-Book</a>
+                        <a href="/admin/menu/buku_all/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Data Buku' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data E-Book</a>
+                    </li>
+                    <li>
+                        <a href="/admin/menu/kategori_tag_all/1/2" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Kategori & Tag E-Book' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Kategori & Tag E-Book</a>
                     </li>
                     <li>
                         <a href="/admin/menu/peminjaman_arsip/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Peminjaman Arsip' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman Arsip</a>
                     </li>
                     <li>
-                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman E-Book</a>
+                        <a href="/admin/menu/peminjaman_buku/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Peminjaman Buku' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman E-Book</a>
                     </li>
                 </ul>
             </li>
@@ -96,3 +100,7 @@
         <hr class="custom-w-100">
     </div>
 </div>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>

@@ -26,7 +26,11 @@ class homeController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            $data = (object) ['user' => $user];
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'beranda',
+                'submenu' => 'none',
+            ];
 
             return view('client.home')->with('data', $data);
         } else {
@@ -34,12 +38,13 @@ class homeController extends Controller
         }
     }
 
-    public function search_home()
+    public function search_home($submenu)
     {
         $user = Auth::user();
         $data = (object) [
-            'menu' => 'search',
-            'user' => $user
+            'menu' => 'layanan',
+            'user' => $user,
+            'submenu' => $submenu
         ];
 
         return view('client.archive')->with('data', $data);
@@ -56,7 +61,8 @@ class homeController extends Controller
 
             $data = (object) [
                 'breadcrumb' => 'Data Peminjaman Arsip Pengguna',
-                'menu' => 'Peminjaman Arsip',
+                'submenu' => 'peminjaman arsip',
+                'menu' => 'layanan',
                 'user' => $user,
                 'data_arsip' => $data_peminjaman
             ];
@@ -78,6 +84,16 @@ class homeController extends Controller
         }
     }
 
+    public function buku_main(Request $request)
+    {
+        $search = $request->search;
+        if ($search == "") {
+            return redirect('all_book/1/');
+        } else {
+            return redirect('book/' . $search . '/1');
+        }
+    }
+
     public function archive_all($page)
     {
         $archive = DB::table('archive')
@@ -89,7 +105,8 @@ class homeController extends Controller
         $data = (object) [
             'search' => "",
             'breadcrumb' => 'Lihat Semua Dokumen',
-            'menu' => 'search',
+            'menu' => 'layanan',
+            'submenu' => 'pencarian arsip',
             'user' => $user,
             'page' => $page,
             'archive' => $archive,
@@ -98,6 +115,30 @@ class homeController extends Controller
 
         return view('client.search')->with('data', $data);
     }
+
+    public function book_all($page)
+    {
+        $archive = DB::table('buku')
+            ->get();
+
+        $user = Auth::user();
+        $jumlah = $archive->count();
+
+        $data = (object) [
+            'search' => "",
+            'breadcrumb' => 'Lihat Semua Buku',
+            'menu' => 'layanan',
+            'submenu' => 'pencarian buku',
+            'user' => $user,
+            'page' => $page,
+            'archive' => $archive,
+            'jumlah' => $jumlah
+        ];
+
+        return view('client.search')->with('data', $data);
+    }
+
+
 
     public function unggah_file(Request $request)
     {
@@ -134,7 +175,8 @@ class homeController extends Controller
         $data = (object) [
             'search' => $search,
             'breadcrumb' => 'Penelusuran ' . $search,
-            'menu' => 'search',
+            'menu' => 'layanan',
+            'submenu' => 'pencarian arsip',
             'page' => $page,
             'archive' => $archive,
             'jumlah' => $jumlah,
@@ -144,6 +186,43 @@ class homeController extends Controller
         return view('client.search')->with('data', $data);
     }
 
+    public function book_search($search, $page)
+    {
+        $buku = DB::table('buku')
+            ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')
+            ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->where('judul', 'like', '%' . $search . '%')
+            ->orWhere('penulis', 'like', '%' . $search . '%')
+            ->orWhere('penerbit', 'like', '%' . $search . '%')
+            ->orWhere('tahun_terbit', '=',  $search)
+            ->get();
+
+        
+
+        $jumlah = DB::table('buku')
+            ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')
+            ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->where('judul', 'like', '%' . $search . '%')
+            ->orWhere('penulis', 'like', '%' . $search . '%')
+            ->orWhere('penerbit', 'like', '%' . $search . '%')
+            ->orWhere('tahun_terbit', '=',  $search)
+            ->count();
+
+        $user = Auth::user();
+        $data = (object) [
+            'search' => $search,
+            'breadcrumb' => 'Penelusuran ' . $search,
+            'menu' => 'layanan',
+            'submenu' => 'pencarian buku',
+            'page' => $page,
+            'buku' => $buku,
+            'jumlah' => $jumlah,
+            'user' => $user
+        ];
+
+        return view('client.buku_search')->with('data', $data);
+    }
+
     public function profile()
     {
         $user = Auth::user();
@@ -151,7 +230,12 @@ class homeController extends Controller
         $user->birth_date = Carbon::parse($user->birth_date)->translatedFormat('d F Y');
         $user->join_at = Carbon::parse($user->created_at)->translatedFormat('d F Y');
 
-        $data = (object) ['breadcrumb' => 'Profil Pengguna', 'menu' => 'profile', 'user' => $user];
+        $data = (object) [
+            'breadcrumb' => 'Profil Pengguna',
+            'menu' => 'profile',
+            'submenu' => 'settings',
+            'user' => $user
+        ];
 
         return view('client.profile')->with('data', $data);
     }
@@ -208,7 +292,11 @@ class homeController extends Controller
     public function login()
     {
 
-        $data = (object) ['breadcrumb' => 'Masuk', 'menu' => 'login'];
+        $data = (object) [
+            'breadcrumb' => 'Login Pengguna',
+            'menu' => 'login',
+            'submenu' => 'masuk'
+        ];
         return view('client.login')->with('data', $data);
     }
 
@@ -268,7 +356,8 @@ class homeController extends Controller
         $biaya = $request->jumlah * 200;
 
         if ($check > 0) {
-            return redirect()->back()->with('alert', 'anda telah meminjam arsip ini');
+            Alert::warning('Peminjaman Gagal!', 'Anda Telah Meminjam Arsip Ini');
+            return redirect()->back();
         } else {
             DB::table('peminjaman_arsip')->insert([
                 'id_users' => $request->id_users,
@@ -277,7 +366,8 @@ class homeController extends Controller
                 'biaya' => $biaya,
                 'created_at' => Carbon::now()
             ]);
-            return redirect()->back()->with('success', 'berhasil');
+            Alert::success('Berhasil!', 'Peminjaman Berhasil Dilakukan');
+            return redirect()->back();
         }
     }
 

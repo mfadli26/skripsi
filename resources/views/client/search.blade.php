@@ -31,11 +31,7 @@
 
 <body class="antialiased d-flex flex-column h-100">
     <main class="flex-shrink-0">
-        @if (session('alert'))
-        <div class="alert alert-success">
-            {{ session('alert') }}
-        </div>
-        @endif
+        @include('sweetalert::alert')
         @include('client.layout.header_arsip')
         @include('client.layout.breadcrumb_arsip')
         <div class="container-fluid">

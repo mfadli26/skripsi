@@ -39,15 +39,21 @@ Route::post('/profile', [homeController::class, 'update_profile']);
 
 Route::post('/update_password', [homeController::class, 'update_password']);
 
-Route::get('/archive', [homeController::class, 'search_home']);
+Route::get('/layanan/{submenu}', [homeController::class, 'search_home']);
 
 Route::post('/archive/main', [homeController::class, 'archive_main']);
+
+Route::post('/buku/main', [homeController::class, 'buku_main']);
 
 Route::post('/archive/pinjam', [homeController::class, 'peminjaman_arsip']);
 
 Route::get('/all_archive/{page}', [homeController::class, 'archive_all']);
 
+Route::get('/all_book/{page}', [homeController::class, 'book_all']);
+
 Route::get('/archive/{search}/{page}', [homeController::class, 'search']);
+
+Route::get('/book/{search}/{page}', [homeController::class, 'book_search']);
 
 Route::get('/keluar', [homeController::class, 'logout']);
 
@@ -69,15 +75,25 @@ Route::get('/admin/menu/user/{search}/{page}', [adminController::class, 'user'])
 
 Route::get('/admin/menu/archive/{search}/{page}', [adminController::class, 'archive'])->middleware('admin');
 
+Route::get('/admin/menu/buku/{search}/{page}', [adminController::class, 'e_book'])->middleware('admin');
+
 Route::get('/admin/menu/archive_all/{page}', [adminController::class, 'archive_all'])->middleware('admin');
+
+Route::get('/admin/menu/buku_all/{page}', [adminController::class, 'buku_all'])->middleware('admin');
+
+Route::get('/admin/menu/kategori_tag_all/{page}/{tab}', [adminController::class, 'kategori_tag_all'])->middleware('admin');
 
 Route::get('/admin/menu/peminjaman_arsip/{page}', [adminController::class, 'peminjaman_arsip'])->middleware('admin');
 
-Route::post('/admin/menu/archive/tambah_archive', [adminController::class, 'tambah_archive_baru']);
+Route::get('/admin/menu/peminjaman_buku/{page}', [adminController::class, 'peminjaman_buku'])->middleware('admin');
+
+Route::post('/admin/menu/archive/tambah_archive', [adminController::class, 'tambah_archive_baru'])->middleware('admin');
 
 Route::post('/admin/menu/archive/cari', [adminController::class, 'cari_arsip'])->middleware('admin');
 
-Route::get('/admin/menu/archive/getDownload', [adminController::class, 'getDownload']);
+Route::post('/admin/menu/buku/cari', [adminController::class, 'cari_buku'])->middleware('admin');
+
+Route::get('/admin/menu/archive/getDownload', [adminController::class, 'getDownload'])->middleware('admin');
 
 Route::get('/admin/menu/archive/delete_arsip', [adminController::class, 'delete_arsip'])->middleware('admin');
 
@@ -90,3 +106,17 @@ Route::get('/admin/menu/archive/bacaSurat', [adminController::class, 'bacaSurat'
 Route::post('/admin/menu/archive/konfirmasi_peminjaman_arsip', [adminController::class, 'konfirmasi_peminjaman_arsip'])->middleware('admin');
 
 Route::get('/admin/konfirmasi_selesai/{id}', [adminController::class, 'konfirmasi_selesai'])->middleware('admin');
+
+Route::get('/admin/buku/tambah_kategori', [adminController::class, 'tambah_kategori'])->middleware('admin');
+
+Route::get('/admin/buku/tambah_tag', [adminController::class, 'tambah_tag'])->middleware('admin');
+
+Route::post('/admin/buku/tambah_buku', [adminController::class, 'tambah_buku'])->middleware('admin');
+
+Route::post('/admin/buku/update_buku', [adminController::class, 'update_buku'])->middleware('admin');
+
+Route::get('/admin/buku/hapus_buku/{id}', [adminController::class, 'hapus_buku'])->middleware('admin');
+
+Route::get('/admin/buku/tag/{id}/{page}', [adminController::class, 'hapus_tag'])->middleware('admin');
+
+Route::get('/admin/buku/kategori/{id}/{page}', [adminController::class, 'hapus_kategori'])->middleware('admin');

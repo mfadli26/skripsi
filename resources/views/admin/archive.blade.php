@@ -28,7 +28,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-md-5">
-                                        Archive List
+                                        List Arsip
                                     </div>
                                     
                                     <div class="col-md-5">

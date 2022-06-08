@@ -88,6 +88,16 @@ class adminController extends Controller
         }
     }
 
+    public function cari_buku(Request $request)
+    {
+        $search = $request->search;
+        if ($search == "") {
+            return redirect('admin/menu/book_all/1/');
+        } else {
+            return redirect('admin/menu/buku/' . $search . '/1');
+        }
+    }
+
     public function archive_all($page)
     {
         $archive = DB::table('archive')
@@ -109,6 +119,174 @@ class adminController extends Controller
         ];
 
         return view('admin.archive')->with('data', $data);
+    }
+
+    public function buku_all($page)
+    {
+        $buku = DB::table('buku')
+            ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')
+            ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $kategori = DB::table('kategori_buku')
+            ->get();
+
+        $jumlah = DB::table('buku')
+            ->count();
+
+        $data = (object) [
+            'sidebar' => "pelayanan",
+            'breadcrumbsub' => 'Data Buku',
+            'breadcrumb' => 'Pelayanan',
+            'buku' => $buku,
+            'page' => $page,
+            'search' => "",
+            'jumlah' => $jumlah,
+            'kategori' => $kategori
+        ];
+
+        return view('admin.buku')->with('data', $data);
+    }
+
+    public function kategori_tag_all($page, $tab)
+    {
+        If($tab == 2 ){
+            $tab = 'kategori';
+        }
+        $kategori = DB::table('kategori_buku')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $tag = DB::table('tag_buku')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $jumlah = DB::table('kategori_buku')
+            ->count();
+
+        $jumlah_tag = DB::table('tag_buku')
+            ->count();
+
+        $data = (object) [
+            'sidebar' => "pelayanan",
+            'breadcrumbsub' => 'Kategori & Tag E-Book',
+            'breadcrumb' => 'Pelayanan',
+            'tab' => $tab,
+            'tag' => $tag,
+            'page' => $page,
+            'search' => "",
+            'jumlah' => $jumlah,
+            'jumlah_tag' => $jumlah_tag,
+            'kategori' => $kategori
+        ];
+
+        return view('admin.kategori_tag')->with('data', $data);
+    }
+
+    public function tambah_kategori(Request $request)
+    {
+        $query = DB::table('kategori_buku')
+            ->where('kategory', '=', $request->kategori)
+            ->count();
+
+        if ($query > 0) {
+            Alert::warning('Gagal!', 'Kategori telah tersedia');
+        } else {
+            DB::table('kategori_buku')
+                ->insert([
+                    'kategory' => $request->kategori
+                ]);
+            Alert::success('Berhasil!', 'Kategori berhasil ditambah');
+        }
+        return redirect()->back();
+    }
+
+    public function tambah_tag(Request $request)
+    {
+        $query = DB::table('tag_buku')
+            ->where('tag', '=', $request->tag)
+            ->count();
+
+        if ($query > 0) {
+            Alert::warning('Gagal!', 'Tag telah tersedia');
+        } else {
+            DB::table('tag_buku')
+                ->insert([
+                    'tag' => $request->tag
+                ]);
+            Alert::success('Berhasil!', 'tag berhasil ditambah');
+        }
+        return redirect()->back();
+    }
+
+    public function tambah_buku(Request $request)
+    {
+        DB::table('buku')
+            ->insert([
+                'judul' => $request->judul,
+                'penerbit' => $request->penerbit,
+                'penulis' => $request->penulis,
+                'tahun_terbit' => $request->tahun,
+                'id_kategori' => $request->id_kategori,
+                'stock_buku' => $request->stock_buku
+            ]);
+
+        Alert::success('Berhasil', 'Buku berhasil ditambahkan!');
+        return redirect()->back();
+    }
+
+    public function update_buku(Request $request)
+    {
+        $id = $request->id;
+        $query = DB::table('buku')
+            ->where('id', '=', $id);
+
+        $query->update([
+            'judul' => $request->judul,
+            'penerbit' => $request->penerbit,
+            'penulis' => $request->penulis,
+            'tahun_terbit' => $request->tahun,
+            'id_kategori' => $request->id_kategori
+        ]);
+
+        Alert::success('Berhasil', 'Data buku berhasil diubah');
+        return redirect()->back();
+    }
+
+    public function hapus_buku($id)
+    {
+        DB::table('buku')
+            ->where('id', '=', $id)
+            ->delete();
+
+        Alert::success('Berhasil!', 'Data buku berhasil dihapus');
+        return redirect()->back();
+    }
+
+    public function hapus_tag($id,$page)
+    {
+        DB::table('tag_buku')
+            ->where('id', '=', $id)
+            ->delete();
+
+        $data_tab = 'tag';
+        Alert::success('Berhasil!', 'Data tag berhasil dihapus');
+        return redirect('/admin/menu/kategori_tag_all/'. $page .'/'. $data_tab);
+    }
+
+    public function hapus_kategori($id,$page)
+    {
+        DB::table('kategori_buku')
+            ->where('id', '=', $id)
+            ->delete();
+
+        $data_tab = 'kategori';
+        Alert::success('Berhasil!', 'Data kategori berhasil dihapus');
+        return redirect('/admin/menu/kategori_tag_all/'. $page .'/'. $data_tab);
     }
 
     public function peminjaman_arsip($page)
@@ -136,6 +314,29 @@ class adminController extends Controller
         ];
 
         return view('admin.peminjaman_arsip')->with('data', $data);
+    }
+
+    public function peminjaman_buku($page)
+    {
+        $peminjaman = DB::table('peminjaman_buku')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $jumlah = DB::table('peminjaman_buku')
+            ->count();
+
+        $data = (object) [
+            'sidebar' => "pelayanan",
+            'breadcrumbsub' => 'Peminjaman Buku',
+            'breadcrumb' => 'Pelayanan',
+            'peminjaman' => $peminjaman,
+            'page' => $page,
+            'search' => "",
+            'jumlah' => $jumlah
+        ];
+
+        return view('admin.peminjaman_buku')->with('data', $data);
     }
 
     public function user_all($page)
@@ -178,9 +379,9 @@ class adminController extends Controller
             ->count();
 
         $data = (object) [
-            'sidebar' => 'archive',
-            'breadcrumb' => 'Archive',
-            'breadcrumb' => 'Data Arsip',
+            'sidebar' => 'pelayanan',
+            'breadcrumb' => 'Pelayanan',
+            'breadcrumbsub' => 'Data Arsip',
             'archive' => $archive,
             'page' => $page,
             'search' => $search,
@@ -188,6 +389,43 @@ class adminController extends Controller
         ];
 
         return view('admin.archive')->with('data', $data);
+    }
+
+    public function e_book($search, $page)
+    {
+        $buku = DB::table('buku')
+            ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')
+            ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->where('judul', 'like', '%' . $search . '%')
+            ->orWhere('penulis', 'like', '%' . $search . '%')
+            ->orWhere('penerbit', 'like', '%' . $search . '%')
+            ->orWhere('tahun_terbit', '=',  $search)
+            ->get();
+
+        $jumlah = DB::table('buku')
+            ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')
+            ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->where('judul', 'like', '%' . $search . '%')
+            ->orWhere('penulis', 'like', '%' . $search . '%')
+            ->orWhere('penerbit', 'like', '%' . $search . '%')
+            ->orWhere('tahun_terbit', '=',  $search)
+            ->count();
+
+        $kategori = DB::table('kategori_buku')
+            ->get();
+
+        $data = (object) [
+            'sidebar' => 'pelayanan',
+            'breadcrumb' => 'Pelayanan',
+            'breadcrumbsub' => 'Data Buku',
+            'kategori' => $kategori,
+            'buku' => $buku,
+            'page' => $page,
+            'search' => $search,
+            'jumlah' => $jumlah
+        ];
+
+        return view('admin.buku')->with('data', $data);
     }
 
     public function user($search, $page)
@@ -370,14 +608,6 @@ class adminController extends Controller
 
     public function konfirmasi_selesai($id)
     {
-        // $batal_pinjam = DB::table('peminjaman_arsip')
-        //     ->where('id', '=', $id);
-
-        // $batal_pinjam
-        //     ->update([
-        //         'status' => 'Selesai'
-        //     ]);
-
         $konfirm = DB::table('peminjaman_arsip')
             ->where('id', '=', $id);
 
