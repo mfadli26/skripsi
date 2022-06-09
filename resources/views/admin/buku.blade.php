@@ -99,8 +99,8 @@
                                                 <th scope="col">Judul</th>
                                                 <th scope="col">Penulis</th>
                                                 <th scope="col">Penerbit</th>
-                                                <th scope="col">Kategori</th>
                                                 <th scope="col">Tahun Terbit</th>
+                                                <th scope="col">Kategori</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -111,95 +111,165 @@
                                                 <td>{{ $buku->judul }}</td>
                                                 <td>{{ $buku->penulis }}</td>
                                                 <td>{{ $buku->penerbit }}</td>
-                                                <td>{{ $buku->kategory }}</td>
                                                 <td>{{ $buku->tahun_terbit }}</td>
+                                                <td>{{ $buku->kategory }}</td>
                                                 <td>
-                                                    <a data-bs-toggle="modal" data-bs-target="#modal_edit_{{$loop->index}}" href="#"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
+                                                    <a href="/admin/buku/detail/{{$buku->id}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
                                                     <a class="delete-confirm" href="/admin/buku/hapus_buku/{{$buku->id}}"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                 </td>
                                             </tr>
                                             <!-- Modal Edit -->
-                                            <form action="/admin/buku/update_buku" method="post">
-                                                {{ csrf_field() }}
-                                                <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_edit_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="label_{{$loop->index}}">Pembaruan Buku</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                                            <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_edit_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="label_{{$loop->index}}">Pembaruan Buku</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <nav class="mb-4">
+                                                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                                <button class="nav-link col-md-6 active" id="nav-kategori-tab" data-bs-toggle="tab" data-bs-target="#nav-kategori" type="button" role="tab" aria-controls="nav-kategori" aria-selected="false">Buku</button>
+                                                                <button class="nav-link col-md-6" id="nav-tag-tab" data-bs-toggle="tab" data-bs-target="#nav-tag" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Tag Buku</button>
                                                             </div>
-                                                            <div class="modal-body">
-                                                                <div class="row mb-3">
-                                                                    <div class="col-md-3">
-                                                                        <span class="form-label m-0">Judul</span>
+                                                        </nav>
+                                                        <div class="tab-content" id="nav-tabContent">
+                                                            <!-- Tab Content 1-->
+                                                            <form action="/admin/buku/update_buku" method="post">
+                                                                {{ csrf_field() }}
+                                                                <div class="tab-pane fade active show" id="nav-kategori" role="tabpanel" aria-labelledby="nav-kategori-tab">
+                                                                    <div class="modal-body">
+                                                                        <div class="row mb-3">
+                                                                            <div class="col-md-3">
+                                                                                <span class="form-label m-0">Judul</span>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <span class="form-label">:</span>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <input type="text" class="form-control" id="judul" name="judul" value="{{$buku->judul}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mb-3">
+                                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                                <span class="form-label m-0">Penulis</span>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <span class="form-label">:</span>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <input type="text" class="form-control" id="penulis" name="penulis" value="{{$buku->penulis}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mb-3">
+                                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                                <span class="form-label m-0">Penerbit</span>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <span class="form-label">:</span>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <input type="text" class="form-control" id="penerbit" name="penerbit" value="{{$buku->penerbit}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mb-3">
+                                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                                <span class="form-label m-0">
+                                                                                    <a data-bs-toggle="tooltip1" data-bs-placement="top" title="Jika Kategori Tidak Ada, Silahkan Tambahkan Kategori Baru Dihalaman Kategori Dan Tag">
+                                                                                        <span class="bi bi-info-circle"></span>
+                                                                                    </a>Kategori</span>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <span class="form-label">:</span>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <select class="form-select" name="id_kategori">
+                                                                                    <option value="{{$kategori->id}}">{{$buku->kategory}}</option>
+                                                                                    @foreach ($data->kategori as $kategori)
+                                                                                    @if($kategori->kategory != $buku->kategory)
+                                                                                    <option type="hidden" value="{{$kategori->id}}">{{$kategori->kategory}}</option>
+                                                                                    @endif
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mb-3">
+                                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                                <span class="form-label m-0">Stock Buku</span>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <span class="form-label">:</span>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <input type="number" class="form-control" id="stock_buku" name="stock_buku" value="{{$buku->stock_buku}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mb-3">
+                                                                            <div class="col-md-3 d-flex align-items-center">
+                                                                                <span class="form-label m-0">Tahun</span>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <span class="form-label">:</span>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <input type="number" class="form-control" id="tahun" name="tahun" value="{{$buku->tahun_terbit}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <input type="hidden" name="id" value="{{$buku->id}}">
                                                                     </div>
-                                                                    <div class="col-md-1">
-                                                                        <span class="form-label">:</span>
-                                                                    </div>
-                                                                    <div class="col-md-8">
-                                                                        <input type="text" class="form-control" id="judul" name="judul" value="{{$buku->judul}}">
+                                                                    <div class="modal-footer">
+                                                                        <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
+                                                                        <button type="submit" class="btn btn-primary text-white">Save</button>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row mb-3">
-                                                                    <div class="col-md-3 d-flex align-items-center">
-                                                                        <span class="form-label m-0">Penulis</span>
+                                                            </form>
+                                                            <!-- Tab Content 2 -->
+                                                            <div class="tab-pane fade" id="nav-tag" role="tabpanel" aria-labelledby="nav-tag-tab">
+                                                                <form action="/admin/buku/tambah_tagtobuku" method="get">
+                                                                    {{ csrf_field() }}
+                                                                    <div class="modal-body">
+                                                                        <div class="row mb-3">
+                                                                            <div class="col-md-3">
+                                                                                <span class="form-label m-0">Judul</span>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <span class="form-label">:</span>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <span>{{$buku->judul}}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mb-3 pb-2" style="border-bottom : solid black 2px;">
+                                                                            <div class="col-md-3">
+                                                                                <span class="form-label m-0">Tag</span>
+                                                                            </div>
+                                                                            <div class="col-md-1">
+                                                                                <span class="form-label">:</span>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <span> - </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        @foreach($data->tag as $tag)
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" value="{{$tag->id}}" type="radio" name="id_tag" id="flexRadioDefault1">
+                                                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                                                {{$tag->tag}}
+                                                                            </label>
+                                                                        </div>
+                                                                        @endforeach
+                                                                        <input type="hidden" name="id_buku" value="{{$buku->id}}">
                                                                     </div>
-                                                                    <div class="col-md-1">
-                                                                        <span class="form-label">:</span>
+                                                                    <div class="modal-footer">
+                                                                        <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
+                                                                        <button type="submit" class="btn btn-primary text-white">Save</button>
                                                                     </div>
-                                                                    <div class="col-md-8">
-                                                                        <input type="text" class="form-control" id="penulis" name="penulis" value="{{$buku->penulis}}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row mb-3">
-                                                                    <div class="col-md-3 d-flex align-items-center">
-                                                                        <span class="form-label m-0">Penerbit</span>
-                                                                    </div>
-                                                                    <div class="col-md-1">
-                                                                        <span class="form-label">:</span>
-                                                                    </div>
-                                                                    <div class="col-md-8">
-                                                                        <input type="text" class="form-control" id="penerbit" name="penerbit" value="{{$buku->penerbit}}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row mb-3">
-                                                                    <div class="col-md-3 d-flex align-items-center">
-                                                                        <span class="form-label m-0">Kategori</span>
-                                                                    </div>
-                                                                    <div class="col-md-1">
-                                                                        <span class="form-label">:</span>
-                                                                    </div>
-                                                                    <div class="col-md-8">
-                                                                        <select class="form-select" name="id_kategori">
-                                                                            <option value="{{$kategori->id}}">{{$buku->kategory}}</option>
-                                                                            @foreach ($data->kategori as $kategori)
-                                                                            @if($kategori->kategory != $buku->kategory)
-                                                                            <option type="hidden" value="{{$kategori->id}}">{{$kategori->kategory}}</option>
-                                                                            @endif
-                                                                            @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row mb-3">
-                                                                    <div class="col-md-3 d-flex align-items-center">
-                                                                        <span class="form-label m-0">Tahun</span>
-                                                                    </div>
-                                                                    <div class="col-md-1">
-                                                                        <span class="form-label">:</span>
-                                                                    </div>
-                                                                    <div class="col-md-8">
-                                                                        <input type="text" class="form-control" id="tahun" name="tahun" value="{{$buku->tahun_terbit}}">
-                                                                    </div>
-                                                                </div>
-                                                                <input type="hidden" name="id" value="{{$buku->id}}">
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}">Back</i></a>
-                                                                <button type="submit" class="btn btn-primary text-white">Save</button>
+                                                                </form>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
                                             </form>
                                             @endforeach
                                         </tbody>
@@ -223,27 +293,6 @@
                                     </nav>
                                 </div>
                             </div>
-                            <div class="modal fade" id="Modal3" aria-hidden="true" aria-labelledby="Modal3Label" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Upload File Arsip</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="form-row">
-                                                <div class="form-group col-mb-6">
-                                                    <label for="nomor-arsip" class="col-form-label">Kategori Buku :</label>
-                                                    <input type="text" class="form-control" id="nomor-arsip" name="nomor_arsip" value="{{ old('nomor_arsip') }}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -257,6 +306,11 @@
     {{ Html::script('js/app.js') }}
 </body>
 <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip1"]'))
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
     $('.delete-confirm').on('click', function(event) {
         event.preventDefault();
         const url = $(this).attr('href');
@@ -272,5 +326,6 @@
         });
     });
 </script>
+
 
 </html>

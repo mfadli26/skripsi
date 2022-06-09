@@ -123,14 +123,21 @@ class adminController extends Controller
 
     public function buku_all($page)
     {
-        $buku = DB::table('buku')
-            ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')
-            ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
-            ->skip(($page - 1) * 20)
-            ->take(20)
-            ->get();
+        $buku = DB::select(
+            DB::raw('
+            SELECT buku.*, kategory, tag
+            FROM buku
+            LEFT JOIN kategori_buku ON buku.id_kategori = kategori_buku.id
+            LEFT JOIN detail_buku_tag ON buku.id = detail_buku_tag.id_buku
+            LEFT JOIN (SELECT tag_buku.id, GROUP_CONCAT(tag) AS tag FROM tag_buku) AS tag_buku ON tag_buku.id = detail_buku_tag.id_tag
+            GROUP BY buku.id')
+        );
+
 
         $kategori = DB::table('kategori_buku')
+            ->get();
+
+        $tag = DB::table('tag_buku')
             ->get();
 
         $jumlah = DB::table('buku')
@@ -144,15 +151,53 @@ class adminController extends Controller
             'page' => $page,
             'search' => "",
             'jumlah' => $jumlah,
-            'kategori' => $kategori
+            'kategori' => $kategori,
+            'tag' => $tag
         ];
 
         return view('admin.buku')->with('data', $data);
     }
 
+    public function detail_buku($id)
+    {
+        $buku = DB::table('buku')
+            ->select('buku.*', 'kategori_buku.*', 'buku.id AS id_buku')
+            ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->where('buku.id', '=', $id)
+            ->get();
+
+        $tag_buku = DB::table('detail_buku_tag')
+            ->rightjoin('buku', 'detail_buku_tag.id_buku', '=', 'buku.id')
+            ->Join('tag_buku', 'detail_buku_tag.id_tag', '=', 'tag_buku.id')
+            ->where('detail_buku_tag.id_buku', '=', $id)
+            ->get();
+
+        $kategori = DB::table('kategori_buku')
+            ->get();
+
+        $tag = DB::table('tag_buku')
+            ->whereNotIn('tag_buku.id', function ($query) use ($id) {
+                $query->select('detail_buku_tag.id_tag')->from('detail_buku_tag')
+                ->where('detail_buku_tag.id_buku', '=', $id);
+            })
+            ->get();
+
+        $data = (object) [
+            'sidebar' => "pelayanan",
+            'breadcrumbsub' => 'Data Buku',
+            'breadcrumb' => 'Pelayanan',
+            'buku' => $buku,
+            'tag_buku' => $tag_buku,
+            'kategori' => $kategori,
+            'tag' => $tag
+        ];
+
+        return view('admin.buku_detail')->with('data', $data);
+    }
+
     public function kategori_tag_all($page, $tab)
     {
-        If($tab == 2 ){
+        if ($tab == 2) {
             $tab = 'kategori';
         }
         $kategori = DB::table('kategori_buku')
@@ -211,6 +256,9 @@ class adminController extends Controller
             ->where('tag', '=', $request->tag)
             ->count();
 
+        $page = $request->page;
+        $data_tab = 'tag';
+
         if ($query > 0) {
             Alert::warning('Gagal!', 'Tag telah tersedia');
         } else {
@@ -220,7 +268,7 @@ class adminController extends Controller
                 ]);
             Alert::success('Berhasil!', 'tag berhasil ditambah');
         }
-        return redirect()->back();
+        return redirect('/admin/menu/kategori_tag_all/' . $page . '/' . $data_tab);
     }
 
     public function tambah_buku(Request $request)
@@ -239,6 +287,18 @@ class adminController extends Controller
         return redirect()->back();
     }
 
+    public function tambah_tagtobuku(Request $request)
+    {
+        DB::table('detail_buku_tag')
+            ->insert([
+                'id_buku' => $request->id_buku,
+                'id_tag' => $request->id_tag
+            ]);
+
+        Alert::success('Berhasil', 'Data tag buku berhasil ditambahkan!');
+        return redirect()->back();
+    }
+
     public function update_buku(Request $request)
     {
         $id = $request->id;
@@ -250,7 +310,8 @@ class adminController extends Controller
             'penerbit' => $request->penerbit,
             'penulis' => $request->penulis,
             'tahun_terbit' => $request->tahun,
-            'id_kategori' => $request->id_kategori
+            'id_kategori' => $request->id_kategori,
+            'stock_buku' => $request->stock_buku
         ]);
 
         Alert::success('Berhasil', 'Data buku berhasil diubah');
@@ -267,7 +328,7 @@ class adminController extends Controller
         return redirect()->back();
     }
 
-    public function hapus_tag($id,$page)
+    public function hapus_tag($id, $page)
     {
         DB::table('tag_buku')
             ->where('id', '=', $id)
@@ -275,10 +336,10 @@ class adminController extends Controller
 
         $data_tab = 'tag';
         Alert::success('Berhasil!', 'Data tag berhasil dihapus');
-        return redirect('/admin/menu/kategori_tag_all/'. $page .'/'. $data_tab);
+        return redirect('/admin/menu/kategori_tag_all/' . $page . '/' . $data_tab);
     }
 
-    public function hapus_kategori($id,$page)
+    public function hapus_kategori($id, $page)
     {
         DB::table('kategori_buku')
             ->where('id', '=', $id)
@@ -286,7 +347,7 @@ class adminController extends Controller
 
         $data_tab = 'kategori';
         Alert::success('Berhasil!', 'Data kategori berhasil dihapus');
-        return redirect('/admin/menu/kategori_tag_all/'. $page .'/'. $data_tab);
+        return redirect('/admin/menu/kategori_tag_all/' . $page . '/' . $data_tab);
     }
 
     public function peminjaman_arsip($page)
@@ -414,6 +475,9 @@ class adminController extends Controller
         $kategori = DB::table('kategori_buku')
             ->get();
 
+        $tag = DB::table('tag_buku')
+            ->get();
+
         $data = (object) [
             'sidebar' => 'pelayanan',
             'breadcrumb' => 'Pelayanan',
@@ -534,7 +598,9 @@ class adminController extends Controller
 
         File::delete(public_path('storage\file_arsip\\' . $filename));
         $query->delete();
-        return redirect()->back()->with('success', 'berhasil');
+
+        Alert::success('Berhasil', 'Data berhasil dihapus');
+        return redirect()->back();
     }
 
     public function update_arsip(Request $request)

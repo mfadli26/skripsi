@@ -34,7 +34,11 @@ class homeController extends Controller
 
             return view('client.home')->with('data', $data);
         } else {
-            return view('client.home');
+            $data = (object) [
+                'menu' => 'beranda',
+                'submenu' => 'none',
+            ];
+            return view('client.home')->with('data', $data);
         }
     }
 
@@ -197,7 +201,7 @@ class homeController extends Controller
             ->orWhere('tahun_terbit', '=',  $search)
             ->get();
 
-        
+
 
         $jumlah = DB::table('buku')
             ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')

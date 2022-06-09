@@ -52,7 +52,7 @@
                         <a href="/admin/menu/archive_all/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Data Arsip' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data Arsip</a>
                     </li>
                     <li>
-                        <a href="/admin/menu/buku_all/1/" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Data Buku' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data E-Book</a>
+                        <a href="/admin/menu/buku_all/1" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Data Buku' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Data E-Book</a>
                     </li>
                     <li>
                         <a href="/admin/menu/kategori_tag_all/1/2" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Kategori & Tag E-Book' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Kategori & Tag E-Book</a>

@@ -158,6 +158,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <input type="hidden" name="page" value="{{$data->page}}">
                                                             <div class="modal-footer">
                                                                 <button class="btn btn-secondary text-white" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
                                                                 <button type="submit" class="btn btn-primary text-white">Simpan</button>

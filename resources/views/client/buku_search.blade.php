@@ -58,34 +58,38 @@
                             <table class="table table-bordered table-striped text-center">
                                 <thead>
                                     <tr>
-                                        <th scope="col">No</th>
                                         <th scope="col">Judul</th>
                                         <th scope="col">Penulis</th>
                                         <th scope="col">Penerbit</th>
                                         <th scope="col">Kategori</th>
                                         <th scope="col">Tahun Terbit</th>
+                                        <th scope="col">Buku Tersedia</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($data->buku as $buku)
                                     <tr>
-                                        <th scope="row">{{$loop->index + 1}}</th>
                                         <th scope="row">{{$buku->judul}}</th>
                                         <td scope="row">{{$buku->penulis}}</td>
                                         <td scope="row">{{$buku->penerbit}}</td>
                                         <td scope="row">{{$buku->kategory}}</td>
                                         <td scope="row">{{$buku->tahun_terbit}}</td>
-
-
+                                        <td scope="row">{{$buku->stock_buku}}</td>
                                         @auth
-                                        <td><button class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Pilih</button></td>
-                                        @endauth
-                                        @guest
-                                        <td scope="row"><a href="/masuk" class="text-decoration-none">Masuk</a> Untuk Melakukan Peminjaman</td>
-                                        @endguest
+                                        @if($buku->stock_buku < 1) <td>
+                                            <div data-bs-toggle="tooltip1" data-bs-placement="top" title="Stock Buku Tidak Tersedia Untuk Dipinjam Saat Ini">
+                                            <button class="btn btn-primary text-white" disabled>Pilih</button>
+                                            </div></td>
+                                            @else
+                                            <td><button class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Pilih</button></td>
+                                            @endif
+                                            @endauth
+                                            @guest
+                                            <td scope="row"><a href="/masuk" class="text-decoration-none">Masuk</a> Untuk Melakukan Peminjaman</td>
+                                            @endguest
                                     </tr>
-                                    
+
                                     @endforeach
                                 </tbody>
                             </table>
@@ -136,5 +140,10 @@
     @include('client.layout.footer_arsip')
     <script src="/js/app.js"></script>
 </body>
-
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip1"]'))
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
 </html>

@@ -111,6 +111,8 @@ Route::get('/admin/buku/tambah_kategori', [adminController::class, 'tambah_kateg
 
 Route::get('/admin/buku/tambah_tag', [adminController::class, 'tambah_tag'])->middleware('admin');
 
+Route::get('/admin/buku/tambah_tagtobuku', [adminController::class, 'tambah_tagtobuku'])->middleware('admin');
+
 Route::post('/admin/buku/tambah_buku', [adminController::class, 'tambah_buku'])->middleware('admin');
 
 Route::post('/admin/buku/update_buku', [adminController::class, 'update_buku'])->middleware('admin');
@@ -120,3 +122,5 @@ Route::get('/admin/buku/hapus_buku/{id}', [adminController::class, 'hapus_buku']
 Route::get('/admin/buku/tag/{id}/{page}', [adminController::class, 'hapus_tag'])->middleware('admin');
 
 Route::get('/admin/buku/kategori/{id}/{page}', [adminController::class, 'hapus_kategori'])->middleware('admin');
+
+Route::get('/admin/buku/detail/{id}', [adminController::class, 'detail_buku'])->middleware('admin');
