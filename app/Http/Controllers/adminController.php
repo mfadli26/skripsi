@@ -167,10 +167,13 @@ class adminController extends Controller
             ->get();
 
         $tag_buku = DB::table('detail_buku_tag')
+            ->select('tag_buku.*', 'detail_buku_tag.id AS id_detail_tag')
             ->rightjoin('buku', 'detail_buku_tag.id_buku', '=', 'buku.id')
             ->Join('tag_buku', 'detail_buku_tag.id_tag', '=', 'tag_buku.id')
             ->where('detail_buku_tag.id_buku', '=', $id)
             ->get();
+
+        $tag_buku_jumlah = $tag_buku->count();
 
         $kategori = DB::table('kategori_buku')
             ->get();
@@ -178,7 +181,7 @@ class adminController extends Controller
         $tag = DB::table('tag_buku')
             ->whereNotIn('tag_buku.id', function ($query) use ($id) {
                 $query->select('detail_buku_tag.id_tag')->from('detail_buku_tag')
-                ->where('detail_buku_tag.id_buku', '=', $id);
+                    ->where('detail_buku_tag.id_buku', '=', $id);
             })
             ->get();
 
@@ -189,10 +192,23 @@ class adminController extends Controller
             'buku' => $buku,
             'tag_buku' => $tag_buku,
             'kategori' => $kategori,
-            'tag' => $tag
+            'tag' => $tag,
+            'tag_buku_jumlah' => $tag_buku_jumlah
         ];
 
         return view('admin.buku_detail')->with('data', $data);
+    }
+
+    
+
+    public function hapus_detail_buku_tag($id)
+    {
+        DB::table('detail_buku_tag')
+        ->where('id', '=', $id)
+        ->delete();
+
+        Alert::success('Berhasil','Tag berhasil dihapus');
+        return redirect()->back();
     }
 
     public function kategori_tag_all($page, $tab)
@@ -273,6 +289,14 @@ class adminController extends Controller
 
     public function tambah_buku(Request $request)
     {
+        if ($request->file('cover') == null) {
+            $filename = 'cover-buku-default.jpg';
+        } else {
+            $file = $request->file('cover');
+            $filename = time() . "_" . $request->nomor_arsip . "." . $request->file->getClientOriginalExtension();
+            $file->move(base_path('\storage\app\public\cover_buku'), $filename);
+        }
+
         DB::table('buku')
             ->insert([
                 'judul' => $request->judul,
@@ -280,7 +304,8 @@ class adminController extends Controller
                 'penulis' => $request->penulis,
                 'tahun_terbit' => $request->tahun,
                 'id_kategori' => $request->id_kategori,
-                'stock_buku' => $request->stock_buku
+                'stock_buku' => $request->stock_buku,
+                'cover' => $filename
             ]);
 
         Alert::success('Berhasil', 'Buku berhasil ditambahkan!');
@@ -301,7 +326,7 @@ class adminController extends Controller
 
     public function update_buku(Request $request)
     {
-        $id = $request->id;
+        $id = $request->id_buku;
         $query = DB::table('buku')
             ->where('id', '=', $id);
 
@@ -520,6 +545,12 @@ class adminController extends Controller
         return view('admin.user')->with('data', $data);
     }
 
+    public function logout_admin()
+    {
+
+        Auth::logout();
+        return redirect('/login_admin_page');
+    }
 
     public function login_check(Request $request)
     {

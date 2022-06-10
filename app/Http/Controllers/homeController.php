@@ -227,6 +227,37 @@ class homeController extends Controller
         return view('client.buku_search')->with('data', $data);
     }
 
+    public function detail_buku($id)
+    {
+        $buku = DB::table('buku')
+            ->select('buku.*', 'kategori_buku.*', 'buku.id AS id_buku')
+            ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->where('buku.id', '=', $id)
+            ->get();
+
+        $tag_buku = DB::table('detail_buku_tag')
+            ->select('tag_buku.*', 'detail_buku_tag.id AS id_detail_tag')
+            ->rightjoin('buku', 'detail_buku_tag.id_buku', '=', 'buku.id')
+            ->Join('tag_buku', 'detail_buku_tag.id_tag', '=', 'tag_buku.id')
+            ->where('detail_buku_tag.id_buku', '=', $id)
+            ->get();
+        
+        $tag_buku_jumlah = $tag_buku->count();
+
+        $user = Auth::user();
+        $data = (object) [
+            'breadcrumb' => 'Penelusuran ',
+            'menu' => 'layanan',
+            'submenu' => 'pencarian buku',
+            'user' => $user,
+            'buku' => $buku,
+            'tag_buku' => $tag_buku,
+            'tag_buku_jumlah' => $tag_buku_jumlah
+        ];
+        
+        return view('client.detail_buku_user')->with('data', $data);
+    }
+
     public function profile()
     {
         $user = Auth::user();

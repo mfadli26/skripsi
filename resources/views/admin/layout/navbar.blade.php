@@ -7,7 +7,8 @@
                     <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded ms-2 me-1">
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">Logout</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="/keluar_admin">Logout</a></li>
                 </ul>
             </div>
         </li>

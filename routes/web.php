@@ -55,6 +55,8 @@ Route::get('/archive/{search}/{page}', [homeController::class, 'search']);
 
 Route::get('/book/{search}/{page}', [homeController::class, 'book_search']);
 
+Route::get('/buku/detail_buku/{id}', [homeController::class, 'detail_buku']);
+
 Route::get('/keluar', [homeController::class, 'logout']);
 
 Route::get('/batal_pinjam_user/{id}', [homeController::class, 'batal_pinjam_user']);
@@ -66,6 +68,8 @@ Route::post('/login_admin', [adminController::class, 'login_admin']);
 Route::get('/admin', [adminController::class, 'index'])->middleware('admin');
 
 Route::get('/admin/menu', [adminController::class, 'index'])->middleware('admin');
+
+Route::get('/keluar_admin', [adminController::class, 'logout_admin'])->middleware('admin');
 
 Route::post('/admin/menu/user/main', [adminController::class, 'users_main'])->middleware('admin');
 
@@ -124,3 +128,5 @@ Route::get('/admin/buku/tag/{id}/{page}', [adminController::class, 'hapus_tag'])
 Route::get('/admin/buku/kategori/{id}/{page}', [adminController::class, 'hapus_kategori'])->middleware('admin');
 
 Route::get('/admin/buku/detail/{id}', [adminController::class, 'detail_buku'])->middleware('admin');
+
+Route::get('/admin/buku/hapus_detail_buku_tag/{id}', [adminController::class, 'hapus_detail_buku_tag'])->middleware('admin');

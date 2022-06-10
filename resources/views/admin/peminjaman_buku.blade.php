@@ -23,7 +23,6 @@
             <div class="row vh-100 overflow-auto">
                 @include('sweetalert::alert')
                 @include('admin.layout.sidebar')
-
                 <div class="col d-flex flex-column h-sm-100 p-0">
                     @include('admin.layout.navbar')
                     @include('admin.layout.breadcrumb')
@@ -89,10 +88,8 @@
         </div>
 
     </main>
-    <script src="/js/app.js">
-    </script>
+    {{ Html::script('js/app.js') }}
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
         $('.delete-confirm').on('click', function(event) {
             event.preventDefault();

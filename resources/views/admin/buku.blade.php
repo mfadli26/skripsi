@@ -81,6 +81,10 @@
                                                                 @endforeach
                                                             </select>
                                                         </div>
+                                                        <div class="mb-3">
+                                                            <label for="cover" class="col-form-label">Foto Cover Buku:</label>
+                                                            <input type="file" class="form-control" id="cover" name="cover" value="{{ old('cover') }}">
+                                                        </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button class="btn btn-secondary text-white" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
@@ -115,7 +119,7 @@
                                                 <td>{{ $buku->kategory }}</td>
                                                 <td>
                                                     <a href="/admin/buku/detail/{{$buku->id}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                    <a class="delete-confirm" href="/admin/buku/hapus_buku/{{$buku->id}}"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                    <a class="delete-confirm" href="/admin/buku/hapus_buku/{{$buku->id}}/"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                 </td>
                                             </tr>
                                             <!-- Modal Edit -->

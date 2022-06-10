@@ -60,8 +60,6 @@
                                     <tr>
                                         <th scope="col">Judul</th>
                                         <th scope="col">Penulis</th>
-                                        <th scope="col">Penerbit</th>
-                                        <th scope="col">Kategori</th>
                                         <th scope="col">Tahun Terbit</th>
                                         <th scope="col">Buku Tersedia</th>
                                         <th scope="col">Aksi</th>
@@ -72,8 +70,6 @@
                                     <tr>
                                         <th scope="row">{{$buku->judul}}</th>
                                         <td scope="row">{{$buku->penulis}}</td>
-                                        <td scope="row">{{$buku->penerbit}}</td>
-                                        <td scope="row">{{$buku->kategory}}</td>
                                         <td scope="row">{{$buku->tahun_terbit}}</td>
                                         <td scope="row">{{$buku->stock_buku}}</td>
                                         @auth
@@ -82,7 +78,7 @@
                                             <button class="btn btn-primary text-white" disabled>Pilih</button>
                                             </div></td>
                                             @else
-                                            <td><button class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Pilih</button></td>
+                                            <td><a href="/buku/detail_buku/{{$buku->id}}" class="btn btn-primary text-white">Pilih</a></td>
                                             @endif
                                             @endauth
                                             @guest
