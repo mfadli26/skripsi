@@ -199,15 +199,15 @@ class adminController extends Controller
         return view('admin.buku_detail')->with('data', $data);
     }
 
-    
+
 
     public function hapus_detail_buku_tag($id)
     {
         DB::table('detail_buku_tag')
-        ->where('id', '=', $id)
-        ->delete();
+            ->where('id', '=', $id)
+            ->delete();
 
-        Alert::success('Berhasil','Tag berhasil dihapus');
+        Alert::success('Berhasil', 'Tag berhasil dihapus');
         return redirect()->back();
     }
 
@@ -405,6 +405,9 @@ class adminController extends Controller
     public function peminjaman_buku($page)
     {
         $peminjaman = DB::table('peminjaman_buku')
+            ->select('*','peminjaman_buku.id AS id_peminjaman','peminjaman_buku.created_at AS tanggal_mulai')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
             ->skip(($page - 1) * 20)
             ->take(20)
             ->get();

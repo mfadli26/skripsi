@@ -39,11 +39,9 @@
                                 <table class="table text-center">
                                     <thead>
                                         <tr>
-                                            <th scope="col">No</th>
                                             <th scope="col">Nama Pengguna</th>
-                                            <th scope="col">Judul Buku</th>
+                                            <th scope="col">Kode Pemesanan</th>
                                             <th scope="col">Tanggal</th>
-                                            <th scope="col">Admin Pengurus</th>
                                             <th scope="col">Denda</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Aksi</th>
@@ -52,11 +50,25 @@
                                     <tbody>
                                         @if($data->jumlah == 0)
                                         <tr>
-                                            <th colspan="8">- Data Peminjaman Buku Masih Kosong -</th>
+                                            <th colspan="7">- Data Peminjaman Buku Masih Kosong -</th>
                                         </tr>
                                         @else
                                         <tr>
-                                            <th colspan="8">- test -</th>
+                                            @foreach($data->peminjaman as $peminjaman)
+                                            <th><a href="" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></th>
+                                            <th><a href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></th>
+                                            <th>{{$peminjaman->tanggal_mulai}}</th>
+                                            @if($peminjaman->denda == null)
+                                            <th>-</th>
+                                            @else
+                                            <th>{{$peminjaman->denda}}</th>
+                                            @endif
+                                            <th>{{$peminjaman->status}}</th>
+                                            <th>
+                                                <a class="selesai-confirm" href=""><i class="fas fa-edit text-success me-2 fs-5"></i></a>
+                                                <a href="" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                            </th>
+                                            @endforeach
                                         </tr>
                                         @endif
                                     </tbody>
@@ -96,7 +108,7 @@
             const url = $(this).attr('href');
             swal({
                 title: 'Apakah Anda Yakin Menghapus Data Peminjaman?',
-                text: 'Data dan detailnya akan dihapus secara permanent!',
+                text: 'Data Peminjaman dan detailnya akan dihapus secara permanent!',
                 icon: 'warning',
                 buttons: ["Cancel", "Yes!"],
             }).then(function(value) {
@@ -110,8 +122,8 @@
             event.preventDefault();
             const url = $(this).attr('href');
             swal({
-                title: 'Apakah Anda Yakin Mengubah Status Arsip Menjadi Selesai?',
-                text: 'Pastikan Pengguna Telah Mendapatkan Hardcopy Arsip!',
+                title: 'Apakah Anda Yakin Mengubah Status Peminjaman Buku Menjadi Selesai?',
+                text: 'Pastikan Pengguna Telah Mengembalikan Buku Dan Membayar Denda Jika Ada',
                 icon: 'warning',
                 buttons: ["Cancel", "Yes!"],
             }).then(function(value) {

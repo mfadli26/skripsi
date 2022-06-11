@@ -406,6 +406,39 @@ class homeController extends Controller
         }
     }
 
+    public function peminjaman_buku(Request $request)
+    {
+        $check =  DB::table('peminjaman_buku')
+            ->where('id_users', '=', $request->id_users)
+            ->where('id_buku', '=', $request->id_buku)
+            ->count();
+
+
+        if ($check > 0) {
+            Alert::warning('Peminjaman Gagal!', 'Anda Telah Meminjam Buku Ini');
+            return redirect()->back();
+        } else 
+        {
+            do {
+                $booking = '#'.Str::random(5);
+            }
+            while (DB::table('peminjaman_buku')
+            ->where('kode_booking','=',$booking)
+            ->first());
+
+            DB::table('peminjaman_buku')->insert([
+                'kode_booking' => '#'.Str::random(5),
+                'id_users' => $request->id_users,
+                'id_buku' => $request->id_buku,
+                'status' => 'Menunggu Konfirmasi Admin'
+                
+            ]);
+            Alert::success('Berhasil!', 'Peminjaman Berhasil Dilakukan');
+            return redirect()->back();
+        }
+        
+    }
+
     public function tambah_akun(Request $request)
     {
         $messages = [

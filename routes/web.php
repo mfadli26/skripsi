@@ -47,6 +47,8 @@ Route::post('/buku/main', [homeController::class, 'buku_main']);
 
 Route::post('/archive/pinjam', [homeController::class, 'peminjaman_arsip']);
 
+Route::post('/buku/pinjam_buku', [homeController::class, 'peminjaman_buku']);
+
 Route::get('/all_archive/{page}', [homeController::class, 'archive_all']);
 
 Route::get('/all_book/{page}', [homeController::class, 'book_all']);

@@ -73,17 +73,11 @@
                                         <td scope="row">{{$buku->tahun_terbit}}</td>
                                         <td scope="row">{{$buku->stock_buku}}</td>
                                         @auth
-                                        @if($buku->stock_buku < 1) <td>
-                                            <div data-bs-toggle="tooltip1" data-bs-placement="top" title="Stock Buku Tidak Tersedia Untuk Dipinjam Saat Ini">
-                                            <button class="btn btn-primary text-white" disabled>Pilih</button>
-                                            </div></td>
-                                            @else
-                                            <td><a href="/buku/detail_buku/{{$buku->id}}" class="btn btn-primary text-white">Pilih</a></td>
-                                            @endif
-                                            @endauth
-                                            @guest
-                                            <td scope="row"><a href="/masuk" class="text-decoration-none">Masuk</a> Untuk Melakukan Peminjaman</td>
-                                            @endguest
+                                        <td><a href="/buku/detail_buku/{{$buku->id}}" class="btn btn-primary text-white">Pilih</a></td>
+                                        @endauth
+                                        @guest
+                                        <td scope="row"><a href="/masuk" class="text-decoration-none">Masuk</a> Untuk Melakukan Peminjaman</td>
+                                        @endguest
                                     </tr>
 
                                     @endforeach
@@ -142,4 +136,5 @@
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
 </script>
+
 </html>

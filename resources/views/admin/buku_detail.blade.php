@@ -55,7 +55,7 @@
                                                 <input type="text" class="form-control" id="penulis" name="penulis" value="{{$buku->penulis}}">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tahun" class="form-label">Tahun Terbut :</label>
+                                                <label for="tahun" class="form-label">Tahun Terbit :</label>
                                                 <input type="number" class="form-control" id="tahun" name="tahun" value="{{$buku->tahun_terbit}}">
                                             </div>
                                         </div>

@@ -74,7 +74,18 @@
                                 </div>
                             </div>
                             <div class="col-12">
-                                <button class="btn btn-primary text-white float-end fs-5">Pinjam</button>
+                                <form action="/buku/pinjam_buku" method="post">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" name="id_buku" value="{{$buku->id_buku}}">
+                                    <input type="hidden" name="id_users" value="{{$data->user->id}}">
+                                    @if ($buku->stock_buku == 0)
+                                    <span class="d-inline-block float-end" tabindex="0" data-bs-toggle="tooltip1" title="Stock Buku Tidak Tersedia Untuk Dipinjam Saat Ini">
+                                        <button class="btn btn-primary text-white fs-5" type="button" disabled>Pinjam</button>
+                                    </span>
+                                    @else
+                                    <button class="btn btn-primary text-white float-end fs-5">Pinjam</button>
+                                    @endif
+                                </form>
                             </div>
 
                         </div>
@@ -90,5 +101,11 @@
     @include('client.layout.footer_arsip')
     <script src="/js/app.js"></script>
 </body>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip1"]'))
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
 
 </html>
