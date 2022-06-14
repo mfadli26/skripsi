@@ -83,7 +83,7 @@
                                         <button class="btn btn-primary text-white fs-5" type="button" disabled>Pinjam</button>
                                     </span>
                                     @else
-                                    <button class="btn btn-primary text-white float-end fs-5">Pinjam</button>
+                                    <button type="submit" class="btn btn-primary text-white float-end fs-5">Pinjam</button>
                                     @endif
                                 </form>
                             </div>

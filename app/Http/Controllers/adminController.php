@@ -98,6 +98,17 @@ class adminController extends Controller
         }
     }
 
+    public function cari_buku_peminjaman(Request $request)
+    {
+        $search = $request->search;
+        if ($search == "") {
+            alert::warning('Kode Pemesanan Tidak Ditemukan', 'Pastikan Huruf Besar Dan Kecil Sesuai');
+            return redirect('/admin/menu/peminjaman_buku/1/zero');
+        } else {
+            return redirect('/admin/menu/peminjaman_buku/1/' . $search);
+        }
+    }
+
     public function archive_all($page)
     {
         $archive = DB::table('archive')
@@ -402,27 +413,120 @@ class adminController extends Controller
         return view('admin.peminjaman_arsip')->with('data', $data);
     }
 
-    public function peminjaman_buku($page)
+    public function peminjaman_buku($page, $search)
     {
-        $peminjaman = DB::table('peminjaman_buku')
-            ->select('*', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+        $peminjaman_konfirmasi = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
             ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
             ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->where('status', 'like', 'Menunggu Konfirmasi Admin')
+            ->orderByDesc('created_at_peminjaman')
             ->skip(($page - 1) * 20)
             ->take(20)
             ->get();
 
-        $jumlah = DB::table('peminjaman_buku')
+        $peminjaman_berlangsung = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->where('status', 'like', 'Peminjaman Berlangsung')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $peminjaman_pengambilan = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->where('status', 'like', 'Pengambilan Buku')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $peminjaman_selesai = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->where('status', 'like', 'Selesai')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $peminjaman_dibatalkan = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->where('status', 'like', 'Dibatalkan Oleh Admin')
+            ->orWhere('status', 'like', 'Dibatalkan Oleh Pengguna')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $jumlah_konfirmasi = DB::table('peminjaman_buku')
+            ->where('status', 'like', 'Menunggu Konfirmasi Admin')
             ->count();
+
+        $jumlah_berlangsung = DB::table('peminjaman_buku')
+            ->where('status', 'like', 'Peminjaman Berlangsung')
+            ->count();
+
+        $jumlah_pengambilan = DB::table('peminjaman_buku')
+            ->where('status', 'like', 'Selesai')
+            ->count();
+
+        $jumlah_selesai = DB::table('peminjaman_buku')
+            ->where('status', 'like', 'Selesai')
+            ->count();
+
+        $jumlah_dibatalkan = DB::table('peminjaman_buku')
+            ->where('status', 'like', 'Dibatalkan Oleh Admin')
+            ->orWhere('status', 'like', 'Dibatalkan Oleh Pengguna')
+            ->count();
+
+        if ($search == 'zero') {
+            $event_cari = '1';
+        } else {
+            $event_cari = DB::table('peminjaman_buku')
+                ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+                ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+                ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+                ->where('kode_booking', '=', '#' . $search)
+                ->get();
+
+            $event_cari_check = DB::table('peminjaman_buku')
+                ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+                ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+                ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+                ->where('kode_booking', '=', '#' . $search)
+                ->count();
+
+            if ($event_cari_check == 0) {
+                alert::warning('Kode Pemesanan Tidak Ditemukan', 'Pastikan Huruf Besar Dan Kecil Sesuai!');
+                return redirect()->back();
+            }
+        }
 
         $data = (object) [
             'sidebar' => "pelayanan",
             'breadcrumbsub' => 'Peminjaman Buku',
             'breadcrumb' => 'Pelayanan',
-            'peminjaman' => $peminjaman,
+            'peminjaman_konfirmasi' => $peminjaman_konfirmasi,
+            'peminjaman_berlangsung' => $peminjaman_berlangsung,
+            'peminjaman_pengambilan' => $peminjaman_pengambilan,
+            'peminjaman_selesai' => $peminjaman_selesai,
+            'peminjaman_dibatalkan' => $peminjaman_dibatalkan,
             'page' => $page,
             'search' => "",
-            'jumlah' => $jumlah
+            'jumlah_konfirmasi' => $jumlah_konfirmasi,
+            'jumlah_berlangsung' => $jumlah_berlangsung,
+            'jumlah_pengambilan' => $jumlah_pengambilan,
+            'jumlah_selesai' => $jumlah_selesai,
+            'jumlah_dibatalkan' => $jumlah_dibatalkan,
+            'event_cari' => $event_cari
         ];
 
         return view('admin.peminjaman_buku')->with('data', $data);
@@ -716,24 +820,47 @@ class adminController extends Controller
         if ($konfirm == 1) {
             $status = 'Pengambilan Buku';
             $peminjaman
-            ->update([
-                'status' => $status,
-                'batas_pengambilan' => Carbon::today()->addDay(6),
-                'komentar' => $request->komentar,
-                'id_admin' => $request->id_admin
-            ]);
+                ->update([
+                    'status' => $status,
+                    'batas_pengambilan' => Carbon::today()->addDay(6),
+                    'komentar' => $request->komentar,
+                    'id_admin' => $request->id_admin
+                ]);
         } elseif ($konfirm == 2) {
             $status = 'Dibatalkan Oleh Admin';
             $peminjaman
-            ->update([
-                'status' => $status,
-                'komentar' => $request->komentar,
-                'id_admin' => $request->id_admin
-            ]);
+                ->update([
+                    'status' => $status,
+                    'komentar' => $request->komentar,
+                    'id_admin' => $request->id_admin
+                ]);
         };
 
         Alert::success('Berhasil', 'Data Peminjaman Pengguna Berhasil Dikonfirmasi');
         return redirect()->back();
+    }
+
+    public function konfirmasi_peminjaman_buku_by_id($id,$konfirm)
+    {
+        $peminjaman = DB::table('peminjaman_buku')
+            ->where('id', '=', $id);
+
+        if ($konfirm == 1) {
+            $status = 'Pengambilan Buku';
+            $peminjaman
+                ->update([
+                    'status' => $status,
+                    'start_at' => Carbon::today(),
+                    'expired_at' => Carbon::today()->addDay(6),
+                ]);
+        } elseif ($konfirm == 2) {
+            $status = 'Selesai';
+            $peminjaman
+                ->update([
+                    'status' => $status,
+                    'return_at' => Carbon::today()
+                ]);
+        };
     }
 
     public function konfirmasi_selesai($id)

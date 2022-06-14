@@ -451,10 +451,9 @@ class homeController extends Controller
         $check =  DB::table('peminjaman_buku')
             ->where('id_users', '=', $request->id_users)
             ->where('id_buku', '=', $request->id_buku)
-            ->where('status', 'like', 'Menunggu Konfirmasi Admin')
-            ->orWhere('status', 'like', 'Peminjaman Berlangsung')
-            ->orWhere('status', 'like', 'Perpanjang Aksi')
-            ->orWhere('status', 'like', 'Pengambilan')
+            ->where('status', '!=', 'Dibatalkan Oleh Admin')
+            ->Where('status', '!=', 'Dibatalkan Oleh Pengguna')
+            ->Where('status', '!=', 'Selesai')
             ->count();
 
 

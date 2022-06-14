@@ -95,13 +95,15 @@ Route::get('/admin/menu/kategori_tag_all/{page}/{tab}', [adminController::class,
 
 Route::get('/admin/menu/peminjaman_arsip/{page}', [adminController::class, 'peminjaman_arsip'])->middleware('admin');
 
-Route::get('/admin/menu/peminjaman_buku/{page}', [adminController::class, 'peminjaman_buku'])->middleware('admin');
+Route::get('/admin/menu/peminjaman_buku/{page}/{search}', [adminController::class, 'peminjaman_buku'])->middleware('admin');
 
 Route::post('/admin/menu/archive/tambah_archive', [adminController::class, 'tambah_archive_baru'])->middleware('admin');
 
 Route::post('/admin/menu/archive/cari', [adminController::class, 'cari_arsip'])->middleware('admin');
 
 Route::post('/admin/menu/buku/cari', [adminController::class, 'cari_buku'])->middleware('admin');
+
+Route::post('/admin/menu/buku/peminjaman/cari', [adminController::class, 'cari_buku_peminjaman'])->middleware('admin');
 
 Route::get('/admin/menu/archive/getDownload', [adminController::class, 'getDownload'])->middleware('admin');
 
@@ -116,6 +118,8 @@ Route::get('/admin/menu/archive/bacaSurat', [adminController::class, 'bacaSurat'
 Route::post('/admin/menu/archive/konfirmasi_peminjaman_arsip', [adminController::class, 'konfirmasi_peminjaman_arsip'])->middleware('admin');
 
 Route::post('/admin/menu/buku/konfirmasi_peminjaman_buku', [adminController::class, 'konfirmasi_peminjaman_buku'])->middleware('admin');
+
+Route::post('/admin/menu/buku/konfirmasi_peminjaman_buku_by_id/{id}/{konfirm}', [adminController::class, 'konfirmasi_peminjaman_buku_by_id'])->middleware('admin');
 
 Route::get('/admin/konfirmasi_selesai/{id}', [adminController::class, 'konfirmasi_selesai'])->middleware('admin');
 
