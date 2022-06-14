@@ -78,6 +78,31 @@ class homeController extends Controller
         }
     }
 
+    public function peminjaman_page_buku()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $peminjaman = DB::table('peminjaman_buku')
+            ->select('*','peminjaman_buku.created_at AS created_at_peminjaman','peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->orderByDesc('created_at_peminjaman')
+            ->get();
+
+            $data = (object) [
+                'breadcrumb' => 'Data Peminjaman Buku Pengguna',
+                'submenu' => 'peminjaman buku',
+                'menu' => 'layanan',
+                'user' => $user,
+                'data_buku' => $peminjaman
+            ];
+
+            return view('client.peminjaman_buku')->with('data', $data);
+        } else {
+            Alert::warning('Perhatian', 'Anda Harus Masuk Terlebih Dahulu');
+            return redirect()->back();
+        }
+    }
+
     public function archive_main(Request $request)
     {
         $search = $request->search;
@@ -229,6 +254,7 @@ class homeController extends Controller
 
     public function detail_buku($id)
     {
+        $user = Auth::user();
         $buku = DB::table('buku')
             ->select('buku.*', 'kategori_buku.*', 'buku.id AS id_buku')
             ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
@@ -244,7 +270,6 @@ class homeController extends Controller
         
         $tag_buku_jumlah = $tag_buku->count();
 
-        $user = Auth::user();
         $data = (object) [
             'breadcrumb' => 'Penelusuran ',
             'menu' => 'layanan',
@@ -371,8 +396,23 @@ class homeController extends Controller
                 'status' => 'Dibatalkan Oleh Pengguna'
             ]);
 
-        alert::success('Berhasil', 'Peminjaman Berhasil dibatalkan');
+        alert::success('Berhasil', 'Peminjaman Berhasil Dibatalkan');
         return redirect()->back();
+    }
+
+    public function batal_pinjam_buku_user($id)
+    {
+        $batal_pinjam = DB::table('peminjaman_buku')
+            ->where('id', '=', $id);
+
+        $batal_pinjam
+        ->update([
+            'status' => 'Dibatalkan Oleh Pengguna'
+        ]);
+
+        alert::success('Berhasil', 'Peminjaman Berhasil Dibatalkan');
+        return redirect()->back();
+        
     }
 
     public function peminjaman_arsip(Request $request)
@@ -411,11 +451,15 @@ class homeController extends Controller
         $check =  DB::table('peminjaman_buku')
             ->where('id_users', '=', $request->id_users)
             ->where('id_buku', '=', $request->id_buku)
+            ->where('status', 'like', 'Menunggu Konfirmasi Admin')
+            ->orWhere('status', 'like', 'Peminjaman Berlangsung')
+            ->orWhere('status', 'like', 'Perpanjang Aksi')
+            ->orWhere('status', 'like', 'Pengambilan')
             ->count();
 
 
         if ($check > 0) {
-            Alert::warning('Peminjaman Gagal!', 'Anda Telah Meminjam Buku Ini');
+            Alert::warning('Peminjaman Buku Ini Sedang Berlangsung!', 'Silahkan Selesaikan Peminjaman Di Halaman Peminjaman!');
             return redirect()->back();
         } else 
         {

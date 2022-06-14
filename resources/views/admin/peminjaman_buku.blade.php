@@ -28,6 +28,63 @@
                     @include('admin.layout.breadcrumb')
                     <div class="wrapper p-4 h-100">
                         <div class="card box-shadow">
+                            <nav class="mb-4">
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <button class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1" type="button" role="tab" aria-controls="nav-kategori" aria-selected="false">Cari Berdasarkan Kode</button>
+                                    <button class="nav-link" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Menunggu Konfirmasi</button>
+                                    <button class="nav-link" id="nav-3-tab" data-bs-toggle="tab" data-bs-target="#nav-3" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Peminjaman Berlangsung</button>
+                                    <button class="nav-link" id="nav-4-tab" data-bs-toggle="tab" data-bs-target="#nav-4" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Pengambilan</button>
+                                    <button class="nav-link" id="nav-5-tab" data-bs-toggle="tab" data-bs-target="#nav-5" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Selesai</button>
+                                    <button class="nav-link" id="nav-6-tab" data-bs-toggle="tab" data-bs-target="#nav-6" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Dibatalkan</button>
+                                </div>
+                            </nav>
+                            <div class="tab-content" id="nav-tabContent">
+                                <!-- Content 1 -->
+                                <div class="tab-pane fade active show" id="nav-1" role="tabpanel" aria-labelledby="nav-1-tab">
+                                    <div class="container-fluid">
+                                        <div class="card w-50 m-auto">
+                                            <div class="card-header text-center">
+                                                <span class="fs-1">Pencarian</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="fs-3 mt-5 text-center">Masukkan Kode Pemesanan</p>
+                                                <div class="row d-flex justify-content-end">
+                                                    <div class="col-auto">
+                                                        <label for="kode" class="col-form-label fs-2">#</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <input type="text" id="kode" class="form-control fs-2 w-50">
+                                                    </div>
+                                                </div>
+                                                <div class="text-center my-5">
+                                                    <button class="btn btn-primary fs-5 text-white"><i class="bi bi-search"></i> Cari</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- Content 2 -->
+                                <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab">
+                                    a
+                                </div>
+                                <!-- Content 3 -->
+                                <div class="tab-pane fade" id="nav-3" role="tabpanel" aria-labelledby="nav-3-tab">
+                                    b
+                                </div>
+                                <!-- Content 4 -->
+                                <div class="tab-pane fade" id="nav-4" role="tabpanel" aria-labelledby="nav-4-tab">
+                                    c
+                                </div>
+                                <!-- Content 5 -->
+                                <div class="tab-pane fade" id="nav-5" role="tabpanel" aria-labelledby="nav-5-tab">
+                                    d
+                                </div>
+                                <!-- Content 6 -->
+                                <div class="tab-pane fade" id="nav-6" role="tabpanel" aria-labelledby="nav-6-tab">
+                                    e
+                                </div>
+                            </div>
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-md-5">
@@ -41,7 +98,12 @@
                                         <tr>
                                             <th scope="col">Nama Pengguna</th>
                                             <th scope="col">Kode Pemesanan</th>
-                                            <th scope="col">Tanggal</th>
+                                            <th scope="col">
+                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Tanggal Peminjaman Dimulai Setelah Dikonfirmasi Admin">
+                                                    <span class="bi bi-info-circle"></span>
+                                                </a> Tanggal Mulai
+                                            </th>
+                                            <th scope="col">Tanggal Berakhir</th>
                                             <th scope="col">Denda</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Aksi</th>
@@ -50,26 +112,192 @@
                                     <tbody>
                                         @if($data->jumlah == 0)
                                         <tr>
-                                            <th colspan="7">- Data Peminjaman Buku Masih Kosong -</th>
+                                            <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                         </tr>
                                         @else
+                                        @foreach($data->peminjaman as $peminjaman)
                                         <tr>
-                                            @foreach($data->peminjaman as $peminjaman)
-                                            <th><a href="" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></th>
-                                            <th><a href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></th>
-                                            <th>{{$peminjaman->tanggal_mulai}}</th>
-                                            @if($peminjaman->denda == null)
-                                            <th>-</th>
-                                            @else
-                                            <th>{{$peminjaman->denda}}</th>
+                                            <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users{{$loop->index}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                            <td><a data-bs-toggle="modal" data-bs-target="#modal_buku{{$loop->index}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                            @if($peminjaman->start_at == null)
+                                            <td>-</th>
+                                                @else
+                                            <td>{{$peminjaman->start_at}}</td>
                                             @endif
-                                            <th>{{$peminjaman->status}}</th>
-                                            <th>
-                                                <a class="selesai-confirm" href=""><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                <a href="" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                            </th>
-                                            @endforeach
+                                            @if($peminjaman->expired_at == null)
+                                            <td>-</td>
+                                            @else
+                                            <td>{{$peminjaman->expired_at}}</td>
+                                            @endif
+                                            @if($peminjaman->denda == null)
+                                            <td>-</td>
+                                            @else
+                                            <td>{{$peminjaman->denda}}</td>
+                                            @endif
+                                            <td>{{$peminjaman->status}}</td>
+                                            <td>
+                                                @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin')
+                                                <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                @else
+                                                <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
+                                                <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                @endif
+                                            </td>
+                                            <!-- Modal user detail -->
+                                            <div class="modal fade" id="modal_users{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Nama Lengkap</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->name}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Email</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->email}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Nomor KTP</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->ktp_number}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Tempat, Tanggal Lahir</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->birth_city}}, {{\Carbon\Carbon::parse($peminjaman->birth_date)->translatedFormat('d F Y')}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Alamat</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->address}}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Modal Detail Peminjaman Buku -->
+                                            <div class="modal fade" id="modal_buku{{$loop->index}}" tabindex="-1" aria-labelledby="label_archive{{$loop->index}}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Buku</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Kode Pemesana</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->kode_booking}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Judul</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->judul}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Penulis</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->penulis}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Penerbit</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->penerbit}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Tahun Terbit</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->tahun_terbit}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Perpanjang Peminjaman</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$peminjaman->extended_count}} (Kali)</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </tr>
+                                        <!-- Modal Konfirmasi -->
+                                        <form action="/admin/menu/buku/konfirmasi_peminjaman_buku" method="post">
+                                            {{ csrf_field() }}
+                                            <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$loop->index}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-md">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title text-center">Tentukan Aksi Yang Ingin Anda Pilih</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body ">
+                                                            <div class="form-check mt-1">
+                                                                <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                                    Konfirmasi Peminjaman
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input name="konfirm" value="2" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                                                <label class="form-check-label" for="flexRadioDefault2">
+                                                                    Tolak Peminjaman
+                                                                </label>
+                                                                <a data-bs-toggle="tooltip" data-bs-placement="right" title="Silahkan Tambahkan Alasan Penolakan Peminjaman Pada Kolom Komentar">
+                                                                    <span class="bi bi-info-circle"></span>
+                                                                </a>
+                                                            </div>
+                                                            <div class="mb-3 mt-4">
+                                                                <label for="exampleFormControlTextarea1" class="form-label">
+                                                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Kolom Komentar Boleh Kosong">
+                                                                        <span class="bi bi-info-circle"></span>
+                                                                    </a> Tambah Komentar :</label>
+                                                                <textarea name="komentar" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                                            </div>
+                                                            <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
+                                                            <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
+                                                            <button class="btn btn-primary text-white">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        @endforeach
                                         @endif
                                     </tbody>
                                 </table>
@@ -101,14 +329,13 @@
 
     </main>
     {{ Html::script('js/app.js') }}
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         $('.delete-confirm').on('click', function(event) {
             event.preventDefault();
             const url = $(this).attr('href');
             swal({
                 title: 'Apakah Anda Yakin Menghapus Data Peminjaman?',
-                text: 'Data Peminjaman dan detailnya akan dihapus secara permanent!',
+                text: 'Data Peminjaman Akan Dihapus Secara Permanent!',
                 icon: 'warning',
                 buttons: ["Cancel", "Yes!"],
             }).then(function(value) {

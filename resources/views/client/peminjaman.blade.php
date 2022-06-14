@@ -234,6 +234,9 @@
         </div>
     </main>
     @include('client.layout.footer_arsip')
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="/js/app.js">
+    </script>
     <script>
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip1"]'))
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
@@ -254,8 +257,6 @@
                 }
             });
         });
-    </script>
-    <script src="/js/app.js">
     </script>
 </body>
 

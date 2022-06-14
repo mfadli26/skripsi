@@ -405,7 +405,7 @@ class adminController extends Controller
     public function peminjaman_buku($page)
     {
         $peminjaman = DB::table('peminjaman_buku')
-            ->select('*','peminjaman_buku.id AS id_peminjaman','peminjaman_buku.created_at AS tanggal_mulai')
+            ->select('*', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
             ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
             ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
             ->skip(($page - 1) * 20)
@@ -706,6 +706,36 @@ class adminController extends Controller
         return redirect()->back();
     }
 
+    public function konfirmasi_peminjaman_buku(Request $request)
+    {
+        $id = $request->id;
+        $peminjaman = DB::table('peminjaman_buku')
+            ->where('id', '=', $id);
+        $konfirm = $request->konfirm;
+
+        if ($konfirm == 1) {
+            $status = 'Pengambilan Buku';
+            $peminjaman
+            ->update([
+                'status' => $status,
+                'batas_pengambilan' => Carbon::today()->addDay(6),
+                'komentar' => $request->komentar,
+                'id_admin' => $request->id_admin
+            ]);
+        } elseif ($konfirm == 2) {
+            $status = 'Dibatalkan Oleh Admin';
+            $peminjaman
+            ->update([
+                'status' => $status,
+                'komentar' => $request->komentar,
+                'id_admin' => $request->id_admin
+            ]);
+        };
+
+        Alert::success('Berhasil', 'Data Peminjaman Pengguna Berhasil Dikonfirmasi');
+        return redirect()->back();
+    }
+
     public function konfirmasi_selesai($id)
     {
         $konfirm = DB::table('peminjaman_arsip')
@@ -717,6 +747,16 @@ class adminController extends Controller
             ]);
 
         Alert::success('Berhasil', 'Status Peminjaman Berhasil Diubah');
+        return redirect()->back();
+    }
+
+    public function hapus_peminjaman($id)
+    {
+        $konfirm = DB::table('peminjaman_buku')
+            ->where('id', '=', $id)
+            ->delete();
+
+        alert::success('Berhasil', 'Data Peminjaman Berhasil Dihapus');
         return redirect()->back();
     }
 
