@@ -83,17 +83,23 @@ class homeController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
             $peminjaman = DB::table('peminjaman_buku')
-            ->select('*','peminjaman_buku.created_at AS created_at_peminjaman','peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
+            ->select('*', 'peminjaman_buku.update_at AS update_peminjaman','peminjaman_buku.created_at AS created_at_peminjaman','peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
             ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
-            ->orderByDesc('created_at_peminjaman')
+            ->orderByDesc('update_peminjaman')
             ->get();
+
+            $check = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.update_at AS update_peminjaman','peminjaman_buku.created_at AS created_at_peminjaman','peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->count();
 
             $data = (object) [
                 'breadcrumb' => 'Data Peminjaman Buku Pengguna',
                 'submenu' => 'peminjaman buku',
                 'menu' => 'layanan',
                 'user' => $user,
-                'data_buku' => $peminjaman
+                'data_buku' => $peminjaman,
+                'check_count' => $check
             ];
 
             return view('client.peminjaman_buku')->with('data', $data);
@@ -407,10 +413,34 @@ class homeController extends Controller
 
         $batal_pinjam
         ->update([
-            'status' => 'Dibatalkan Oleh Pengguna'
+            'status' => 'Dibatalkan Oleh Pengguna',
+            'update_at' => Carbon::now()->toDateTimeString()
         ]);
 
         alert::success('Berhasil', 'Peminjaman Berhasil Dibatalkan');
+        return redirect()->back();
+        
+    }
+
+    public function perpanjang_masa($id)
+    {
+        $check = DB::table('peminjaman_buku')
+            ->where('id', '=', $id)
+            ->where('extended_count', '=', 0)
+            ->count();
+
+        if($check > 0 ){
+            DB::table('peminjaman_buku')
+            ->where('id', '=', $id)
+            ->update([
+                'extended_count' => 1,
+                'update_at' => Carbon::now()->toDateTimeString()
+            ]);
+            alert::success('Berhasil!', 'Perpanjang Masa Peminjaman Berhasil');
+        }else{
+            alert::warning('Gagal!', 'Perpanjang Masa Peminjaman Lebih Dari Satu Kali');
+        }
+        
         return redirect()->back();
         
     }
@@ -420,6 +450,9 @@ class homeController extends Controller
         $check =  DB::table('peminjaman_arsip')
             ->where('id_users', '=', $request->id_users)
             ->where('id_archive', '=', $request->id_archive)
+            ->where('status', '!=', 'Dibatalkan Oleh Admin')
+            ->Where('status', '!=', 'Dibatalkan Oleh Pengguna')
+            ->Where('status', '!=', 'Selesai')
             ->count();
 
         if ($request->type == '1') {
@@ -428,18 +461,26 @@ class homeController extends Controller
             $status = "Menunggu Konfirmasi";
         }
 
-        $biaya = $request->jumlah * 200;
+        $biaya = $request->jumlah * 150;
 
         if ($check > 0) {
-            Alert::warning('Peminjaman Gagal!', 'Anda Telah Meminjam Arsip Ini');
+            Alert::warning('Peminjaman Arsip Sedang Berlangsung!', 'Silahkan Selesaikan Proses Peminjaman!');
             return redirect()->back();
         } else {
+            do {
+                $booking = '#'.Str::random(5);
+            }
+            while (DB::table('peminjaman_arsip')
+            ->where('kode_booking','=',$booking)
+            ->first());
+
             DB::table('peminjaman_arsip')->insert([
+                'kode_booking' => $booking,
                 'id_users' => $request->id_users,
                 'id_archive' => $request->id_archive,
                 'status' => $status,
                 'biaya' => $biaya,
-                'created_at' => Carbon::now()
+                'update_at' => Carbon::now()->toDateTimeString()
             ]);
             Alert::success('Berhasil!', 'Peminjaman Berhasil Dilakukan');
             return redirect()->back();
@@ -458,7 +499,7 @@ class homeController extends Controller
 
 
         if ($check > 0) {
-            Alert::warning('Peminjaman Buku Ini Sedang Berlangsung!', 'Silahkan Selesaikan Peminjaman Di Halaman Peminjaman!');
+            Alert::warning('Peminjaman Buku Ini Sedang Berlangsung!', 'Silahkan Selesaikan Proses Peminjaman');
             return redirect()->back();
         } else 
         {
@@ -469,12 +510,18 @@ class homeController extends Controller
             ->where('kode_booking','=',$booking)
             ->first());
 
+            DB::table('buku')
+            ->where('id', '=', $request->id_buku)
+            ->update([
+                'stock_buku' => DB::raw('stock_buku - 1')
+            ]);
+
             DB::table('peminjaman_buku')->insert([
-                'kode_booking' => '#'.Str::random(5),
+                'kode_booking' => $booking,
                 'id_users' => $request->id_users,
                 'id_buku' => $request->id_buku,
-                'status' => 'Menunggu Konfirmasi Admin'
-                
+                'status' => 'Menunggu Konfirmasi Admin',
+                'update_at' => Carbon::now()->toDateTimeString()
             ]);
             Alert::success('Berhasil!', 'Peminjaman Berhasil Dilakukan');
             return redirect()->back();
@@ -526,6 +573,17 @@ class homeController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'berhasil');
+    }
+
+    public function contact_us()
+    {
+        $data = (object) [
+            'menu' => 'contact_us',
+            'submenu' => 'contact_us',
+            'breadcrumb' => 'Contact Us'
+        ];
+
+        return view('client.contact_us')->with('data', $data);
     }
 
 

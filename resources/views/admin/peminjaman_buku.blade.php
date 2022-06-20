@@ -100,7 +100,7 @@
                                                     <td>{{$peminjaman->denda}}</td>
                                                     @endif
                                                     <td>{{$peminjaman->status}}</td>
-                                                    <td scope="col" >
+                                                    <td scope="col">
                                                         <a href="" data-bs-toggle="modal" data-bs-target="#modal_detail{{$loop->index}}">
                                                             <span class="bi bi-search" data-bs-toggle="tooltip1" data-bs-placement="top" title="Klik Untuk Melihat Detail Buku!"></span>
                                                         </a>
@@ -112,9 +112,15 @@
                                                         <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
                                                         <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                         @elseif($peminjaman->status == 'Peminjaman Berlangsung')
-                                                        <a class="btn btn-primary text-white" href="">Konfirmasi Pengembalian</a>
+                                                        <form action="/admin/buku/konfirmasi_selesai" method="post">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
+                                                            <input type="hidden" name="id_buku" value="{{$peminjaman->id_buku}}">
+                                                            <input type="hidden" name="denda" value="0">
+                                                            <button type="submit" class="btn btn-primary text-white selesai-confirm">Konfirmasi Pengembalian</button>
+                                                        </form>
                                                         @elseif($peminjaman->status == 'Pengambilan Buku')
-                                                        <a class="btn btn-primary text-white" href="">Konfirmasi Pengambilan</a>
+                                                        <a class="btn btn-success text-white ambil-confirm" href="/admin/buku/pengambilan/{{$peminjaman->id_peminjaman}}">Konfirmasi Pengambilan</a>
                                                         @endif
                                                     </td>
                                                     <!-- Modal Detail Tanggal -->
@@ -344,7 +350,7 @@
                                         <nav aria-label="...">
                                             <ul class="pagination">
                                                 <li class="page-item">
-                                                    <a class="page-link" href="/admin/menu/peminjaman_buku/1/zero" tabindex="-1" aria-disabled="true">Back</a>
+                                                    <a class="page-link" href="/admin/menu/peminjaman_buku/1/default" tabindex="-1" aria-disabled="true">Back</a>
                                                 </li>
                                             </ul>
                                         </nav>
@@ -376,10 +382,12 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman_konfirmasi as $peminjaman)
+                                                @foreach($data->peminjaman as $peminjaman)
+                                                @if($peminjaman->status == 'Menunggu Konfirmasi Admin')
+
                                                 <tr>
-                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users{{$loop->index}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
-                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku{{$loop->index}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td>{{$peminjaman->created_at_peminjaman}}</td>
                                                     <td>
                                                         @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin')
@@ -389,162 +397,53 @@
                                                         <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                         @endif
                                                     </td>
-                                                    <!-- Modal user detail -->
-                                                    <div class="modal fade" id="modal_users{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nama Lengkap</span>
+                                                    <!-- Modal Konfirmasi -->
+                                                    <form action="/admin/menu/buku/konfirmasi_peminjaman_buku" method="post">
+                                                        {{ csrf_field() }}
+                                                        <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$loop->index}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-md">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title text-center">Tentukan Aksi Yang Ingin Anda Pilih</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body ">
+                                                                        <div class="form-check mt-1">
+                                                                            <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                                                Konfirmasi Peminjaman
+                                                                            </label>
                                                                         </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->name}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Email</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->email}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nomor KTP</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->ktp_number}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tempat, Tanggal Lahir</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->birth_city}}, {{\Carbon\Carbon::parse($peminjaman->birth_date)->translatedFormat('d F Y')}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Alamat</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->address}}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Modal Detail Peminjaman Buku -->
-                                                    <div class="modal fade" id="modal_buku{{$loop->index}}" tabindex="-1" aria-labelledby="label_archive{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Buku</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Kode Pemesana</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->kode_booking}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Judul</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->judul}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penulis</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penulis}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penerbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penerbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tahun Terbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->tahun_terbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Perpanjang Peminjaman</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->extended_count}} (Kali)</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </tr>
-                                                <!-- Modal Konfirmasi -->
-                                                <form action="/admin/menu/buku/konfirmasi_peminjaman_buku" method="post">
-                                                    {{ csrf_field() }}
-                                                    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$loop->index}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-md">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title text-center">Tentukan Aksi Yang Ingin Anda Pilih</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body ">
-                                                                    <div class="form-check mt-1">
-                                                                        <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                                                        <label class="form-check-label" for="flexRadioDefault1">
-                                                                            Konfirmasi Peminjaman
-                                                                        </label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input name="konfirm" value="2" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                                                        <label class="form-check-label" for="flexRadioDefault2">
-                                                                            Tolak Peminjaman
-                                                                        </label>
-                                                                        <a data-bs-toggle="tooltip" data-bs-placement="right" title="Silahkan Tambahkan Alasan Penolakan Peminjaman Pada Kolom Komentar">
-                                                                            <span class="bi bi-info-circle"></span>
-                                                                        </a>
-                                                                    </div>
-                                                                    <div class="mb-3 mt-4">
-                                                                        <label for="exampleFormControlTextarea1" class="form-label">
-                                                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Kolom Komentar Boleh Kosong">
+                                                                        <div class="form-check">
+                                                                            <input name="konfirm" value="2" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                                                            <label class="form-check-label" for="flexRadioDefault2">
+                                                                                Tolak Peminjaman
+                                                                            </label>
+                                                                            <a data-bs-toggle="tooltip" data-bs-placement="right" title="Silahkan Tambahkan Alasan Penolakan Peminjaman Pada Kolom Komentar">
                                                                                 <span class="bi bi-info-circle"></span>
-                                                                            </a> Tambah Komentar :</label>
-                                                                        <textarea name="komentar" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="mb-3 mt-4">
+                                                                            <label for="exampleFormControlTextarea1" class="form-label">
+                                                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Kolom Komentar Boleh Kosong">
+                                                                                    <span class="bi bi-info-circle"></span>
+                                                                                </a> Tambah Komentar :</label>
+                                                                            <textarea name="komentar" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                                                        </div>
+                                                                        <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
+                                                                        <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
                                                                     </div>
-                                                                    <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
-                                                                    <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
-                                                                    <button class="btn btn-primary text-white">Save</button>
+                                                                    <div class="modal-footer">
+                                                                        <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
+                                                                        <button class="btn btn-primary text-white">Save</button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </form>
-                                                @endforeach
-                                                @endif
+                                                    </form>
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
                                             </tbody>
                                         </table>
                                         <nav aria-label="...">
@@ -596,10 +495,11 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman_berlangsung as $peminjaman)
+                                                @foreach($data->peminjaman as $peminjaman)
+                                                @if($peminjaman->status == 'Peminjaman Berlangsung')
                                                 <tr>
-                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users{{$loop->index}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
-                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku{{$loop->index}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     @if($peminjaman->start_at == null)
                                                     <td>-</th>
                                                         @else
@@ -617,169 +517,17 @@
                                                     @endif
                                                     <td>{{$peminjaman->status}}</td>
                                                     <td>
-                                                        @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin')
-                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @else
-                                                        <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                        <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @endif
+                                                        <form action="/admin/buku/konfirmasi_selesai" method="post">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
+                                                            <input type="hidden" name="id_buku" value="{{$peminjaman->id_buku}}">
+                                                            <input type="hidden" name="denda" value="0">
+                                                            <button type="submit" value="asda" class="btn btn-primary text-white selesai-confirm">Konfirmasi Pengembalian</button>
+                                                        </form>
                                                     </td>
-                                                    <!-- Modal user detail -->
-                                                    <div class="modal fade" id="modal_users{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nama Lengkap</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->name}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Email</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->email}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nomor KTP</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->ktp_number}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tempat, Tanggal Lahir</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->birth_city}}, {{\Carbon\Carbon::parse($peminjaman->birth_date)->translatedFormat('d F Y')}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Alamat</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->address}}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Modal Detail Peminjaman Buku -->
-                                                    <div class="modal fade" id="modal_buku{{$loop->index}}" tabindex="-1" aria-labelledby="label_archive{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Buku</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Kode Pemesana</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->kode_booking}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Judul</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->judul}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penulis</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penulis}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penerbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penerbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tahun Terbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->tahun_terbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Perpanjang Peminjaman</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->extended_count}} (Kali)</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </tr>
-                                                <!-- Modal Konfirmasi -->
-                                                <form action="/admin/menu/buku/konfirmasi_peminjaman_buku" method="post">
-                                                    {{ csrf_field() }}
-                                                    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$loop->index}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-md">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title text-center">Tentukan Aksi Yang Ingin Anda Pilih</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body ">
-                                                                    <div class="form-check mt-1">
-                                                                        <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                                                        <label class="form-check-label" for="flexRadioDefault1">
-                                                                            Konfirmasi Peminjaman
-                                                                        </label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input name="konfirm" value="2" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                                                        <label class="form-check-label" for="flexRadioDefault2">
-                                                                            Tolak Peminjaman
-                                                                        </label>
-                                                                        <a data-bs-toggle="tooltip" data-bs-placement="right" title="Silahkan Tambahkan Alasan Penolakan Peminjaman Pada Kolom Komentar">
-                                                                            <span class="bi bi-info-circle"></span>
-                                                                        </a>
-                                                                    </div>
-                                                                    <div class="mb-3 mt-4">
-                                                                        <label for="exampleFormControlTextarea1" class="form-label">
-                                                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Kolom Komentar Boleh Kosong">
-                                                                                <span class="bi bi-info-circle"></span>
-                                                                            </a> Tambah Komentar :</label>
-                                                                        <textarea name="komentar" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                                                    </div>
-                                                                    <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
-                                                                    <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
-                                                                    <button class="btn btn-primary text-white">Save</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                                @endforeach
-                                                @endif
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
                                             </tbody>
                                         </table>
                                         <nav aria-label="...">
@@ -825,175 +573,19 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman_pengambilan as $peminjaman)
+                                                @foreach($data->peminjaman as $peminjaman)
+                                                @if($peminjaman->status == 'Pengambilan Buku')
                                                 <tr>
-                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users{{$loop->index}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
-                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku{{$loop->index}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td>{{$peminjaman->batas_pengambilan}}</td>
+                                                    <td>{{$peminjaman->status}}</td>
                                                     <td>
-                                                        @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin')
-                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @else
-                                                        <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                        <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @endif
+                                                        <a href="/admin/buku/pengambilan/{{$peminjaman->id_peminjaman}}" class="btn btn-primary text-white ambil-confirm">Konfirmasi Pengambilan</a>
                                                     </td>
-                                                    <!-- Modal user detail -->
-                                                    <div class="modal fade" id="modal_users{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nama Lengkap</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->name}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Email</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->email}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nomor KTP</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->ktp_number}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tempat, Tanggal Lahir</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->birth_city}}, {{\Carbon\Carbon::parse($peminjaman->birth_date)->translatedFormat('d F Y')}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Alamat</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->address}}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Modal Detail Peminjaman Buku -->
-                                                    <div class="modal fade" id="modal_buku{{$loop->index}}" tabindex="-1" aria-labelledby="label_archive{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Buku</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Kode Pemesana</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->kode_booking}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Judul</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->judul}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penulis</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penulis}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penerbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penerbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tahun Terbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->tahun_terbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Perpanjang Peminjaman</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->extended_count}} (Kali)</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </tr>
-                                                <!-- Modal Konfirmasi -->
-                                                <form action="/admin/menu/buku/konfirmasi_peminjaman_buku" method="post">
-                                                    {{ csrf_field() }}
-                                                    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$loop->index}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-md">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title text-center">Tentukan Aksi Yang Ingin Anda Pilih</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body ">
-                                                                    <div class="form-check mt-1">
-                                                                        <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                                                        <label class="form-check-label" for="flexRadioDefault1">
-                                                                            Konfirmasi Peminjaman
-                                                                        </label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input name="konfirm" value="2" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                                                        <label class="form-check-label" for="flexRadioDefault2">
-                                                                            Tolak Peminjaman
-                                                                        </label>
-                                                                        <a data-bs-toggle="tooltip" data-bs-placement="right" title="Silahkan Tambahkan Alasan Penolakan Peminjaman Pada Kolom Komentar">
-                                                                            <span class="bi bi-info-circle"></span>
-                                                                        </a>
-                                                                    </div>
-                                                                    <div class="mb-3 mt-4">
-                                                                        <label for="exampleFormControlTextarea1" class="form-label">
-                                                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Kolom Komentar Boleh Kosong">
-                                                                                <span class="bi bi-info-circle"></span>
-                                                                            </a> Tambah Komentar :</label>
-                                                                        <textarea name="komentar" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                                                    </div>
-                                                                    <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
-                                                                    <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
-                                                                    <button class="btn btn-primary text-white">Save</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                                @endforeach
-                                                @endif
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
                                             </tbody>
                                         </table>
                                         <nav aria-label="...">
@@ -1042,10 +634,11 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman_selesai as $peminjaman)
+                                                @foreach($data->peminjaman as $peminjaman)
+                                                @if ($peminjaman->status == 'Selesai')
                                                 <tr>
-                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users{{$loop->index}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
-                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku{{$loop->index}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     @if($peminjaman->start_at == null)
                                                     <td>-</th>
                                                         @else
@@ -1068,167 +661,10 @@
                                                     @endif
                                                     <td>{{$peminjaman->status}}</td>
                                                     <td>
-                                                        @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin')
-                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @else
-                                                        <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
                                                         <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @endif
                                                     </td>
-                                                    <!-- Modal user detail -->
-                                                    <div class="modal fade" id="modal_users{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nama Lengkap</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->name}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Email</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->email}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nomor KTP</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->ktp_number}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tempat, Tanggal Lahir</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->birth_city}}, {{\Carbon\Carbon::parse($peminjaman->birth_date)->translatedFormat('d F Y')}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Alamat</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->address}}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Modal Detail Peminjaman Buku -->
-                                                    <div class="modal fade" id="modal_buku{{$loop->index}}" tabindex="-1" aria-labelledby="label_archive{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Buku</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Kode Pemesana</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->kode_booking}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Judul</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->judul}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penulis</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penulis}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penerbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penerbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tahun Terbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->tahun_terbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Perpanjang Peminjaman</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->extended_count}} (Kali)</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </tr>
-                                                <!-- Modal Konfirmasi -->
-                                                <form action="/admin/menu/buku/konfirmasi_peminjaman_buku" method="post">
-                                                    {{ csrf_field() }}
-                                                    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$loop->index}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-md">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title text-center">Tentukan Aksi Yang Ingin Anda Pilih</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body ">
-                                                                    <div class="form-check mt-1">
-                                                                        <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                                                        <label class="form-check-label" for="flexRadioDefault1">
-                                                                            Konfirmasi Peminjaman
-                                                                        </label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input name="konfirm" value="2" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                                                        <label class="form-check-label" for="flexRadioDefault2">
-                                                                            Tolak Peminjaman
-                                                                        </label>
-                                                                        <a data-bs-toggle="tooltip" data-bs-placement="right" title="Silahkan Tambahkan Alasan Penolakan Peminjaman Pada Kolom Komentar">
-                                                                            <span class="bi bi-info-circle"></span>
-                                                                        </a>
-                                                                    </div>
-                                                                    <div class="mb-3 mt-4">
-                                                                        <label for="exampleFormControlTextarea1" class="form-label">
-                                                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Kolom Komentar Boleh Kosong">
-                                                                                <span class="bi bi-info-circle"></span>
-                                                                            </a> Tambah Komentar :</label>
-                                                                        <textarea name="komentar" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                                                    </div>
-                                                                    <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
-                                                                    <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
-                                                                    <button class="btn btn-primary text-white">Save</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
+                                                @endif
                                                 @endforeach
                                                 @endif
                                             </tbody>
@@ -1265,13 +701,6 @@
                                                 <tr>
                                                     <th scope="col">Nama Pengguna</th>
                                                     <th scope="col">Kode Pemesanan</th>
-                                                    <th scope="col">
-                                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Tanggal Peminjaman Dimulai Setelah Dikonfirmasi Admin">
-                                                            <span class="bi bi-info-circle"></span>
-                                                        </a> Tanggal Mulai
-                                                    </th>
-                                                    <th scope="col">Tanggal Berakhir</th>
-                                                    <th scope="col">Denda</th>
                                                     <th scope="col">Status</th>
                                                     <th scope="col">Aksi</th>
                                                 </tr>
@@ -1282,25 +711,11 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman_dibatalkan as $peminjaman)
+                                                @foreach($data->peminjaman as $peminjaman)
+                                                @if($peminjaman->status == 'Dibatalkan Oleh Admin' || $peminjaman->status == 'Dibatalkan Oleh Pengguna')
                                                 <tr>
-                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users{{$loop->index}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
-                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku{{$loop->index}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
-                                                    @if($peminjaman->start_at == null)
-                                                    <td>-</th>
-                                                        @else
-                                                    <td>{{$peminjaman->start_at}}</td>
-                                                    @endif
-                                                    @if($peminjaman->expired_at == null)
-                                                    <td>-</td>
-                                                    @else
-                                                    <td>{{$peminjaman->expired_at}}</td>
-                                                    @endif
-                                                    @if($peminjaman->denda == null)
-                                                    <td>-</td>
-                                                    @else
-                                                    <td>{{$peminjaman->denda}}</td>
-                                                    @endif
+                                                    <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
+                                                    <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td>{{$peminjaman->status}}</td>
                                                     <td>
                                                         @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin')
@@ -1310,115 +725,6 @@
                                                         <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                         @endif
                                                     </td>
-                                                    <!-- Modal user detail -->
-                                                    <div class="modal fade" id="modal_users{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nama Lengkap</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->name}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Email</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->email}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Nomor KTP</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->ktp_number}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tempat, Tanggal Lahir</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->birth_city}}, {{\Carbon\Carbon::parse($peminjaman->birth_date)->translatedFormat('d F Y')}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Alamat</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->address}}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Modal Detail Peminjaman Buku -->
-                                                    <div class="modal fade" id="modal_buku{{$loop->index}}" tabindex="-1" aria-labelledby="label_archive{{$loop->index}}" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Buku</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Kode Pemesana</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->kode_booking}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Judul</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->judul}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penulis</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penulis}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Penerbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->penerbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Tahun Terbit</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->tahun_terbit}}</span>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-md-3 d-flex align-items-center">
-                                                                            <span class="form-label m-0">Perpanjang Peminjaman</span>
-                                                                        </div>
-                                                                        <span class="form-label m-0 col-md-1">:</span>
-                                                                        <span class="form-label m-0 col-md-8">{{$peminjaman->extended_count}} (Kali)</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </tr>
                                                 <!-- Modal Konfirmasi -->
                                                 <form action="/admin/menu/buku/konfirmasi_peminjaman_buku" method="post">
@@ -1464,6 +770,7 @@
                                                         </div>
                                                     </div>
                                                 </form>
+                                                @endif
                                                 @endforeach
                                                 @endif
                                             </tbody>
@@ -1486,6 +793,117 @@
                                     </div>
                                 </div>
                             </div>
+                            @foreach($data->peminjaman AS $peminjaman)
+                            <!-- Modal user detail -->
+                            <div class="modal fade" id="modal_users_{{$peminjaman->id_peminjaman}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Nama Lengkap</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->name}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Email</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->email}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Nomor KTP</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->ktp_number}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Tempat, Tanggal Lahir</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->birth_city}}, {{\Carbon\Carbon::parse($peminjaman->birth_date)->translatedFormat('d F Y')}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Alamat</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->address}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal Detail Peminjaman Buku -->
+                            <div class="modal fade" id="modal_buku_{{$peminjaman->id_peminjaman}}" tabindex="-1" aria-labelledby="label_archive{{$loop->index}}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Buku</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Kode Pemesana</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->kode_booking}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Judul</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->judul}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Penulis</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->penulis}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Penerbit</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->penerbit}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Tahun Terbit</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->tahun_terbit}}</span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3 d-flex align-items-center">
+                                                    <span class="form-label m-0">Perpanjang Peminjaman</span>
+                                                </div>
+                                                <span class="form-label m-0 col-md-1">:</span>
+                                                <span class="form-label m-0 col-md-8">{{$peminjaman->extended_count}} (Kali)</span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
                         </div>
                     </div>
 
@@ -1514,10 +932,22 @@
 
         $('.selesai-confirm').on('click', function(event) {
             event.preventDefault();
+            var form = $(this).parents('form');
+            swal({
+                title: 'Konfirmasi Pengembalian Buku',
+                text: 'Pastikan Buku Yang Dikembalikan Benar Dan Membayar Denda Jika Ada',
+                icon: 'warning',
+                buttons: ["Cancel", "Yes!"],
+            }).then(function(value) {
+                if (value) form.submit();
+            });
+        });
+
+        $('.ambil-confirm').on('click', function(event) {
+            event.preventDefault();
             const url = $(this).attr('href');
             swal({
-                title: 'Apakah Anda Yakin Mengubah Status Peminjaman Buku Menjadi Selesai?',
-                text: 'Pastikan Pengguna Telah Mengembalikan Buku Dan Membayar Denda Jika Ada',
+                text: 'Pastikan Buku Yang Diterima Pengguna Telah Sesuai!',
                 icon: 'warning',
                 buttons: ["Cancel", "Yes!"],
             }).then(function(value) {

@@ -52,8 +52,8 @@
                                         <thead>
                                             <tr class="text-center">
                                                 <th scope="col">No</th>
+                                                <th scope="col">Kode Pemesanan</th>
                                                 <th scope="col">Nomor Arsip</th>
-                                                <th scope="col">Nomor Surat</th>
                                                 <th scope="col"><span class="bi bi-info-circle" data-bs-toggle="tooltip1" data-bs-placement="top" title="Tanggal Mulai Pengambilan Dimulai Setelah Mendapatkan Konfirmasi Dari Admin"></span> Tanggal Mulai Pengambilan</th>
                                                 <th scope="col">Tanggal Berakhir Pengambilan</th>
                                                 <th scope="col"><span class="bi bi-info-circle" data-bs-toggle="tooltip1" data-bs-placement="top" title="Total Biaya Berdasarkan Jumlah Lembar Arsip"></span> Biaya</th>
@@ -65,8 +65,8 @@
                                             @foreach($data->data_arsip as $archive)
                                             <tr class="text-center" data-bs-toggle="collapse" data-bs-target="#r1_{{$archive->id}}">
                                                 <td>{{$loop->index + 1}}</td>
+                                                <td>{{$archive->kode_booking}}</td>
                                                 <td>{{$archive->nomor_arsip}}</td>
-                                                <td>{{$archive->nomor_surat}}</td>
                                                 @if($archive->start_at == null)
                                                 <td>-</td>
                                                 @else
@@ -149,9 +149,9 @@
                                                         </div>
 
 
-                                                        @if($archive->status == 'Unggah Izin' || $archive->status == 'File Izin Ditolak')
                                                         <form action="/unggah_file" method="post" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
+                                                            @if($archive->status == 'Unggah Izin' || $archive->status == 'File Izin Ditolak')
                                                             @if($archive->type == 1)
                                                             <div class="row">
                                                                 <div class="col-md-5">
@@ -161,60 +161,42 @@
                                                                     <span class="form-label">:</span>
                                                                 </div>
                                                                 <div class="col-md-6">
-                                                                    <input type="file" class="form-control-sm" name="file">
+                                                                    <input type="file" class="form-control-sm" name="file" required>
                                                                     <input type="hidden" name="id" value="{{$archive->id}}">
                                                                 </div>
                                                             </div>
                                                             @endif
-                                                            <!-- Modal Konfirmasi Upload File -->
-                                                            <div class="modal" id="modal_{{$loop->index}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered modal-md">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title text-center" id="label_{{$loop->index}}">Apakah Anda Yakin Menggunggah File?</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body text-center">
-                                                                            <button type="button" class="btn btn-secondary col-3">Batal</button>
-                                                                            <button type="submit" class="btn btn-primary text-white col-3">Unggah</button>
-                                                                        </div>
-                                                                        <div class="modal-footer">
+                                                            @endif
+                                                            <div class="row">
+                                                                <div class="col-md-5">
+                                                                    <span class="form-label m-0">Komentar Admin</span>
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <span class="form-label">:</span>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @if($archive->komentar == NULL)
+                                                                    <span class="form-label">-</span>
+                                                                    @else
+                                                                    <span class="form-label">{{$archive->komentar}}</span>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-5">
+                                                                <span>Klik <a href="">Link</a> Berikut Untuk Melihat Panduan Pengambilan Arsip</span>
+                                                            </div>
+                                                            <div class="ms-3 mt-3">
 
-                                                                        </div>
-                                                                    </div>
+                                                                <div class="float-end">
+                                                                    @if($archive->status == 'Menunggu Konfirmasi' || $archive->status == 'Pengambilan Arsip' || $archive->status == 'File Izin Ditolak' || $archive->status == 'Unggah Izin')
+                                                                    <a href="/batal_pinjam_user/{{$archive->id}}" class="batal_pinjam btn btn-danger text-white">Batal</a>
+                                                                    @endif
+                                                                    @if($archive->status == 'Unggah Izin' || $archive->status == 'File Izin Ditolak')
+                                                                    <button class="btn btn-primary text-white upload-confirm" type="submit">Unggah</button>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         </form>
-                                                        @endif
-                                                        <div class="row">
-                                                            <div class="col-md-5">
-                                                                <span class="form-label m-0">Komentar Admin</span>
-                                                            </div>
-                                                            <div class="col-md-1">
-                                                                <span class="form-label">:</span>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                @if($archive->komentar == NULL)
-                                                                <span class="form-label">-</span>
-                                                                @else
-                                                                <span class="form-label">{{$archive->komentar}}</span>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-5">
-                                                            <span>Klik <a href="">Link</a> Berikut Untuk Melihat Panduan Pengambilan Arsip</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="ms-3 mt-3">
-
-                                                        <div class="float-end">
-                                                            @if($archive->status == 'Menunggu Konfirmasi' || $archive->status == 'Pengambilan Arsip' || $archive->status == 'File Izin Ditolak' || $archive->status == 'Unggah Izin')
-                                                            <a href="/batal_pinjam_user/{{$archive->id}}" class="batal_pinjam btn btn-danger text-white">Batal</a>
-                                                            @endif
-                                                            @if($archive->status == 'Unggah Izin' || $archive->status == 'File Izin Ditolak')
-                                                            <button class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" type="button">Unggah</button>
-                                                            @endif
-                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -255,6 +237,19 @@
                 if (value) {
                     window.location.href = url;
                 }
+            });
+        });
+
+        $('.upload-confirm').on('click', function(event) {
+            event.preventDefault();
+            var form = $(this).parents('form');
+            swal({
+                title: 'Konfirmasi Upload File',
+                text: 'Pastikan File Izin Telah Benar!',
+                icon: 'warning',
+                buttons: ["Cancel", "Yes!"],
+            }).then(function(value) {
+                if (value) form.submit();
             });
         });
     </script>

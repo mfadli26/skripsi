@@ -50,73 +50,181 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <thead>
-                                            <tr class="text-center">
-                                                <td scope="col"></td>
-                                                <td scope="col">Kode Pemesanan</td>
-                                                <td scope="col">Batas Tanggal Pengambilan</td>
-                                                <td scope="col">Denda</td>
-                                                <td scope="col">Tanggal Mulai</td>
-                                                <td scope="col">Tanggal Berakhir</td>
-                                                <td scope="col">Status</td>
-                                                <td scope="col">Komentar</td>
-                                                <td scope="col">Aksi</td>
+                                            <tr>
+                                                <th scope="col">Buku</th>
+                                                <th scope="col">Kode Pemesanan</th>
+                                                <th scope="col">Judul</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col" class="text-center">Detail</th>
+                                                <th scope="col" class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @if($data->check_count == 0)
+                                            <tr>
+                                                <th colspan="7" class="text-center">- Data Peminjaman Masih Kosong, Silahkan Lakukan Peminjaman Terlebih Dahulu -</th>
+                                            </tr>
+                                            @else
                                             @foreach($data->data_buku as $data_buku)
-                                            <tr class="text-center">
-                                                <td scope="col">
+                                            <tr>
+                                                <th scope="row">
                                                     <a href="/buku/detail_buku/{{$data_buku->id_buku}}">
                                                         <span class="bi bi-search" data-bs-toggle="tooltip1" data-bs-placement="top" title="Klik Untuk Melihat Detail Buku!"></span>
                                                     </a>
-                                                </td>
+                                                </th>
                                                 <td scope="col">{{$data_buku->kode_booking}}</td>
-                                                @if($data_buku->batas_pengambilan == null)
-                                                <td scope="col">-</td>
-                                                @else
-                                                <td scope="col">{{$data_buku->batas_pengambilan}}</td>
-                                                @endif
-                                                @if($data_buku->denda == null)
-                                                <td>-</td>
-                                                @else
-                                                <td scope="col">{{$data_buku->denda}}</td>
-                                                @endif
-                                                @if($data_buku->start_at == null)
-                                                <td>-</td>
-                                                <td>-</td>
-                                                @else
-                                                <td scope="col"><span class="bi bi-info-circle" data-bs-toggle="tooltip1" data-bs-placement="top" title="Tanggal Mulai Peminjaman Dimulai Setelah Mendapatkan Konfirmasi Dari Admin"></span>{{$data_buku->start_at}}</td>
-                                                <td scope="col">{{$data_buku->expired_at}}</td>
-                                                @endif
+                                                <td scope="col">{{$data_buku->judul}}</td>
                                                 <td scope="col">{{$data_buku->status}}</td>
-                                                @if ($data_buku->komentar == null)
-                                                <td>-</td>
-                                                @else
-                                                <td scope="col">
-                                                    <a href="" data-bs-toggle="modal" data-bs-target="#komen_{{$loop->index}}">
-                                                        <span class="bi bi-chat-square" data-bs-toggle="tooltip1" data-bs-placement="top" title="Klik Untuk Melihat Komentar Admin"></span>
+                                                <td scope="col" class="text-center">
+                                                    <a href="" data-bs-toggle="modal" data-bs-target="#detail_{{$loop->index}}">
+                                                        <span class="bi bi-ticket-detailed" data-bs-toggle="tooltip1" data-bs-placement="top" title="Klik Untuk Melihat Komentar Admin"></span>
                                                     </a>
                                                 </td>
-                                                @endif
-                                                <td>
-                                                    @if($data_buku->status == 'Dibatalkan Oleh Pengguna' || $data_buku->status == 'Dibatalkan Oleh Admin')
-                                                    -
+                                                <th scope="row" class="text-center">
+                                                    @if($data_buku->status == 'Dibatalkan Oleh Pengguna' || $data_buku->status == 'Dibatalkan Oleh Admin' || $data_buku->status == 'Selesai')
+                                                        -
                                                     @elseif($data_buku->status == 'Menunggu Konfirmasi Admin')
-                                                    <a href="/buku/batal_pinjam/{{$data_buku->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                    @else
-                                                    <a href="/buku/batal_pinjam/{{$data_buku->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                        <a href="/buku/batal_pinjam/{{$data_buku->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                    @elseif($data_buku->status == 'Peminjaman Berlangsung')
+                                                        @if($data_buku->extended_count == 0)
+                                                            <a href="/buku/perpanjang_masa/{{$data_buku->id_peminjaman}}" class="perpanjang-confirm btn btn-primary text-white">Perpanjang Masa</a>
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    @elseif($data_buku->status == 'Pengambilan Buku')
+                                                        <a href="/buku/perpanjang_masa/{{$data_buku->id_peminjaman}}" class="btn btn-primary text-white">Panduan Pengambilan</a>
                                                     @endif
-                                                </td>
+                                                </th>
                                             </tr>
-                                            <div class="modal" id="komen_{{$loop->index}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-sm">
+                                            <!-- Modal Detail Peminjaman -->
+                                            <div class="modal" id="detail_{{$loop->index}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                            <h5 class="modal-title" id="exampleModalLabel">Detail Peminjaman</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            {{$data_buku->komentar}}
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    Tanggal Pengajuan
+                                                                </div>
+                                                                <div class="col-1">
+                                                                    :
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    @if($data_buku->created_at_peminjaman == null)
+                                                                    -
+                                                                    @else
+                                                                    {{$data_buku->created_at_peminjaman}}
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    Tanggal Batas Pengambilan
+                                                                </div>
+                                                                <div class="col-1">
+                                                                    :
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    @if($data_buku->batas_pengambilan == null)
+                                                                    -
+                                                                    @else
+                                                                    {{$data_buku->batas_pengambilan}}
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    Tanggal Mulai
+                                                                </div>
+                                                                <div class="col-1">
+                                                                    :
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    @if($data_buku->start_at == null)
+                                                                    -
+                                                                    @else
+                                                                    {{$data_buku->start_at}}
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    Tanggal Berakhir
+                                                                </div>
+                                                                <div class="col-1">
+                                                                    :
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    @if($data_buku->expired_at == null)
+                                                                    -
+                                                                    @else
+                                                                    {{$data_buku->expired_at}}
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    Denda
+                                                                </div>
+                                                                <div class="col-1">
+                                                                    :
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    @if($data_buku->denda == null)
+                                                                    -
+                                                                    @else
+                                                                    {{$data_buku->denda}}
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    Komentar
+                                                                </div>
+                                                                <div class="col-1">
+                                                                    :
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    @if($data_buku->komentar == null)
+                                                                    -
+                                                                    @else
+                                                                    {{$data_buku->komentar}}
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    Perpanjang Masa Peminjaman (Max 1 Kali)
+                                                                </div>
+                                                                <div class="col-1">
+                                                                    :
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    @if($data_buku->extended_count == null)
+                                                                    -
+                                                                    @else
+                                                                    {{$data_buku->extended_count}} (Kali)
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    Tanggal Pengembalian
+                                                                </div>
+                                                                <div class="col-1">
+                                                                    :
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    @if($data_buku->return_at == null)
+                                                                    -
+                                                                    @else
+                                                                    {{$data_buku->return_at}}
+                                                                    @endif
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -125,6 +233,7 @@
                                                 </div>
                                             </div>
                                             @endforeach
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>
@@ -147,6 +256,19 @@
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+        $('.perpanjang-confirm').on('click', function(event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Maksimal Perpanjang Masa Peminjaman Hanya 1 kali',
+                icon: 'warning',
+                buttons: ["Cancel", "Yes!"],
+            }).then(function(value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
 
         $('.delete-confirm').on('click', function(event) {
             event.preventDefault();

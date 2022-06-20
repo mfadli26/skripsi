@@ -63,15 +63,12 @@
                         @endif
                     </div>
                     <div>
-                        <div class="text-center text-dark py-4">
-                            @if($data->submenu == 'pencarian arsip')
-                            <h1 class="h1">Panduan Penggunaan Layanan Kearsipan Online</h1>
-                            @elseif($data->submenu == 'pencarian buku')
-                            <h1 class="h1">Panduan Penggunaan Layanan Buku Online</h1>
-                            @endif
-                        </div>
                         <div class="col-md-7 mx-auto">
-                            <img src="{{url('/img/panduan.jpg')}}" class="w-100 border border-secondary" style="border-width: 10px">
+                            @if($data->submenu == 'pencarian arsip')
+                            <img id="giftest" src="" class="w-100 border border-secondary" style="border-width: 10px">
+                            @elseif($data->submenu == 'pencarian buku')
+                            <img id="giftest" src="" class="w-100 border border-secondary" style="border-width: 10px">
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -81,5 +78,21 @@
     @include('client.layout.footer_arsip')
     <script src="/js/app.js"></script>
 </body>
+<script>
+    var paths = [window.location.origin + "/img/Banner_Layanan_Arsip_Online.gif",
+        window.location.origin + "/img/Banner_Layanan_Arsip_Online.jpg"
+    ];
+
+    var img = document.getElementById("giftest");
+    var i = 0;
+    var timer = setInterval(function() {
+        // If we've reached the end of the array...
+        if (i >= paths.length) {
+            clearInterval(timer); // Stop the timer
+            return; // Exit the function
+        }
+        img.src = paths[i++]; // Sete the path to the current counter and then increase the counter
+    }, 1000);
+</script>
 
 </html>

@@ -43,15 +43,6 @@
                         <li><a class="dropdown-item" href="#">Info Kegiatan</a></li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown text-center px-4 border-end ">
-                    <a class="nav-link dropdown-toggle text-dark btn-hover" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Forum/Saran
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Tanya/Jawab</a></li>
-                        <li><a class="dropdown-item" href="#">Kritik dan Saran</a></li>
-                    </ul>
-                </li>
                 <li class="nav-item dropdown text-center px-4 border-end">
                     <a class="nav-link dropdown-toggle text-dark btn-hover" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Profile
@@ -65,6 +56,11 @@
                         <li><a class="dropdown-item" href="#">Sarana Dan Prasarana</a></li>
                         <li><a class="dropdown-item" href="#">Dasar Hukum</a></li>
                     </ul>
+                </li>
+                <li class="nav-item dropdown text-center px-4 border-end ">
+                    <a class="nav-link text-dark fs-6 btn-hover {{$data->submenu == 'contact_us' ? 'link-active' : ''}}" href="/contact_us">
+                        Contact Us
+                    </a>
                 </li>
                 @guest
                 <li class="nav-item text-center px-4 border-end">

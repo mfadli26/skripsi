@@ -67,6 +67,10 @@ Route::get('/batal_pinjam_user/{id}', [homeController::class, 'batal_pinjam_user
 
 Route::get('/buku/batal_pinjam/{id}', [homeController::class, 'batal_pinjam_buku_user']);
 
+Route::get('/buku/perpanjang_masa/{id}', [homeController::class, 'perpanjang_masa']);
+
+Route::get('/contact_us', [homeController::class, 'contact_us']);
+
 Route::get('/login_admin_page', [adminController::class, 'login_admin_page']);
 
 Route::post('/login_admin', [adminController::class, 'login_admin']);
@@ -93,7 +97,7 @@ Route::get('/admin/menu/buku_all/{page}', [adminController::class, 'buku_all'])-
 
 Route::get('/admin/menu/kategori_tag_all/{page}/{tab}', [adminController::class, 'kategori_tag_all'])->middleware('admin');
 
-Route::get('/admin/menu/peminjaman_arsip/{page}', [adminController::class, 'peminjaman_arsip'])->middleware('admin');
+Route::get('/admin/menu/peminjaman_arsip/{tab}/{page}/{search}', [adminController::class, 'peminjaman_arsip'])->middleware('admin');
 
 Route::get('/admin/menu/peminjaman_buku/{page}/{search}', [adminController::class, 'peminjaman_buku'])->middleware('admin');
 
@@ -104,6 +108,8 @@ Route::post('/admin/menu/archive/cari', [adminController::class, 'cari_arsip'])-
 Route::post('/admin/menu/buku/cari', [adminController::class, 'cari_buku'])->middleware('admin');
 
 Route::post('/admin/menu/buku/peminjaman/cari', [adminController::class, 'cari_buku_peminjaman'])->middleware('admin');
+
+Route::post('/admin/menu/arsip/peminjaman/cari', [adminController::class, 'cari_arsip_peminjaman'])->middleware('admin');
 
 Route::get('/admin/menu/archive/getDownload', [adminController::class, 'getDownload'])->middleware('admin');
 
@@ -121,7 +127,9 @@ Route::post('/admin/menu/buku/konfirmasi_peminjaman_buku', [adminController::cla
 
 Route::post('/admin/menu/buku/konfirmasi_peminjaman_buku_by_id/{id}/{konfirm}', [adminController::class, 'konfirmasi_peminjaman_buku_by_id'])->middleware('admin');
 
-Route::get('/admin/konfirmasi_selesai/{id}', [adminController::class, 'konfirmasi_selesai'])->middleware('admin');
+Route::post('/admin/buku/konfirmasi_selesai', [adminController::class, 'konfirmasi_selesai'])->middleware('admin');
+
+Route::get('/admin/arsip/konfirmasi_selesai/{id}', [adminController::class, 'konfirmasi_peminjaman_arsip_selesai'])->middleware('admin');
 
 Route::get('/admin/buku/tambah_kategori', [adminController::class, 'tambah_kategori'])->middleware('admin');
 
@@ -144,3 +152,5 @@ Route::get('/admin/buku/detail/{id}', [adminController::class, 'detail_buku'])->
 Route::get('/admin/buku/hapus_detail_buku_tag/{id}', [adminController::class, 'hapus_detail_buku_tag'])->middleware('admin');
 
 Route::get('/admin/buku/hapus_peminjaman/{id}', [adminController::class, 'hapus_peminjaman'])->middleware('admin');
+
+Route::get('/admin/buku/pengambilan/{id}', [adminController::class, 'pengambilan_buku'])->middleware('admin');
