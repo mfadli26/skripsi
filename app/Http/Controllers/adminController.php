@@ -1025,13 +1025,33 @@ class adminController extends Controller
 
     public function artikel_admin_tambah_page()
     {
+        $query = DB::table('artikel')
+        ->where('id', '=', '1')
+        ->get();
+
         $data = (object) [
             'sidebar' => 'infoterkini',
             'breadcrumb' => 'Info Terkini',
             'breadcrumbsub' => 'Berita',
+            'konten' => $query
         ];
 
         return view('admin.tambah_artikel')->with('data', $data);
+    }
+
+    public function update_artikel(Request $request)
+    {
+        DB::table('artikel')
+        ->where('id', '=', $request->id)
+        ->update([
+            'judul' => $request->judul,
+            'penulis' => $request->penulis,
+            'tanggal' => $request->tanggal,
+            'content' => $request->konten
+        ]);
+
+        alert::success('Berhasil', 'data berhasil diubah!');
+        return redirect()->back();
     }
 
     /**

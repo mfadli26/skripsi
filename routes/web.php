@@ -169,4 +169,6 @@ Route::get('/admin/artikel', [adminController::class, 'artikel_admin'])->middlew
 
 Route::get('/admin/artikel/tambah', [adminController::class, 'artikel_admin_tambah_page'])->middleware('admin');
 
+Route::post('/admin/artikel/update', [adminController::class, 'update_artikel'])->middleware('admin');
+
 
