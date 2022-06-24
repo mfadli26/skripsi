@@ -26,10 +26,14 @@ class adminController extends Controller
      */
     public function index()
     {
+        $conten = DB::table('content_home')
+            ->get();
+
         $data = (object) [
             'sidebar' => 'home',
             'breadcrumb' => 'Dashboard',
-            'breadcrumbsub' => '1'
+            'breadcrumbsub' => '1',
+            'konten' => $conten
         ];
 
         return view('admin.admin')->with('data', $data);
@@ -894,8 +898,8 @@ class adminController extends Controller
                 'update_at' => Carbon::now()->toDateTimeString()
             ]);
 
-            alert::success('Berhasil', 'Pengambilan Arsip Berhasil Dikonfirmasi!');
-            return redirect()->back();
+        alert::success('Berhasil', 'Pengambilan Arsip Berhasil Dikonfirmasi!');
+        return redirect()->back();
     }
 
     public function konfirmasi_selesai(Request $request)
@@ -946,6 +950,88 @@ class adminController extends Controller
 
         alert::success('Berhasil', 'Pengambilan Buku Berhasil Dikonformasi');
         return redirect()->back();
+    }
+
+    public function contact_us_admin()
+    {
+        $contact_data = DB::table('contact_us')
+            ->get();
+
+        $data = (object) [
+            'sidebar' => 'contact_us',
+            'breadcrumb' => 'Contact Us',
+            'breadcrumbsub' => '1',
+            'contact_data' => $contact_data
+        ];
+
+
+        return view('admin.contact_us')->with('data', $data);
+    }
+
+    public function edit_content(Request $request)
+    {
+        File::delete(public_path('storage\admin_conten\\' . $request->old_file));
+        $path = $request->file('file');
+        $pathname = time() . "_" . $request->id . "." . $request->file->getClientOriginalExtension();
+        $path->move(public_path('storage\admin_conten'), $pathname);
+
+        DB::table('content_home')
+            ->where('id', '=', $request->id)
+            ->update([
+                'path' => $pathname,
+                'id_admin' => $request->id_admin,
+                'update_at' => Carbon::now()->toDateTimeString()
+            ]);
+
+        alert::success('Berhasil', 'Data Konten Berhasil Diubah');
+        return redirect()->back();
+    }
+
+    public function konten_status($id, $status)
+    {
+        $query = DB::table('content_home')
+            ->where('id', '=', $id);
+
+        if($status == 1){
+            $query
+            ->update([
+                'status' => '0',
+                'update_at' => Carbon::now()->toDateTimeString()
+            ]);
+            alert::success('Berhasil','Konten Berhasil Dinonaktifkan');
+        }else{
+            $query
+            ->update([
+                'status' => '1',
+                'update_at' => Carbon::now()->toDateTimeString()
+            ]);
+            alert::success('Berhasil','Konten Berhasil Diaktifkan');
+        }
+
+        return redirect()->back();
+    }
+
+    public function artikel_admin()
+    {
+        $data = (object) [
+            'sidebar' => 'infoterkini',
+            'breadcrumb' => 'Info Terkini',
+            'breadcrumbsub' => 'Berita',
+        ];
+
+
+        return view('admin.artikel')->with('data', $data);
+    }
+
+    public function artikel_admin_tambah_page()
+    {
+        $data = (object) [
+            'sidebar' => 'infoterkini',
+            'breadcrumb' => 'Info Terkini',
+            'breadcrumbsub' => 'Berita',
+        ];
+
+        return view('admin.tambah_artikel')->with('data', $data);
     }
 
     /**

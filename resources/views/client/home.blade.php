@@ -25,15 +25,17 @@
                     <div class="grid grid-cols-1">
                         <div id="carouselExampleControls" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="false">
                             <div class="carousel-inner">
+                                @foreach($data->content AS $content)
+                                @if($content->id == 1)
                                 <div class="carousel-item active">
-                                    <img src="{{url('/img/banner-1.jpg')}}" class="d-block w-100" alt="banner-1">
+                                    <img src="{{url('/storage/admin_conten/'.$content->path)}}" class="d-block w-100" style="height : 600px !important;" alt="banner-1">
                                 </div>
+                                @else
                                 <div class="carousel-item">
-                                    <img src="{{url('/img/banner-2.jpg')}}" class="d-block w-100" alt="banner-2">
+                                    <img src="{{url('/storage/admin_conten/'.$content->path)}}" class="d-block w-100" style="height : 600px !important;" alt="banner-1">
                                 </div>
-                                <div class="carousel-item">
-                                    <img src="{{url('/img/banner-3.jpg')}}" class="d-block w-100" alt="banner-3">
-                                </div>
+                                @endif
+                                @endforeach
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

@@ -23,6 +23,10 @@ class homeController extends Controller
      */
     public function home_page()
     {
+        $content = DB::table('content_home')
+            ->where('status', '=', '1')
+            ->get();
+            
         if (Auth::check()) {
             $user = Auth::user();
 
@@ -30,6 +34,7 @@ class homeController extends Controller
                 'user' => $user,
                 'menu' => 'beranda',
                 'submenu' => 'none',
+                'content' => $content
             ];
 
             return view('client.home')->with('data', $data);
@@ -37,6 +42,7 @@ class homeController extends Controller
             $data = (object) [
                 'menu' => 'beranda',
                 'submenu' => 'none',
+                'content' => $content
             ];
             return view('client.home')->with('data', $data);
         }
@@ -83,15 +89,15 @@ class homeController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
             $peminjaman = DB::table('peminjaman_buku')
-            ->select('*', 'peminjaman_buku.update_at AS update_peminjaman','peminjaman_buku.created_at AS created_at_peminjaman','peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
-            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
-            ->orderByDesc('update_peminjaman')
-            ->get();
+                ->select('*', 'peminjaman_buku.update_at AS update_peminjaman', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
+                ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+                ->orderByDesc('update_peminjaman')
+                ->get();
 
             $check = DB::table('peminjaman_buku')
-            ->select('*', 'peminjaman_buku.update_at AS update_peminjaman','peminjaman_buku.created_at AS created_at_peminjaman','peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
-            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
-            ->count();
+                ->select('*', 'peminjaman_buku.update_at AS update_peminjaman', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
+                ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+                ->count();
 
             $data = (object) [
                 'breadcrumb' => 'Data Peminjaman Buku Pengguna',
@@ -273,7 +279,7 @@ class homeController extends Controller
             ->Join('tag_buku', 'detail_buku_tag.id_tag', '=', 'tag_buku.id')
             ->where('detail_buku_tag.id_buku', '=', $id)
             ->get();
-        
+
         $tag_buku_jumlah = $tag_buku->count();
 
         $data = (object) [
@@ -285,7 +291,7 @@ class homeController extends Controller
             'tag_buku' => $tag_buku,
             'tag_buku_jumlah' => $tag_buku_jumlah
         ];
-        
+
         return view('client.detail_buku_user')->with('data', $data);
     }
 
@@ -350,7 +356,11 @@ class homeController extends Controller
 
     public function register()
     {
-        $data = (object) ['breadcrumb' => 'Pendaftaran', 'menu' => 'register'];
+        $data = (object) [
+            'breadcrumb' => 'Pendaftaran', 
+            'menu' => 'register',
+            'submenu' => 'asda'
+        ];
 
         return view('client.register')->with('data', $data);
     }
@@ -412,14 +422,13 @@ class homeController extends Controller
             ->where('id', '=', $id);
 
         $batal_pinjam
-        ->update([
-            'status' => 'Dibatalkan Oleh Pengguna',
-            'update_at' => Carbon::now()->toDateTimeString()
-        ]);
+            ->update([
+                'status' => 'Dibatalkan Oleh Pengguna',
+                'update_at' => Carbon::now()->toDateTimeString()
+            ]);
 
         alert::success('Berhasil', 'Peminjaman Berhasil Dibatalkan');
         return redirect()->back();
-        
     }
 
     public function perpanjang_masa($id)
@@ -429,20 +438,19 @@ class homeController extends Controller
             ->where('extended_count', '=', 0)
             ->count();
 
-        if($check > 0 ){
+        if ($check > 0) {
             DB::table('peminjaman_buku')
-            ->where('id', '=', $id)
-            ->update([
-                'extended_count' => 1,
-                'update_at' => Carbon::now()->toDateTimeString()
-            ]);
+                ->where('id', '=', $id)
+                ->update([
+                    'extended_count' => 1,
+                    'update_at' => Carbon::now()->toDateTimeString()
+                ]);
             alert::success('Berhasil!', 'Perpanjang Masa Peminjaman Berhasil');
-        }else{
+        } else {
             alert::warning('Gagal!', 'Perpanjang Masa Peminjaman Lebih Dari Satu Kali');
         }
-        
+
         return redirect()->back();
-        
     }
 
     public function peminjaman_arsip(Request $request)
@@ -468,11 +476,11 @@ class homeController extends Controller
             return redirect()->back();
         } else {
             do {
-                $booking = '#'.Str::random(5);
-            }
-            while (DB::table('peminjaman_arsip')
-            ->where('kode_booking','=',$booking)
-            ->first());
+                $booking = '#' . Str::random(5);
+            } while (DB::table('peminjaman_arsip')
+                ->where('kode_booking', '=', $booking)
+                ->first()
+            );
 
             DB::table('peminjaman_arsip')->insert([
                 'kode_booking' => $booking,
@@ -501,20 +509,19 @@ class homeController extends Controller
         if ($check > 0) {
             Alert::warning('Peminjaman Buku Ini Sedang Berlangsung!', 'Silahkan Selesaikan Proses Peminjaman');
             return redirect()->back();
-        } else 
-        {
+        } else {
             do {
-                $booking = '#'.Str::random(5);
-            }
-            while (DB::table('peminjaman_buku')
-            ->where('kode_booking','=',$booking)
-            ->first());
+                $booking = '#' . Str::random(5);
+            } while (DB::table('peminjaman_buku')
+                ->where('kode_booking', '=', $booking)
+                ->first()
+            );
 
             DB::table('buku')
-            ->where('id', '=', $request->id_buku)
-            ->update([
-                'stock_buku' => DB::raw('stock_buku - 1')
-            ]);
+                ->where('id', '=', $request->id_buku)
+                ->update([
+                    'stock_buku' => DB::raw('stock_buku - 1')
+                ]);
 
             DB::table('peminjaman_buku')->insert([
                 'kode_booking' => $booking,
@@ -526,7 +533,6 @@ class homeController extends Controller
             Alert::success('Berhasil!', 'Peminjaman Berhasil Dilakukan');
             return redirect()->back();
         }
-        
     }
 
     public function tambah_akun(Request $request)
@@ -577,15 +583,63 @@ class homeController extends Controller
 
     public function contact_us()
     {
-        $data = (object) [
-            'menu' => 'contact_us',
-            'submenu' => 'contact_us',
-            'breadcrumb' => 'Contact Us'
-        ];
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'contact_us',
+                'submenu' => 'contact_us',
+                'breadcrumb' => 'Contact Us'
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'beranda',
+                'submenu' => 'none',
+                'breadcrumb' => 'Contact Us'
+            ];
+        }
 
         return view('client.contact_us')->with('data', $data);
     }
 
+    public function contact_us_send(Request $request)
+    {
+        DB::table('contact_us')
+            ->insert([
+                'nama_depan' => $request->nama_depan,
+                'nama_belakang' => $request->nama_belakang,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'msg' => $request->msg
+            ]);
+
+        alert::success('Berhasil', 'Feedback Anda Telah ');
+        return redirect()->back();
+    }
+
+    public function visimisi()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'profile',
+                'submenu' => 'visimisi',
+                'breadcrumb' => 'Visi Dan Misi'
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'profile',
+                'submenu' => 'visimisi',
+                'breadcrumb' => 'Visi Dan Misi'
+            ];
+        }
+
+        return view('client.visidanmisi')->with('data', $data);
+    }
 
 
     /**

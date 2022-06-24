@@ -4,6 +4,21 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
+<style>
+    .btn-hover:hover {
+        color: rgb(40, 142, 146) !important;
+    }
+
+    .btn-hover {
+        transition: color 0.2s linear;
+    }
+
+    .link-active {
+        color: rgb(103, 195, 199) !important;
+        border-bottom: 3px solid rgb(103, 195, 199) !important;
+    }
+</style>
+
 <div class="header">
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between border-bottom row">
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: white">
@@ -50,7 +65,7 @@
                                 <li><a class="dropdown-item" href="#">Gambaran Umum</a></li>
                                 <li><a class="dropdown-item" href="#">Sejarah</a></li>
                                 <li><a class="dropdown-item" href="#">Susunan Organisasi</a></li>
-                                <li><a class="dropdown-item" href="#">Visi dan Misi</a></li>
+                                <li><a class="dropdown-item" href="/visimisi">Visi dan Misi</a></li>
                                 <li><a class="dropdown-item" href="#">Tugas Dan Fungsi</a></li>
                                 <li><a class="dropdown-item" href="#">Sarana Dan Prasarana</a></li>
                                 <li><a class="dropdown-item" href="#">Dasar Hukum</a></li>
@@ -58,7 +73,7 @@
                         </li>
                         <li class="nav-item dropdown text-center px-4 border-end ">
                             <a class="nav-link text-dark btn-hover text-muted" href="/contact_us">
-                                Forum/Saran
+                                Contact Us
                             </a>
                         </li>
                         @guest

@@ -14,18 +14,6 @@
     <!-- Styles -->
 
     <style>
-        .btn-hover:hover {
-            color: red !important;
-        }
-
-        .btn-hover {
-            transition: color 0.2s linear;
-        }
-
-        .link-active {
-            color: rgb(103, 195, 199) !important;
-        }
-
         .outer {
             display: flex;
             justify-content: center;
@@ -214,13 +202,13 @@
 
         .signupForm {
             height: 100%;
-            background-color: #32a1fa;
+            background-color: rgb(103, 195, 199);
             background-size: cover;
         }
 
         .signinForm {
             height: 100%;
-            background: #32a1fa;
+            background: rgb(103, 195, 199);
         }
 
         .signinForm p {
@@ -286,7 +274,7 @@
                 <div class="Container mt-5 box">
                     <div class="blueBg">
                         <div class="box signin">
-                            <h2>Mari Bangun Kab.Sarolangun Bersama.</h2>
+                            <h2>Mari Membangun Kab.Sarolangun Bersama.</h2>
                             <Button outline color="warning" class="signinBtn">
                                 Kembali
                             </Button>
@@ -299,11 +287,7 @@
                     </div>
                     <div class="formBx">
                         <div class="form signinForm">
-                            <p>Informasi Kontak</p>
-                            <p class="context-contact">
-                                Fill up them form and our Team will get back to you within
-                                24 hours.
-                            </p>
+                            <p class="fs-2">Informasi Kontak</p>
                             <p class="mt-5 icon-contact">
                                 <a>
                                     <i class="bi bi-envelope-fill"></i>
@@ -320,42 +304,45 @@
                                 <a>
                                     <i class="bi bi-geo-alt-fill"></i>
                                 </a>
-                                <span>Jalan Soekarno Hatta No X, Bandung</span>
+                                <span>Komplek Perkantoran Gunung Kembang, Kabupaten Sarolangun, Jambi</span>
                             </p>
                             <div class="circle"></div>
                             <div class="circle-next"></div>
                         </div>
 
                         <div class="form signupForm">
-                            <div class="container">
-                                <div class="row mt-5">
-                                    <div class="col-md-6">
-                                        <Label class="label-contact">Nama Depan</Label>
-                                        <Input type="text" class="form-control" name="email" id="exampleEmail" placeholder="Enter your first name" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <Label class="label-contact">Nama Belakang</Label>
-                                        <Input type="text" class="form-control" name="password" id="examplePassword" placeholder="Enter your last name" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <Label class="label-contact">Mail</Label>
-                                        <Input type="email" class="form-control" name="password" id="examplePassword" placeholder="Enter your Email" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <Label class="label-contact">Phone</Label>
-                                        <Input type="text" class="form-control" name="password" id="examplePassword" placeholder="Enter your Phone" />
-                                    </div>
-                                    <div class="col-12">
-                                        <Label class="label-contact">Message</Label>
-                                        <textarea class="form-control" name="password" id="examplePassword" placeholder="Enter your message"></textarea>
-                                    </div>
-                                    <div class="col-md-12 mt-3">
-                                        <Button class="text-white btn fs-4 btn-primary mt-1" style=" width: 100%; background-color : #5ab8c7;">
-                                            Kirim Pesan
-                                        </Button>
+                            <form method="post" action="/contact_us/send">
+                                {{ csrf_field() }}
+                                <div class="container">
+                                    <div class="row mt-5">
+                                        <div class="col-md-6">
+                                            <Label class="label-contact">Nama Depan</Label>
+                                            <Input type="text" class="form-control" name="nama_depan" id="exampleEmail" placeholder="Enter your first name" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <Label class="label-contact">Nama Belakang</Label>
+                                            <Input type="text" class="form-control" name="nama_belakang" id="examplePassword" placeholder="Enter your last name">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <Label class="label-contact">Mail</Label>
+                                            <Input type="email" class="form-control" name="email" id="examplePassword" placeholder="Enter your Email" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <Label class="label-contact">Phone</Label>
+                                            <Input type="number" class="form-control" name="phone" id="examplePassword" placeholder="Enter your Phone" required>
+                                        </div>
+                                        <div class="col-12">
+                                            <Label class="label-contact">Message</Label>
+                                            <textarea class="form-control" name="msg" id="examplePassword" placeholder="Enter your message" required></textarea>
+                                        </div>
+                                        <div class="col-md-12 mt-3">
+                                            <Button class="text-white btn fs-4 btn-primary mt-1" type="submit" style=" width: 100%; background-color : #5ab8c7;">
+                                                Kirim Pesan
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

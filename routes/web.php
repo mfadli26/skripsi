@@ -39,6 +39,8 @@ Route::get('/profile', [homeController::class, 'profile']);
 
 Route::post('/profile', [homeController::class, 'update_profile']);
 
+Route::post('/contact_us/send', [homeController::class, 'contact_us_send']);
+
 Route::post('/update_password', [homeController::class, 'update_password']);
 
 Route::get('/layanan/{submenu}', [homeController::class, 'search_home']);
@@ -70,6 +72,8 @@ Route::get('/buku/batal_pinjam/{id}', [homeController::class, 'batal_pinjam_buku
 Route::get('/buku/perpanjang_masa/{id}', [homeController::class, 'perpanjang_masa']);
 
 Route::get('/contact_us', [homeController::class, 'contact_us']);
+
+Route::get('/visimisi', [homeController::class, 'visimisi']);
 
 Route::get('/login_admin_page', [adminController::class, 'login_admin_page']);
 
@@ -154,3 +158,15 @@ Route::get('/admin/buku/hapus_detail_buku_tag/{id}', [adminController::class, 'h
 Route::get('/admin/buku/hapus_peminjaman/{id}', [adminController::class, 'hapus_peminjaman'])->middleware('admin');
 
 Route::get('/admin/buku/pengambilan/{id}', [adminController::class, 'pengambilan_buku'])->middleware('admin');
+
+Route::get('/admin/contact_us', [adminController::class, 'contact_us_admin'])->middleware('admin');
+
+Route::post('/admin/home_content_edit', [adminController::class, 'edit_content'])->middleware('admin');
+
+Route::get('/admin/konten_status/{id}/{status}', [adminController::class, 'konten_status'])->middleware('admin');
+
+Route::get('/admin/artikel', [adminController::class, 'artikel_admin'])->middleware('admin');
+
+Route::get('/admin/artikel/tambah', [adminController::class, 'artikel_admin_tambah_page'])->middleware('admin');
+
+

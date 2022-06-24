@@ -66,13 +66,13 @@
                 </ul>
             </li>
             <li class="nav-item custom-w-100 border-bottom">
-                <a href="#sub-infoterkini" data-bs-toggle="collapse" class="btn-hover-1 nav-link px-2 text-white ">
+                <a href="#sub-infoterkini" data-bs-toggle="collapse" class="btn-hover-1 nav-link px-2 text-white {{$data->sidebar == 'infoterkini' ? 'active' : ''}}">
                     <i class="bi bi-newspaper"></i>
                     <span class="ms-1 d-none d-sm-inline">Info Terkini</span>
                 </a>
-                <ul class="collapse nav flex-column ms-1" id="sub-infoterkini">
+                <ul class="collapse nav flex-column ms-1 {{$data->sidebar == 'infoterkini' ? 'show' : ''}}" id="sub-infoterkini">
                     <li class="w-100">
-                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Berita</a>
+                        <a href="/admin/artikel" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Berita' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Berita</a>
                     </li>
                     <li>
                         <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Info Kegiatan</a>
@@ -83,18 +83,10 @@
                 </ul>
             </li>
             <li class="nav-item custom-w-100 border-bottom">
-                <a href="#sub-forumsaran" data-bs-toggle="collapse" class="btn-hover-1 nav-link px-2 text-white">
+                <a href="/admin/contact_us" class="btn-hover-1 nav-link px-2 text-white {{$data->sidebar == 'contact_us' ? 'active' : ''}}">
                     <i class="bi bi-chat-right-dots-fill"></i>
-                    <span class="ms-1 d-none d-sm-inline">Forum/Saran</span>
+                    <span class="ms-1 d-none d-sm-inline">Contact Us</span>
                 </a>
-                <ul class="collapse nav flex-column ms-1" id="sub-forumsaran">
-                    <li class="w-100">
-                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Forum</a>
-                    </li>
-                    <li>
-                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Saran</a>
-                    </li>
-                </ul>
             </li>
         </ul>
         <hr class="custom-w-100">
