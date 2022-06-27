@@ -19,8 +19,8 @@
     }
 </style>
 
-<div class="header bg-white">
-    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between border-bottom row">
+<div class="bg-white">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between border-bottom row m-0">
         <nav class="navbar navbar-expand-lg" style="background-color: white">
             <div class="col-md-2 offset-md-1">
                 <a href="/home" class="nav-link text-secondary">
@@ -30,7 +30,7 @@
             <div class="col-md-8">
                 <ul class="nav col-lg-auto my-2 justify-content-end my-md-0 text-small h-100 align-items-center">
                     <li class="text-center px-4 border-end">
-                        <a href="/home" class="nav-link text-dark fs-6 btn-hover">
+                        <a href="/home" class="nav-link text-dark fs-6 btn-hover {{$data->menu == 'beranda' ? 'link-active' :''}}">
                             Beranda
                         </a>
                     </li>
@@ -63,13 +63,12 @@
                             Profile
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">Gambaran Umum</a></li>
-                            <li><a class="dropdown-item" href="#">Sejarah</a></li>
-                            <li><a class="dropdown-item" href="#">Susunan Organisasi</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'gambaranumum' ? 'link-active' :''}}" href="/gambaranumum">Gambaran Umum</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'sejarah' ? 'link-active' :''}}" href="/sejarah_singkat">Sejarah</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'susunan' ? 'link-active' :''}}" href="/susunan_organisasi">Susunan Organisasi</a></li>
                             <li><a class="dropdown-item {{$data->submenu == 'visimisi' ? 'link-active' :''}}" href="/visimisi">Visi dan Misi</a></li>
-                            <li><a class="dropdown-item" href="#">Tugas Dan Fungsi</a></li>
-                            <li><a class="dropdown-item" href="#">Sarana Dan Prasarana</a></li>
-                            <li><a class="dropdown-item" href="#">Dasar Hukum</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'tugas' ? 'link-active' :''}}" href="/tugas_fungsi">Tugas Dan Fungsi</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'dasar' ? 'link-active' :''}}" href="/dasar_hukum">Dasar Hukum</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown text-center px-4 border-end ">

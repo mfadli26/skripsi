@@ -1,5 +1,5 @@
-<footer class="row mt-2 mt-auto">
-    <div class="container mt-3 pt-4 pb-3" style="background-color: #616365;">
+<footer class="row mt-5 mx-0">
+    <div class="container mt-3 pt-4 pb-3" style="background: linear-gradient(180deg, rgba(189,224,254,1) 0%, rgba(162,210,255,1) 54%, rgba(162,194,255,1) 100%);">
         <div class="row">
             <div class="col-md-4 offset-md-2">
                 <h4 class="text-white h4 mb-4">Hubungi Kami</h4>
@@ -13,10 +13,10 @@
             </div>
         </div>
     </div>
-    <div class="container p-3 bg-secondary">
+    <div class="container py-2" style="background-color: #80acff;">
         <div class="row">
             <div class="col-md-4 offset-md-2">
-                <h6 class="text-white h6 m-0">Copyright Fadli 2021</h6>
+                <h6 class="text-white h6 m-0">Copyright Fadli 2022</h6>
             </div>
         </div>
     </div>

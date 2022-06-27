@@ -75,6 +75,16 @@ Route::get('/contact_us', [homeController::class, 'contact_us']);
 
 Route::get('/visimisi', [homeController::class, 'visimisi']);
 
+Route::get('/gambaranumum', [homeController::class, 'gambaranumum']);
+
+Route::get('/sejarah_singkat', [homeController::class, 'sejarah_singkat']);
+
+Route::get('/susunan_organisasi', [homeController::class, 'susunan_organisasi']);
+
+Route::get('/tugas_fungsi', [homeController::class, 'tugas_fungsi']);
+
+Route::get('/dasar_hukum', [homeController::class, 'dasar_hukum']);
+
 Route::get('/berita', [homeController::class, 'berita']);
 
 Route::get('/berita/detail/{id}', [homeController::class, 'detail_berita']);

@@ -40,26 +40,20 @@
         @include('client.layout.header_arsip')
         @include('client.layout.breadcrumb_arsip')
         <div class="container-fluid">
-            <div class="wrapper" style="padding-bottom: 100px !important;">
+            <div class="wrapper py-3 pt-5" style="padding-bottom: 100px !important;">
                 <div class="container">
                     <div class="row">
                         <div class="col-8">
-                            @foreach($data->artikel AS $artikel)
-                            <a href="/berita/detail/{{$artikel->id}}" class="card mt-3 text-decoration-none text-black artikel-t">
-                                <div class="card-body row">
-                                    <div class="col-md-3">
-                                        <img src="{{url('/storage/gambar_artikel/'.$artikel->gambar)}}" class="w-100">
-                                    </div>
-                                    <div class="col-md-9">
-                                        <strong class="fs-5">{{$artikel->judul}}</strong>
-                                        <p class="mt-2"><span class="badge bg-primary"><i class="bi bi-calendar"></i> {{$artikel->tanggal}}<span></p>
-                                        <span>
-                                            {!! substr($artikel->content, 0, 250) !!}..
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                            @endforeach
+                            <p>Tugas pokok dan fungsi Dinas Perpustakaan dan Kearsipan Kabupaten Sarolangun sesuai dengan peraturan Gubernur Jambi Nomor 64 Tahun 2016 tentang Kedudukan, Susunan Organisasi, Uraian Tugas dan Fungsi Serta Tata Kerja Dinas Perpustakaan dan Kearsipan Kabupaten Sarolangun, sebagai berikut :</p>
+                            <p class="mt-3 fw-bold">a. Tugas Pokok :</p>
+                            <p class="mt-3">Melaksanakan penyusunan dan pelaksanaan kebijakan Daerah yang bersifat spesifik yaitu di bidang perpustakaan dan kearsipan.</p>
+                            <p class="mt-3 fw-bold">b. Fungsi :</p>
+                            <ul>
+                                <li>Perumusan kebijakan teknis dibidang arsip dan perpustakaan</li>
+                                <li>Pemberian dukungan atas penyelenggaraan pemerintahan daerah</li>
+                                <li>Pembinaan dan pelaksanaan tugas sesuai dengan lingkup tugasnya</li>
+                                <li>Pelaksanaan tugas lain yang diberikan Gubernur.</li>
+                            </ul>
                         </div>
                         @include('client.layout.sidemenu')
                     </div>

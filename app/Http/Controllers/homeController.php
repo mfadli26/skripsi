@@ -36,6 +36,10 @@ class homeController extends Controller
             ->where('status', '=', '1')
             ->get();
 
+        $artikel = DB::table('artikel')
+            ->take(4)
+            ->get();
+
         if (Auth::check()) {
             $user = Auth::user();
 
@@ -45,7 +49,8 @@ class homeController extends Controller
                 'submenu' => 'none',
                 'content' => $content,
                 'buku1' => $buku1,
-                'buku2' => $buku2
+                'buku2' => $buku2,
+                'artikel' => $artikel
             ];
 
             return view('client.home')->with('data', $data);
@@ -55,7 +60,8 @@ class homeController extends Controller
                 'submenu' => 'none',
                 'content' => $content,
                 'buku1' => $buku1,
-                'buku2' => $buku2
+                'buku2' => $buku2,
+                'artikel' => $artikel
             ];
             return view('client.home')->with('data', $data);
         }
@@ -658,6 +664,146 @@ class homeController extends Controller
         }
 
         return view('client.visidanmisi')->with('data', $data);
+    }
+
+    public function gambaranumum()
+    {
+        $artikel_terbaru = DB::table('artikel')
+            ->take(3)
+            ->get();
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'profile',
+                'submenu' => 'gambaranumum',
+                'breadcrumb' => 'Gambaran Umum',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'profile',
+                'submenu' => 'gambaranumum',
+                'breadcrumb' => 'Gambaran Umum',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        }
+
+        return view('client.gambaran_umum')->with('data', $data);
+    }
+
+    public function sejarah_singkat()
+    {
+        $artikel_terbaru = DB::table('artikel')
+            ->take(3)
+            ->get();
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'profile',
+                'submenu' => 'sejarah',
+                'breadcrumb' => 'Sejarah Singkat',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'profile',
+                'submenu' => 'sejarah',
+                'breadcrumb' => 'Sejarah Singkat',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        }
+
+        return view('client.sejarah_singkat')->with('data', $data);
+    }
+
+    public function susunan_organisasi()
+    {
+        $artikel_terbaru = DB::table('artikel')
+            ->take(3)
+            ->get();
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'profile',
+                'submenu' => 'susunan',
+                'breadcrumb' => 'Susunan Organisasi',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'profile',
+                'submenu' => 'susunan',
+                'breadcrumb' => 'Susunan Organisasi',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        }
+
+        return view('client.susunan_organisasi')->with('data', $data);
+    }
+
+    public function tugas_fungsi()
+    {
+        $artikel_terbaru = DB::table('artikel')
+            ->take(3)
+            ->get();
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'profile',
+                'submenu' => 'tugas',
+                'breadcrumb' => 'Tugas Dan Fungsi',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'profile',
+                'submenu' => 'tugas',
+                'breadcrumb' => 'Tugas Dan Fungsi',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        }
+
+        return view('client.tugas_fungsi')->with('data', $data);
+    }
+
+    public function dasar_hukum()
+    {
+        $artikel_terbaru = DB::table('artikel')
+            ->take(3)
+            ->get();
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'profile',
+                'submenu' => 'dasar',
+                'breadcrumb' => 'Dasar Hukum',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'profile',
+                'submenu' => 'dasar',
+                'breadcrumb' => 'Dasar Hukum',
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        }
+
+        return view('client.dasar_hukum')->with('data', $data);
     }
 
     public function berita()

@@ -64,25 +64,7 @@
                             </div>
                             @endforeach
                         </div>
-                        <div class="col-4 ps-5" style="border-left : solid 1px black;">
-                            <h4><strong>ARTIKEL TERBARU</strong></h4>
-                            <div class="card">
-                                <ul class="list-group list-group-flush">
-                                    @foreach ($data->artikel_terbaru AS $terbaru)
-                                    <a href="/berita/detail/{{$terbaru->id}}" class="text-decoration-none list-group-item artikel-t">
-                                        <div class="row">
-                                            <div class="col-5">
-                                                <img src="{{url('/storage/gambar_artikel/'.$terbaru->gambar)}}" class="w-100">
-                                            </div>
-                                            <div class="col-7">
-                                                {{$terbaru->judul}}
-                                            </div>
-                                        </div>
-                                    </a>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
+                        @include('client.layout.sidemenu')
                     </div>
                 </div>
             </div>

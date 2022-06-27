@@ -19,16 +19,13 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(0deg,
-                    rgba(103, 195, 199, 1) 6%,
-                    rgba(28, 180, 187, 1) 17%,
-                    rgba(40, 142, 146, 1) 63%);
+            background: linear-gradient(0deg, rgba(189,224,254,1) 0%, rgba(162,210,255,1) 54%, rgba(162,194,255,1) 100%);
             transition: 0.5s;
             margin-inline: 2.5%;
         }
 
         .outer.active {
-            background: #288d91;
+            background: linear-gradient(0deg, rgba(189,224,254,1) 0%, rgba(162,210,255,1) 54%, rgba(162,194,255,1) 100%);
         }
 
         .box {
@@ -47,7 +44,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(255, 255, 255, 0, 2);
+            background: #bde0fe;
             box-shadow: 0 5px 45px rgba(0, 0, 0, 0.15);
         }
 
@@ -202,13 +199,13 @@
 
         .signupForm {
             height: 100%;
-            background-color: rgb(103, 195, 199);
+            background-color: #a2c2ff;
             background-size: cover;
         }
 
         .signinForm {
             height: 100%;
-            background: rgb(103, 195, 199);
+            background: #a2c2ff;
         }
 
         .signinForm p {
@@ -336,7 +333,7 @@
                                             <textarea class="form-control" name="msg" id="examplePassword" placeholder="Enter your message" required></textarea>
                                         </div>
                                         <div class="col-md-12 mt-3">
-                                            <Button class="text-white btn fs-4 btn-primary mt-1" type="submit" style=" width: 100%; background-color : #5ab8c7;">
+                                            <Button class="text-white btn fs-4 btn-primary mt-1" type="submit" style=" width: 100%; background-color : #a2d2ff;">
                                                 Kirim Pesan
                                             </Button>
                                         </div>
