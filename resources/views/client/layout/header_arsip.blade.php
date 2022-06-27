@@ -48,11 +48,11 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown text-center px-4 border-end">
-                        <a class="nav-link dropdown-toggle text-dark btn-hover" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle text-dark btn-hover {{$data->menu == 'infoterkini' ? 'link-active' : ''}}" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Info Terkini
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">Berita</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'berita' ? 'link-active' : ''}}" href="/berita">Berita</a></li>
                             <li><a class="dropdown-item" href="#">Galeri Foto</a></li>
                             <li><a class="dropdown-item" href="#">Galeri Video</a></li>
                             <li><a class="dropdown-item" href="#">Info Kegiatan</a></li>
@@ -84,7 +84,7 @@
                     @endguest
                     @auth
                     <li class="nav-item dropdown text-center px-4 border-end">
-                        <a class="nav-link dropdown-toggle text-dark btn-hover {{$data->menu == 'profile' ? 'link-active' : ''}}" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle text-dark btn-hover {{$data->menu == 'user' ? 'link-active' : ''}}" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Hi, {{$data->user->name}}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

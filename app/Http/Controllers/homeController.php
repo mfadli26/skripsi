@@ -23,10 +23,19 @@ class homeController extends Controller
      */
     public function home_page()
     {
+        $buku1 = DB::table('buku')
+            ->take(4)
+            ->get();
+
+        $buku2 = DB::table('buku')
+            ->skip(4)
+            ->take(4)
+            ->get();
+
         $content = DB::table('content_home')
             ->where('status', '=', '1')
             ->get();
-            
+
         if (Auth::check()) {
             $user = Auth::user();
 
@@ -34,7 +43,9 @@ class homeController extends Controller
                 'user' => $user,
                 'menu' => 'beranda',
                 'submenu' => 'none',
-                'content' => $content
+                'content' => $content,
+                'buku1' => $buku1,
+                'buku2' => $buku2
             ];
 
             return view('client.home')->with('data', $data);
@@ -42,7 +53,9 @@ class homeController extends Controller
             $data = (object) [
                 'menu' => 'beranda',
                 'submenu' => 'none',
-                'content' => $content
+                'content' => $content,
+                'buku1' => $buku1,
+                'buku2' => $buku2
             ];
             return view('client.home')->with('data', $data);
         }
@@ -304,7 +317,7 @@ class homeController extends Controller
 
         $data = (object) [
             'breadcrumb' => 'Profil Pengguna',
-            'menu' => 'profile',
+            'menu' => 'user',
             'submenu' => 'settings',
             'user' => $user
         ];
@@ -357,7 +370,7 @@ class homeController extends Controller
     public function register()
     {
         $data = (object) [
-            'breadcrumb' => 'Pendaftaran', 
+            'breadcrumb' => 'Pendaftaran',
             'menu' => 'register',
             'submenu' => 'asda'
         ];
@@ -621,6 +634,10 @@ class homeController extends Controller
 
     public function visimisi()
     {
+        $artikel_terbaru = DB::table('artikel')
+            ->take(3)
+            ->get();
+
         if (Auth::check()) {
             $user = Auth::user();
 
@@ -628,17 +645,89 @@ class homeController extends Controller
                 'user' => $user,
                 'menu' => 'profile',
                 'submenu' => 'visimisi',
-                'breadcrumb' => 'Visi Dan Misi'
+                'breadcrumb' => 'Visi Dan Misi',
+                'artikel_terbaru' => $artikel_terbaru
             ];
         } else {
             $data = (object) [
                 'menu' => 'profile',
                 'submenu' => 'visimisi',
-                'breadcrumb' => 'Visi Dan Misi'
+                'breadcrumb' => 'Visi Dan Misi',
+                'artikel_terbaru' => $artikel_terbaru
             ];
         }
 
         return view('client.visidanmisi')->with('data', $data);
+    }
+
+    public function berita()
+    {
+        $artikel = DB::table('artikel')
+            ->take(10)
+            ->get();
+
+        $artikel_terbaru = DB::table('artikel')
+            ->orderByDesc('tanggal')
+            ->take(3)
+            ->get();
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'infoterkini',
+                'submenu' => 'berita',
+                'breadcrumb' => 'Berita',
+                'artikel' => $artikel,
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'infoterkini',
+                'submenu' => 'berita',
+                'breadcrumb' => 'Berita',
+                'artikel' => $artikel,
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        }
+
+        return view('client.berita')->with('data', $data);
+    }
+
+    public function detail_berita($id)
+    {
+        $artikel = DB::table('artikel')
+            ->where('id', '=', $id)
+            ->get();
+
+        $artikel_terbaru = DB::table('artikel')
+            ->orderByDesc('tanggal')
+            ->take(3)
+            ->get();
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'infoterkini',
+                'submenu' => 'berita',
+                'breadcrumb' => 'Berita',
+                'artikel' => $artikel,
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'infoterkini',
+                'submenu' => 'berita',
+                'breadcrumb' => 'Berita',
+                'artikel' => $artikel,
+                'artikel_terbaru' => $artikel_terbaru
+            ];
+        }
+
+        return view('client.detail_berita')->with('data', $data);
     }
 
 

@@ -54,13 +54,18 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($data->artikel as $artikel)
                                         <tr>
-                                            <th scope="row">1</th>
-                                            <th>1</th>
-                                            <th>1</th>
-                                            <th>1</th>
-                                            <th>1</th>
+                                            <th scope="row">{{$loop->index + 1}}</th>
+                                            <th>{{$artikel->judul}}</th>
+                                            <th>{{$artikel->penulis}}</th>
+                                            <th>{{$artikel->tanggal}}</th>
+                                            <td>
+                                                <a href="/admin/artikel/update_artikel/{{$artikel->id}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
+                                                <a href="" ><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                            </td>
                                         </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

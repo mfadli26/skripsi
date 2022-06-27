@@ -14,6 +14,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\DBAL\TimestampType;
 use Laravel\Ui\Presets\React;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -292,6 +293,18 @@ class adminController extends Controller
         return redirect()->back();
     }
 
+    public function edit_kategori(Request $request)
+    {
+        DB::table('kategori_buku')
+        ->where('id', '=', $request->id)
+        ->update([
+            'kategory' => $request->kategori
+        ]);
+    
+        alert::success('Berhasil', 'Data kategori berhasil diubah');
+        return redirect()->back();
+    }
+
     public function tambah_tag(Request $request)
     {
         $query = DB::table('tag_buku')
@@ -310,6 +323,22 @@ class adminController extends Controller
                 ]);
             Alert::success('Berhasil!', 'tag berhasil ditambah');
         }
+        return redirect('/admin/menu/kategori_tag_all/' . $page . '/' . $data_tab);
+    }
+
+    public function edit_tag(Request $request)
+    {
+        DB::table('tag_buku')
+        ->where('id', '=', $request->id)
+        ->update([
+            'tag' => $request->tag
+        ]);
+
+        $page = $request->page;
+        $data_tab = 'tag';
+    
+        alert::success('Berhasil', 'Data tag berhasil diubah');
+
         return redirect('/admin/menu/kategori_tag_all/' . $page . '/' . $data_tab);
     }
 
@@ -992,20 +1021,20 @@ class adminController extends Controller
         $query = DB::table('content_home')
             ->where('id', '=', $id);
 
-        if($status == 1){
+        if ($status == 1) {
             $query
-            ->update([
-                'status' => '0',
-                'update_at' => Carbon::now()->toDateTimeString()
-            ]);
-            alert::success('Berhasil','Konten Berhasil Dinonaktifkan');
-        }else{
+                ->update([
+                    'status' => '0',
+                    'update_at' => Carbon::now()->toDateTimeString()
+                ]);
+            alert::success('Berhasil', 'Konten Berhasil Dinonaktifkan');
+        } else {
             $query
-            ->update([
-                'status' => '1',
-                'update_at' => Carbon::now()->toDateTimeString()
-            ]);
-            alert::success('Berhasil','Konten Berhasil Diaktifkan');
+                ->update([
+                    'status' => '1',
+                    'update_at' => Carbon::now()->toDateTimeString()
+                ]);
+            alert::success('Berhasil', 'Konten Berhasil Diaktifkan');
         }
 
         return redirect()->back();
@@ -1013,10 +1042,16 @@ class adminController extends Controller
 
     public function artikel_admin()
     {
+        $artikel = DB::table('artikel')
+            ->skip((1 - 1) * 20)
+            ->take(20)
+            ->get();
+
         $data = (object) [
             'sidebar' => 'infoterkini',
             'breadcrumb' => 'Info Terkini',
             'breadcrumbsub' => 'Berita',
+            'artikel' => $artikel
         ];
 
 
@@ -1025,30 +1060,77 @@ class adminController extends Controller
 
     public function artikel_admin_tambah_page()
     {
-        $query = DB::table('artikel')
-        ->where('id', '=', '1')
-        ->get();
-
         $data = (object) [
             'sidebar' => 'infoterkini',
             'breadcrumb' => 'Info Terkini',
-            'breadcrumbsub' => 'Berita',
-            'konten' => $query
+            'breadcrumbsub' => 'Berita'
         ];
 
         return view('admin.tambah_artikel')->with('data', $data);
     }
 
+    public function tambah_artikel(Request $request)
+    {
+        $path = $request->file('file');
+        $pathname = "IMG_".time() . "_" . "." . $request->file->getClientOriginalExtension();
+        $path->move(public_path('storage\gambar_artikel'), $pathname);
+
+        DB::table('artikel')
+            ->insert([
+                'judul' => $request->judul,
+                'penulis' => $request->penulis,
+                'tanggal' => $request->tanggal,
+                'gambar' => $pathname,
+                'content' => $request->konten
+            ]);
+
+        alert::success('Berhasil', 'data berhasil diubah!');
+        return redirect()->back();
+    }
+
+    public function update_page_artikel($id)
+    {
+        $artikel = DB::table('artikel')
+            ->where('id', '=', $id)
+            ->get();
+
+        $data = (object) [
+            'sidebar' => 'infoterkini',
+            'breadcrumb' => 'Info Terkini',
+            'breadcrumbsub' => 'Berita',
+            'artikel' => $artikel
+        ];
+
+        return view('admin.edit_artikel')->with('data', $data);
+    }
+
     public function update_artikel(Request $request)
     {
-        DB::table('artikel')
-        ->where('id', '=', $request->id)
-        ->update([
-            'judul' => $request->judul,
-            'penulis' => $request->penulis,
-            'tanggal' => $request->tanggal,
-            'content' => $request->konten
-        ]);
+        if (empty($request->file)) {
+            DB::table('artikel')
+                ->where('id', '=', $request->id)
+                ->update([
+                    'judul' => $request->judul,
+                    'penulis' => $request->penulis,
+                    'tanggal' => $request->tanggal,
+                    'content' => $request->konten
+                ]);
+        } else {
+            File::delete(public_path('storage\gambar_artikel\\' . $request->old_pict));
+            $path = $request->file('file');
+            $pathname = "IMG_".time() . "_" . "." . $request->file->getClientOriginalExtension();
+            $path->move(public_path('storage\gambar_artikel'), $pathname);
+
+            DB::table('artikel')
+                ->where('id', '=', $request->id)
+                ->update([
+                    'judul' => $request->judul,
+                    'penulis' => $request->penulis,
+                    'tanggal' => $request->tanggal,
+                    'content' => $request->konten,
+                    'gambar' => $pathname
+                ]);
+        }
 
         alert::success('Berhasil', 'data berhasil diubah!');
         return redirect()->back();

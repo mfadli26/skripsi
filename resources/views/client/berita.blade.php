@@ -25,6 +25,7 @@
         .link-active {
             color: red !important;
         }
+
         .artikel-t:hover {
             background-color: rgba(108, 117, 125, 0.2) !important;
             box-shadow: 1px 1px rgb(108, 117, 125) !important;
@@ -43,20 +44,22 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-7 me-5">
-                            <h4><strong>VISI</strong></h4>
-                            <p class="fs-5">Visi Rencana Pembangunan Jangka Menengah Kabupaten Sarolangun Periode 2011 – 2016, adalah suatu kondisi yang akan dicapai Kabupaten Sarolangun lima tahun ke depan. Memperhatikan potensi, kondisi, permasalahan, tantangan dan peluang serta mempertimbangkan berbagai isu yang ada, maka visi Kabupaten Sarolangun yang akan diwujudkan pada tahapan kedua RPJP Daerah Kabupaten Sarolangun (Tahun 2011 – 2016) adalah :</p>
-                            <h4 class="my-5"><strong><em>"SAROLANGUN LEBIH MAJU DAN SEJAHTERA"</em></strong></h4>
-                            <h4><strong>LEBIH MAJU</strong></h4>
-                            <p class="fs-5">Meningkatnya kemajuan pembangunan daerah dibidang sosial, ekonomi, politik dan hukum menuju kemandirian daerah.</p>
-                            <h4 class="mt-5"><strong>LEBIH SEJAHTERA</strong></h4>
-                            <p class="fs-5">Terciptanya kondisi yang lebih kondusif bagi tumbuh kembangnya partisipasi ekonomi, sosial, budaya masyarakat dalam mendukung pembangunan berkelanjutan</p>
-                            <h4 class="mt-5 mb-3"><strong>MISI</strong></h4>
-                            <P class="fs-5">Agar Visi RPJMD Kabupaten Sarolangun Tahun 2011 – 2016 tersebut dapat diwujudkan, maka ditetapkan 5 (lima) misi sebagai berikut:</P>
-                            <P class="fs-5">1. Meningkatkan Infrastruktur Pelayanan Umum</P>
-                            <P class="fs-5">2. Meningkatkan Perekonomian Masyarakat Dan Daerah</P>
-                            <P class="fs-5">3. Meningkatkan Kualitas Sumber Daya Manusia</P>
-                            <P class="fs-5">4. Meningkatkan Tata Kelola Pemerintahan Yang Baik</P>
-                            <P class="fs-5">5. Meningkatkan Tata Kehidupan Masyarakat Yang Agamis, Berbudaya dan Harmonis</P>
+                            @foreach($data->artikel AS $artikel)
+                            <a href="/berita/detail/{{$artikel->id}}" class="card mt-3 text-decoration-none text-black artikel-t">
+                                <div class="card-body row">
+                                    <div class="col-md-3">
+                                        <img src="{{url('/storage/gambar_artikel/'.$artikel->gambar)}}" class="w-100">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <strong class="fs-5">{{$artikel->judul}}</strong>
+                                        <p class="mt-2"><span class="badge bg-primary"><i class="bi bi-calendar"></i> {{$artikel->tanggal}}<span></p>
+                                        <span>
+                                            {!! substr($artikel->content, 0, 250) !!}..
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                            @endforeach
                         </div>
                         <div class="col-4 ms-5 ps-5" style="border-left : solid 1px black;">
                             <h4><strong>ARTIKEL TERBARU</strong></h4>

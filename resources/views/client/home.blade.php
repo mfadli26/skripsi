@@ -17,182 +17,123 @@
 </head>
 
 <body class="antialiased">
-    <div class="container-fluid bg-image" style="background-image: url('img/bg.jpg');">
-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0" style="background: transparent;">
-            <div class="mx-auto sm:px-6 lg:px-8">
-                <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow">
-                    @include('client.layout.header_home')
-                    <div class="grid grid-cols-1">
-                        <div id="carouselExampleControls" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="false">
-                            <div class="carousel-inner">
-                                @foreach($data->content AS $content)
-                                @if($content->id == 1)
-                                <div class="carousel-item active">
-                                    <img src="{{url('/storage/admin_conten/'.$content->path)}}" class="d-block w-100" style="height : 600px !important;" alt="banner-1">
-                                </div>
-                                @else
-                                <div class="carousel-item">
-                                    <img src="{{url('/storage/admin_conten/'.$content->path)}}" class="d-block w-100" style="height : 600px !important;" alt="banner-1">
-                                </div>
-                                @endif
-                                @endforeach
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
+    <div class="">
+        @include('client.layout.header_arsip')
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow">
+            <div class="grid grid-cols-1">
+                <div id="carouselExampleControls" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="false">
+                    <div class="carousel-inner">
+                        @foreach($data->content AS $content)
+                        @if($content->id == 1)
+                        <div class="carousel-item active">
+                            <img src="{{url('/storage/admin_conten/'.$content->path)}}" class="d-block w-100" style="height : 800px !important;" alt="banner-1">
+                        </div>
+                        @else
+                        <div class="carousel-item">
+                            <img src="{{url('/storage/admin_conten/'.$content->path)}}" class="d-block w-100" style="height : 800px !important;" alt="banner-1">
+                        </div>
+                        @endif
+                        @endforeach
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="container-fluid grid grid-cols-1 position-relative">
+                <div class="wrapper position-relative">
+                    <div class="ms-5 py-3 pt-5">
+                        <h2 class="h2"><strong>Rekomendasi Buku</strong></h2>
+                    </div>
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
+                        <div class="button-event p-3 text-end pe-5">
+                            <button class="px-4 py-2 rounded-pill" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                Prev
                             </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
+                            <button class="px-4 py-2 rounded-pill" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                Next
                             </button>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 position-relative">
-                        <img class="position-absolute" src="https://dispusip.jakarta.go.id/dispusip/wp-content/uploads/2019/05/BACKGROUND-02.jpg" style="width: 1920px; height: 1080px;">
-                        <div class="wrapper position-relative">
-                            <div class="text-center py-3 pt-5">
-                                <h2 class="h2">Latest Archive</h2>
-                            </div>
-                            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
-                                <div class="carousel-indicators">
-                                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                </div>
-                                <div class="button-event p-3 text-end pe-5">
-                                    <button class="px-4 py-2 rounded-pill" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                        Prev
-                                    </button>
-                                    <button class="px-4 py-2 rounded-pill" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                        Next
-                                    </button>
-                                </div>
-                                <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <div class="row row-cols-1 row-cols-md-4 g-4 px-5">
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-3.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-3.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-3.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-3.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="row row-cols-1 row-cols-md-4 g-4 px-5">
+                                    @foreach($data->buku1 as $buku)
+                                    <div class="col-md">
+                                        <div class="card px-2 rounded-0">
+                                            <img src="{{url('/storage/cover_buku/'.$buku->cover)}}" class="w-100" style="height : 420px;">
+                                            <div class="card-body px-0">
+                                                <p class="card-text fs-3 fw-bold">{{ucwords($buku->judul)}}</p>
+                                                <p>{{$buku->tahun_terbit}}</p>
+                                                <a href="/buku/detail_buku/{{$buku->id}}" class="btn btn-primary text-light float-end"><i class="bi bi-search"></i> Lihat Buku</a>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="carousel-item">
-                                        <div class="row row-cols-1 row-cols-md-4 g-4 px-5">
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-2.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-2.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-2.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-2.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="carousel-item">
-                                        <div class="row row-cols-1 row-cols-md-4 g-4 px-5">
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-1.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-1.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-1.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md">
-                                                <div class="card px-2 rounded-0">
-                                                    <img src="{{url('/img/banner-1.jpg')}}" class="card-img-top rounded-0 pt-2" alt="event-1">
-                                                    <div class="card-body px-0">
-                                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                                        <a href="#" class="btn btn-success text-light float-end">Go somewhere</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
-                            @include('client.layout.footer_home')
+                            <div class="carousel-item">
+                                <div class="row row-cols-1 row-cols-md-4 g-4 px-5">
+                                    @foreach($data->buku2 as $buku)
+                                    <div class="col-md">
+                                        <div class="card px-2 rounded-0">
+                                            <img src="{{url('/storage/cover_buku/'.$buku->cover)}}" class="w-100" style="height : 420px;">
+                                            <div class="card-body px-0">
+                                                <p class="card-text fs-3 fw-bold">{{ucwords($buku->judul)}}</p>
+                                                <p>{{$buku->tahun_terbit}}</p>
+                                                <a href="/buku/detail_buku/{{$buku->id}}" class="btn btn-primary text-light float-end"><i class="bi bi-search"></i> Lihat Buku</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="">
+                        <span class="fs-2"><strong>Video</strong></span>
+                        <a href="" class="float-end me-5 mt-3">Lihat Selangkapnya <i class="bi bi-chevron-double-right"></i></a>
+                        <div class="row mt-4">
+                            <div class="col-4 px-1">
+                                <iframe width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY">
+                                </iframe>
+                            </div>
+                            <div class="col-4 px-1">
+                                <iframe width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY">
+                                </iframe>
+                            </div>
+                            <div class="col-4 px-1">
+                                <iframe width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mx-auto">
+                        <span class="fs-2"><strong>Foto</strong></span>
+                        <a href="" class="float-end me-5 mt-3">Lihat Selangkapnya <i class="bi bi-chevron-double-right"></i></a>
+                        <div class="row">
+                            <div class="col-3 px-1">
+                                <img class="w-100" src="{{url('/storage/gambar_artikel/1656337231_117 JCH Sarolangun Berangkat Ke Tanah Suci, PJ Bupati Henrizal Bilang Begini.jpg')}}">
+                            </div>
+                            <div class="col-3 px-1">
+                                <img class="w-100" src="{{url('/storage/gambar_artikel/1656337231_117 JCH Sarolangun Berangkat Ke Tanah Suci, PJ Bupati Henrizal Bilang Begini.jpg')}}">
+                            </div>
+                            <div class="col-3 px-1">
+                                <img class="w-100" src="{{url('/storage/gambar_artikel/1656337231_117 JCH Sarolangun Berangkat Ke Tanah Suci, PJ Bupati Henrizal Bilang Begini.jpg')}}">
+                            </div>
+                            <div class="col-3 px-1">
+                                <img class="w-100" src="{{url('/storage/gambar_artikel/1656337231_117 JCH Sarolangun Berangkat Ke Tanah Suci, PJ Bupati Henrizal Bilang Begini.jpg')}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ms-5 py-3 pt-5">
+                        <h2 class="h2"><strong>Berita</strong></h2>
+                    </div>
+                    @include('client.layout.footer_home')
                 </div>
             </div>
         </div>

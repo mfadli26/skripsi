@@ -75,6 +75,10 @@ Route::get('/contact_us', [homeController::class, 'contact_us']);
 
 Route::get('/visimisi', [homeController::class, 'visimisi']);
 
+Route::get('/berita', [homeController::class, 'berita']);
+
+Route::get('/berita/detail/{id}', [homeController::class, 'detail_berita']);
+
 Route::get('/login_admin_page', [adminController::class, 'login_admin_page']);
 
 Route::post('/login_admin', [adminController::class, 'login_admin']);
@@ -137,7 +141,11 @@ Route::get('/admin/arsip/konfirmasi_selesai/{id}', [adminController::class, 'kon
 
 Route::get('/admin/buku/tambah_kategori', [adminController::class, 'tambah_kategori'])->middleware('admin');
 
+Route::post('/admin/buku/edit_kategori', [adminController::class, 'edit_kategori'])->middleware('admin');
+
 Route::get('/admin/buku/tambah_tag', [adminController::class, 'tambah_tag'])->middleware('admin');
+
+Route::post('/admin/buku/edit_tag', [adminController::class, 'edit_tag'])->middleware('admin');
 
 Route::get('/admin/buku/tambah_tagtobuku', [adminController::class, 'tambah_tagtobuku'])->middleware('admin');
 
@@ -168,6 +176,10 @@ Route::get('/admin/konten_status/{id}/{status}', [adminController::class, 'konte
 Route::get('/admin/artikel', [adminController::class, 'artikel_admin'])->middleware('admin');
 
 Route::get('/admin/artikel/tambah', [adminController::class, 'artikel_admin_tambah_page'])->middleware('admin');
+
+Route::post('/admin/artikel/tambah_baru', [adminController::class, 'tambah_artikel'])->middleware('admin');
+
+Route::get('/admin/artikel/update_artikel/{id}', [adminController::class, 'update_page_artikel'])->middleware('admin');
 
 Route::post('/admin/artikel/update', [adminController::class, 'update_artikel'])->middleware('admin');
 

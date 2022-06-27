@@ -2,17 +2,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.83.1">
     <title>Admin</title>
 
-    <link href="../../css/app.css" rel="stylesheet">
+    <link href="/css/app.css" rel="stylesheet">
     <link href="/css/admin.css" rel="stylesheet">
-
-
 
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico" />
     <link rel="canonical" href="https://quilljs.com/standalone/full/">
@@ -38,32 +31,36 @@
                     @include('admin.layout.breadcrumb')
                     <div class="wrapper p-4 h-100">
                         <div class="container bg-white mt-2 pb-5">
-                            <h3 class="pt-5">Tambah Artikel Baru</h3>
+                            <h3 class="pt-5">Edit Artikel</h3>
                             <div class="row">
-                                <form action="/admin/artikel/tambah_baru" method="post" enctype="multipart/form-data">
+                                @foreach ($data->artikel AS $konten)
+                                <form action="/admin/artikel/update" method="post" enctype="multipart/form-data">
                                     {{ csrf_field() }}
+                                    <input type="hidden" name="id" value="{{$konten->id}}">
                                     <div class="mt-4 col-6">
                                         <div class="mb-3">
                                             <label class="form-label">Judul</label>
-                                            <input type="text" name="judul" class="form-control" required>
+                                            <input type="text" name="judul" class="form-control" value="{{$konten->judul}}">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Penulis</label>
-                                            <input type="text" name="penulis" class="form-control" required>
+                                            <input type="text" name="penulis" class="form-control" value="{{$konten->penulis}}">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Tanggal</label>
-                                            <input type="date" name="tanggal" class="form-control" required>
+                                            <input type="date" name="tanggal" class="form-control" value="{{$konten->tanggal}}">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Gambar</label>
-                                            <input type="file" name="file" class="form-control" required>
+                                            <img src="{{url('/storage/gambar_artikel/'.$konten->gambar)}}" class="w-100">
+                                            <input type="hidden" name="old_pict" value="{{$konten->gambar}}">
+                                            <input type="file" name="file" class="form-control">
                                         </div>
                                     </div>
                                     <div class="mt-4 col-12">
                                         <div class="mb-3">
                                             <label class="form-label">Konten</label>
-                                            <textarea id="content-textarea" class="form-control" style="display : none" name="konten" required></textarea>
+                                            <textarea id="content-textarea" class="form-control" style="display : none" name="konten">{{$konten->content}}</textarea>
                                         </div>
                                         <div id="standalone-container">
                                             <div id="toolbar-container">
@@ -105,11 +102,12 @@
                                                     <button class="ql-clean"></button>
                                                 </span>
                                             </div>
-                                            <div id="editor-container"></div>
+                                            <div id="editor-container">{!! $konten->content !!}</div>
                                         </div>
                                     </div>
-                                    <button class="btn btn-primary text-white float-end mt-5" type="submit">Submit</button>
+                                    <button class="btn btn-primary text-white float-end" type="submit">Submit</button>
                                 </form>
+                                @endforeach
                             </div>
                         </div>
 
@@ -118,7 +116,7 @@
             </div>
         </div>
     </main>
-    <script src="../../js/app.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js"></script>

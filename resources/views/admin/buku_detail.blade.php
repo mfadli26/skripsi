@@ -76,7 +76,7 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <span>Tag : <button data-bs-target="#modal_tambah_tag_{{$loop->index}}" data-bs-toggle="modal" class="btn btn-success text-white rounded-circle"><i class="bi bi-plus-lg"></i></button></span>
+                                                <span>Tag : <a data-bs-target="#modal_tambah_tag_{{$loop->index}}" data-bs-toggle="modal" class="btn btn-success text-white rounded-circle"><i class="bi bi-plus-lg"></i></a></span>
                                             </div>
                                             <div class="mb-3 row">
                                                 @if($data->tag_buku_jumlah == 0)
