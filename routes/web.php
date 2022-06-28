@@ -27,9 +27,9 @@ Route::post('/daftar/baru', [homeController::class, 'tambah_akun']);
 
 Route::get('/masuk', [homeController::class, 'login']);
 
-Route::get('/archive_pinjam', [homeController::class, 'peminjaman_page']);
+Route::get('/archive_pinjam/{page}', [homeController::class, 'peminjaman_page']);
 
-Route::get('/buku_pinjam', [homeController::class, 'peminjaman_page_buku']);
+Route::get('/buku_pinjam/{page}', [homeController::class, 'peminjaman_page_buku']);
 
 Route::post('/masuk', [homeController::class, 'login_check']);
 

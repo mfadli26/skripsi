@@ -30,7 +30,7 @@
                                     <div class="col-md-5">
                                         List Arsip
                                     </div>
-                                    
+
                                     <div class="col-md-5">
                                         <form action="/admin/menu/archive/cari" method="post">
                                             {{ csrf_field() }}
@@ -57,7 +57,7 @@
                                         <div class="modal-body text-center">
                                             <button class="btn btn-primary" data-bs-target="#Modal2" data-bs-toggle="modal" data-bs-dismiss="modal">Manual</button>
                                             <hr>
-                                            <button class="btn btn-primary" data-bs-target="#Modal3" data-bs-toggle="modal" data-bs-dismiss="modal">+ File</button>    
+                                            <button class="btn btn-primary" data-bs-target="#Modal3" data-bs-toggle="modal" data-bs-dismiss="modal">+ File</button>
                                         </div>
                                     </div>
                                 </div>
@@ -155,7 +155,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($data->archive as $archive)
+                                        @if($data->check_count == 0)
+                                        <tr class="text-center">
+                                            <td colspan="7">
+                                                - Data Arsip Masih Kosong, Silahkan Tambahankan Arsip Baru -
+                                            </td>
+                                        </tr>
+                                        @else
+                                        @foreach($data->archive as $archive)
                                         <tr>
                                             <td>{{$archive->nomor_arsip}}</td>
                                             <td>{{$archive->nomor_surat}}</td>
@@ -188,7 +195,7 @@
                                                                 </div>
                                                                 <div class="col-md-8">
                                                                     <input type="text" class="form-control" id="nomor-surat" name="nomor_arsip" value="{{$archive->nomor_arsip}}">
-                                                                </div>  
+                                                                </div>
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-md-3 d-flex align-items-center">
@@ -253,7 +260,7 @@
                                                                     <span class="form-label m-0 col-md-1">:</span>
                                                                 </div>
                                                                 <div class="col-md-8">
-                                                                    <textarea type="text" class="form-control" id="nomor-surat" name="keterangan" >{{$archive->keterangan}}</textarea>
+                                                                    <textarea type="text" class="form-control" id="nomor-surat" name="keterangan">{{$archive->keterangan}}</textarea>
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-3">
@@ -265,13 +272,13 @@
                                                                 </div>
                                                                 <div class="col-md-8">
                                                                     <select class="form-control" aria-label="Default select example" name="type" value="{{ old('type') }}">
-                                                                    @if($archive->type == 1)
+                                                                        @if($archive->type == 1)
                                                                         <option selected value="1">Harus Dengan Surat Pengantar</option>
                                                                         <option value="0">Tidak Memerlukan Surat Pengantar</option>
-                                                                    @else
+                                                                        @else
                                                                         <option value="1">Harus Dengan Surat Pengantar</option>
                                                                         <option selected value="0">Tidak Memerlukan Surat Pengantar</option>
-                                                                    @endif
+                                                                        @endif
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -306,38 +313,43 @@
                                                     </div>
                                                     <div class="modal-body row">
                                                         <div class="col-md-6">
-                                                            
+
                                                             <a href="/admin/menu/archive/delete_arsip?id={{$archive->id}}" class="btn btn-secondary float-end">Hapus</a>
-                                                
+
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button> 
-                                                        </div> 
+                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+                                                        </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    @endforeach
+                                        @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
+                                @if($data->check_count != 0)
                                 <nav aria-label="...">
                                     <ul class="pagination">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                        @if(ceil($data->jumlah_page) == 1)
+                                        <li class="page-item disabled">Jumlah Data : {{$data->check_count}}</li>
+                                        @else
+                                        <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
+                                            <a class="page-link" href="/admin/menu/archive_all/{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
                                         </li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item" aria-current="page">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Next</a>
-                                        </li>
+                                        @for($j = 0; $j < ceil($data->jumlah_page); $j++)
+                                            <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/archive_all/{{$j+1}}">{{$j+1}}</a></li>
+                                            @endfor
+                                            <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
+                                                <a class="page-link" href="/admin/menu/archive_all/{{$data->page + 1}}">Next</a>
+                                            </li>
+                                            @endif
                                     </ul>
                                 </nav>
+                                @endif
                                 <div class="card-footer">
                                 </div>
                             </div>
@@ -348,7 +360,7 @@
                 </div>
             </div>
         </div>
-    
+
     </main>
 
     {{ Html::script('js/app.js') }}

@@ -62,6 +62,13 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @if($data->check_count == 0)
+                                            <tr class="text-center">
+                                                <td colspan="7">
+                                                    - Anda Belum Meminjam Arsip Apapun, <a href="/layanan/pencarian arsip">Klik</a> Disini Untuk Mencari Arsip -
+                                                </td>
+                                            </tr>
+                                            @else
                                             @foreach($data->data_arsip as $archive)
                                             <tr class="text-center" data-bs-toggle="collapse" data-bs-target="#r1_{{$archive->id}}">
                                                 <td>{{$loop->index + 1}}</td>
@@ -201,8 +208,28 @@
                                                 </td>
                                             </tr>
                                             @endforeach
+                                            @endif
                                         </tbody>
                                     </table>
+                                    @if($data->check_count != 0)
+                                    <nav aria-label="...">
+                                        <ul class="pagination">
+                                            @if(ceil($data->jumlah_page) == 1)
+                                            <li class="page-item disabled">Jumlah Data : {{$data->check_count}}</li>
+                                            @else
+                                            <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
+                                                <a class="page-link" href="/archive_pinjam/{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
+                                            </li>
+                                            @for($j = 0; $j < ceil($data->jumlah_page); $j++)
+                                                <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="/archive_pinjam/{{$j+1}}">{{$j+1}}</a></li>
+                                                @endfor
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
+                                                    <a class="page-link" href="/archive_pinjam/{{$data->page + 1}}">Next</a>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
+                                    @endif
                                 </div>
                             </div>
                         </div>

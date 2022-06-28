@@ -135,6 +135,8 @@ class adminController extends Controller
         $jumlah = DB::table('archive')
             ->count();
 
+        $page_jumlah = $jumlah / 20;
+
         $data = (object) [
             'sidebar' => "pelayanan",
             'breadcrumbsub' => 'Data Arsip',
@@ -142,7 +144,8 @@ class adminController extends Controller
             'archive' => $archive,
             'page' => $page,
             'search' => "",
-            'jumlah' => $jumlah
+            'check_count' => $jumlah,
+            'jumlah_page' => $page_jumlah,
         ];
 
         return view('admin.archive')->with('data', $data);
@@ -150,17 +153,21 @@ class adminController extends Controller
 
     public function buku_all($page)
     {
+        $limit = ($page - 1) * 2;
         $buku = DB::select(
             DB::raw('
             SELECT buku.*, kategory, tag
-            FROM buku
+            FROM buku 
             LEFT JOIN kategori_buku ON buku.id_kategori = kategori_buku.id
             LEFT JOIN detail_buku_tag ON buku.id = detail_buku_tag.id_buku
             LEFT JOIN (SELECT tag_buku.id, GROUP_CONCAT(tag) AS tag FROM tag_buku) AS tag_buku ON tag_buku.id = detail_buku_tag.id_tag
-            GROUP BY buku.id')
+            GROUP BY buku.id limit 20 offset ' . $limit . '')
         );
 
+        $buku_count = DB::table('buku')
+            ->count();
 
+        $page_jumlah = $buku_count / 20;
         $kategori = DB::table('kategori_buku')
             ->get();
 
@@ -179,7 +186,9 @@ class adminController extends Controller
             'search' => "",
             'jumlah' => $jumlah,
             'kategori' => $kategori,
-            'tag' => $tag
+            'tag' => $tag,
+            'check_count' => $jumlah,
+            'jumlah_page' => $page_jumlah,
         ];
 
         return view('admin.buku')->with('data', $data);
@@ -240,24 +249,37 @@ class adminController extends Controller
 
     public function kategori_tag_all($page, $tab)
     {
-        if ($tab == 2) {
-            $tab = 'kategori';
-        }
-        $kategori = DB::table('kategori_buku')
-            ->skip(($page - 1) * 20)
-            ->take(20)
-            ->get();
-
-        $tag = DB::table('tag_buku')
-            ->skip(($page - 1) * 20)
-            ->take(20)
-            ->get();
-
         $jumlah = DB::table('kategori_buku')
             ->count();
 
         $jumlah_tag = DB::table('tag_buku')
             ->count();
+
+        $page_kategori_jumlah = $jumlah / 2;
+
+        $page_tag_jumlah = $jumlah_tag / 2;
+
+        if ($tab == 2) {
+            $tab = 'kategori';
+            $page_kat = 1;
+            $page_tag = 1;
+        } elseif ($tab == 'kategori') {
+            $page_kat = $page;
+            $page_tag = 1;
+        } elseif ($tab == 'tag') {
+            $page_kat = 1;
+            $page_tag = $page;
+        }
+
+        $kategori = DB::table('kategori_buku')
+            ->skip(($page_kat - 1) * 2)
+            ->take(2)
+            ->get();
+
+        $tag = DB::table('tag_buku')
+            ->skip(($page_tag - 1) * 2)
+            ->take(2)
+            ->get();
 
         $data = (object) [
             'sidebar' => "pelayanan",
@@ -266,10 +288,14 @@ class adminController extends Controller
             'tab' => $tab,
             'tag' => $tag,
             'page' => $page,
+            'page_kat' => $page_kat,
+            'page_tag' => $page_tag,
             'search' => "",
             'jumlah' => $jumlah,
             'jumlah_tag' => $jumlah_tag,
-            'kategori' => $kategori
+            'kategori' => $kategori,
+            'jumlah_page' => $page_kategori_jumlah,
+            'jumlah_page_tag' => $page_tag_jumlah
         ];
 
         return view('admin.kategori_tag')->with('data', $data);
@@ -1284,8 +1310,8 @@ class adminController extends Controller
     public function hapus_video($page_video, $id)
     {
         DB::table('video')
-        ->where('id', '=', $id)
-        ->delete();
+            ->where('id', '=', $id)
+            ->delete();
 
         $tab = 'video';
 

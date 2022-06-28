@@ -82,17 +82,17 @@
                                                 </td>
                                                 <th scope="row" class="text-center">
                                                     @if($data_buku->status == 'Dibatalkan Oleh Pengguna' || $data_buku->status == 'Dibatalkan Oleh Admin' || $data_buku->status == 'Selesai')
-                                                        -
+                                                    -
                                                     @elseif($data_buku->status == 'Menunggu Konfirmasi Admin')
-                                                        <a href="/buku/batal_pinjam/{{$data_buku->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                    <a href="/buku/batal_pinjam/{{$data_buku->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                     @elseif($data_buku->status == 'Peminjaman Berlangsung')
-                                                        @if($data_buku->extended_count == 0)
-                                                            <a href="/buku/perpanjang_masa/{{$data_buku->id_peminjaman}}" class="perpanjang-confirm btn btn-primary text-white">Perpanjang Masa</a>
-                                                        @else
-                                                            -
-                                                        @endif
+                                                    @if($data_buku->extended_count == 0)
+                                                    <a href="/buku/perpanjang_masa/{{$data_buku->id_peminjaman}}" class="perpanjang-confirm btn btn-primary text-white">Perpanjang Masa</a>
+                                                    @else
+                                                    -
+                                                    @endif
                                                     @elseif($data_buku->status == 'Pengambilan Buku')
-                                                        <a href="/buku/perpanjang_masa/{{$data_buku->id_peminjaman}}" class="btn btn-primary text-white">Panduan Pengambilan</a>
+                                                    <a href="/buku/perpanjang_masa/{{$data_buku->id_peminjaman}}" class="btn btn-primary text-white">Panduan Pengambilan</a>
                                                     @endif
                                                 </th>
                                             </tr>
@@ -236,6 +236,25 @@
                                             @endif
                                         </tbody>
                                     </table>
+                                    @if($data->check_count != 0)
+                                    <nav aria-label="...">
+                                        <ul class="pagination">
+                                            @if(ceil($data->jumlah_page) == 1)
+                                            <li class="page-item disabled">Jumlah Data : {{$data->check_count}}</li>
+                                            @else
+                                            <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
+                                                <a class="page-link" href="/buku_pinjam/{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
+                                            </li>
+                                            @for($j = 0; $j < ceil($data->jumlah_page); $j++)
+                                                <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="/buku_pinjam/{{$j+1}}">{{$j+1}}</a></li>
+                                                @endfor
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
+                                                    <a class="page-link" href="/buku_pinjam/{{$data->page + 1}}">Next</a>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
+                                    @endif
                                 </div>
                             </div>
                         </div>

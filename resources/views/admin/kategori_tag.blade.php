@@ -131,21 +131,25 @@
                                         </table>
                                     </div>
                                     <div class="card-footer">
+                                        @if($data->jumlah != 0)
                                         <nav aria-label="...">
                                             <ul class="pagination">
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                                @if(ceil($data->jumlah_page) == 1)
+                                                <li class="page-item disabled">Jumlah Data : {{$data->jumlah}}</li>
+                                                @else
+                                                <li class="page-item {{$data->page_kat == 1 ? 'disabled' : ''}}">
+                                                    <a class="page-link" href="/admin/menu/kategori_tag_all/{{$data->page_kat - 1}}/kategori" tabindex="-1" aria-disabled="true">Previous</a>
                                                 </li>
-                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item" aria-current="page">
-                                                    <a class="page-link" href="#">2</a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#">Next</a>
-                                                </li>
+                                                @for($j = 0; $j < ceil($data->jumlah_page); $j++)
+                                                    <li class="page-item {{$data->page_kat == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/kategori_tag_all/{{$j+1}}/kategori">{{$j+1}}</a></li>
+                                                    @endfor
+                                                    <li class="page-item {{$data->page_kat == ceil($data->jumlah_page) ? 'disabled' : ''}}">
+                                                        <a class="page-link" href="/admin/menu/kategori_tag_all/{{$data->page_kat + 1}}/kategori">Next</a>
+                                                    </li>
+                                                    @endif
                                             </ul>
                                         </nav>
+                                        @endif
                                     </div>
                                 </div>
                                 <!-- Tab Content 2 -->
@@ -254,21 +258,25 @@
                                         </table>
                                     </div>
                                     <div class="card-footer">
+                                        @if($data->jumlah_tag != 0)
                                         <nav aria-label="...">
                                             <ul class="pagination">
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                                @if(ceil($data->jumlah_page_tag) == 1)
+                                                <li class="page-item disabled">Jumlah Data : {{$data->jumlah_tag}}</li>
+                                                @else
+                                                <li class="page-item {{$data->page_tag == 1 ? 'disabled' : ''}}">
+                                                    <a class="page-link" href="/admin/menu/kategori_tag_all/{{$data->page_tag - 1}}/tag" tabindex="-1" aria-disabled="true">Previous</a>
                                                 </li>
-                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item" aria-current="page">
-                                                    <a class="page-link" href="#">2</a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#">Next</a>
-                                                </li>
+                                                @for($j = 0; $j < ceil($data->jumlah_page_tag); $j++)
+                                                    <li class="page-item {{$data->page_tag == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/kategori_tag_all/{{$j+1}}/tag">{{$j+1}}</a></li>
+                                                    @endfor
+                                                    <li class="page-item {{$data->page_tag == ceil($data->jumlah_page_tag) ? 'disabled' : ''}}">
+                                                        <a class="page-link" href="/admin/menu/kategori_tag_all/{{$data->page_tag + 1}}/tag">Next</a>
+                                                    </li>
+                                                    @endif
                                             </ul>
                                         </nav>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

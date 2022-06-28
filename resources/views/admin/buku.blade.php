@@ -280,21 +280,25 @@
                                     </table>
                                 </div>
                                 <div class="card-footer">
+                                    @if($data->check_count != 0)
                                     <nav aria-label="...">
                                         <ul class="pagination">
-                                            <li class="page-item disabled">
-                                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                            @if(ceil($data->jumlah_page) == 1)
+                                            <li class="page-item disabled">Jumlah Data : {{$data->check_count}}</li>
+                                            @else
+                                            <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
+                                                <a class="page-link" href="/admin/menu/buku_all/{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
                                             </li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item" aria-current="page">
-                                                <a class="page-link" href="#">2</a>
-                                            </li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">Next</a>
-                                            </li>
+                                            @for($j = 0; $j < ceil($data->jumlah_page); $j++)
+                                                <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/buku_all/{{$j+1}}">{{$j+1}}</a></li>
+                                                @endfor
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
+                                                    <a class="page-link" href="/admin/menu/buku_all/{{$data->page + 1}}">Next</a>
+                                                </li>
+                                                @endif
                                         </ul>
                                     </nav>
+                                    @endif
                                 </div>
                             </div>
                         </div>

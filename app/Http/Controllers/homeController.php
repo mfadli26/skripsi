@@ -89,21 +89,33 @@ class homeController extends Controller
         return view('client.archive')->with('data', $data);
     }
 
-    public function peminjaman_page()
+    public function peminjaman_page($page)
     {
         if (Auth::check()) {
             $user = Auth::user();
             $data_peminjaman = DB::table('archive')
                 ->join('peminjaman_arsip', 'archive.id', '=', 'peminjaman_arsip.id_archive')
                 ->where('id_users', '=', $user->id)
+                ->skip(($page - 1) * 20)
+                ->take(20)
                 ->get();
+
+            $jumlah_peminjaman = DB::table('archive')
+                ->join('peminjaman_arsip', 'archive.id', '=', 'peminjaman_arsip.id_archive')
+                ->where('id_users', '=', $user->id)
+                ->count();
+
+            $page_jumlah = $jumlah_peminjaman / 20;
 
             $data = (object) [
                 'breadcrumb' => 'Data Peminjaman Arsip Pengguna',
                 'submenu' => 'peminjaman arsip',
                 'menu' => 'layanan',
                 'user' => $user,
-                'data_arsip' => $data_peminjaman
+                'data_arsip' => $data_peminjaman,
+                'check_count' => $jumlah_peminjaman,
+                'jumlah_page' => $page_jumlah,
+                'page' => $page
             ];
 
             return view('client.peminjaman')->with('data', $data);
@@ -113,20 +125,26 @@ class homeController extends Controller
         }
     }
 
-    public function peminjaman_page_buku()
+    public function peminjaman_page_buku($page)
     {
         if (Auth::check()) {
             $user = Auth::user();
             $peminjaman = DB::table('peminjaman_buku')
-                ->select('*', 'peminjaman_buku.update_at AS update_peminjaman', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
+                ->select('*', 'peminjaman_buku.update_at AS update_peminjaman', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku', 'peminjaman_buku.id_users AS id_user')
+                ->where('id_users', '=', $user->id)
                 ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+                ->skip(($page - 1) * 20)
+                ->take(20)
                 ->orderByDesc('update_peminjaman')
                 ->get();
 
             $check = DB::table('peminjaman_buku')
-                ->select('*', 'peminjaman_buku.update_at AS update_peminjaman', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku')
+                ->select('*', 'peminjaman_buku.update_at AS update_peminjaman', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'buku.id AS id_buku', 'peminjaman_buku.id_users AS id_user')
+                ->where('id_users', '=', $user->id)
                 ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
                 ->count();
+
+            $page_jumlah = $check / 20;
 
             $data = (object) [
                 'breadcrumb' => 'Data Peminjaman Buku Pengguna',
@@ -134,7 +152,9 @@ class homeController extends Controller
                 'menu' => 'layanan',
                 'user' => $user,
                 'data_buku' => $peminjaman,
-                'check_count' => $check
+                'check_count' => $check,
+                'jumlah_page' => $page_jumlah,
+                'page' => $page
             ];
 
             return view('client.peminjaman_buku')->with('data', $data);

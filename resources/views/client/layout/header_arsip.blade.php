@@ -43,8 +43,8 @@
                             <li><a class="dropdown-item {{$data->submenu == 'pencarian arsip' ? 'link-active' : ''}}" href="/layanan/pencarian arsip">E-Archive</a></li>
                             <li><a class="dropdown-item {{$data->submenu == 'layanan_buku' ? 'link-active' : ''}}" href="/layanan_buku">Layanan Umum Perpustakaan</a></li>
                             <li><a class="dropdown-item {{$data->submenu == 'layanan_arsip' ? 'link-active' : ''}}" href="/layanan_arsip">Layanan Umum Kearsipan</a></li>
-                            <li><a class="dropdown-item {{$data->submenu == 'peminjaman buku' ? 'link-active' : ''}}" href="/buku_pinjam">Peminjaman E-Book</a></li>
-                            <li><a class="dropdown-item {{$data->submenu == 'peminjaman arsip' ? 'link-active' : ''}}" href="/archive_pinjam">Peminjaman E-Archive</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'peminjaman buku' ? 'link-active' : ''}}" href="/buku_pinjam/1">Peminjaman E-Book</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'peminjaman arsip' ? 'link-active' : ''}}" href="/archive_pinjam/1">Peminjaman E-Archive</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown text-center px-4 border-end">
