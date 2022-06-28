@@ -89,6 +89,14 @@ Route::get('/berita', [homeController::class, 'berita']);
 
 Route::get('/berita/detail/{id}', [homeController::class, 'detail_berita']);
 
+Route::get('/galeri_foto/{page}', [homeController::class, 'galeri_foto']);
+
+Route::get('/galeri_video/{page}', [homeController::class, 'galeri_video']);
+
+Route::get('/layanan_arsip', [homeController::class, 'layanan_arsip']);
+
+Route::get('/layanan_buku', [homeController::class, 'layanan_buku']);
+
 Route::get('/login_admin_page', [adminController::class, 'login_admin_page']);
 
 Route::post('/login_admin', [adminController::class, 'login_admin']);
@@ -192,5 +200,23 @@ Route::post('/admin/artikel/tambah_baru', [adminController::class, 'tambah_artik
 Route::get('/admin/artikel/update_artikel/{id}', [adminController::class, 'update_page_artikel'])->middleware('admin');
 
 Route::post('/admin/artikel/update', [adminController::class, 'update_artikel'])->middleware('admin');
+
+Route::get('/admin/menu/foto_video/{page}/{tab}', [adminController::class, 'foto_video'])->middleware('admin');
+
+Route::post('/admin/foto/tambah', [adminController::class, 'tambah_foto'])->middleware('admin');
+
+Route::post('/admin/foto/edit', [adminController::class, 'edit_foto'])->middleware('admin');
+
+Route::get('/admin/foto/hapus/{id}', [adminController::class, 'hapus_foto'])->middleware('admin');
+
+Route::post('/admin/video/tambah', [adminController::class, 'tambah_video'])->middleware('admin');
+
+Route::post('/admin/video/edit', [adminController::class, 'edit_video'])->middleware('admin');
+
+Route::get('/admin/video/hapus/{page_video}/{id}', [adminController::class, 'hapus_video'])->middleware('admin');
+
+
+
+
 
 

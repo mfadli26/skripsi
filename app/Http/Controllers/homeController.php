@@ -40,6 +40,12 @@ class homeController extends Controller
             ->take(4)
             ->get();
 
+        $video = DB::table('video')
+            ->take(3)
+            ->get();
+        $foto = DB::table('foto')
+            ->take(4)
+            ->get();
         if (Auth::check()) {
             $user = Auth::user();
 
@@ -50,7 +56,9 @@ class homeController extends Controller
                 'content' => $content,
                 'buku1' => $buku1,
                 'buku2' => $buku2,
-                'artikel' => $artikel
+                'artikel' => $artikel,
+                'video' => $video,
+                'foto' => $foto
             ];
 
             return view('client.home')->with('data', $data);
@@ -61,7 +69,9 @@ class homeController extends Controller
                 'content' => $content,
                 'buku1' => $buku1,
                 'buku2' => $buku2,
-                'artikel' => $artikel
+                'artikel' => $artikel,
+                'video' => $video,
+                'foto' => $foto
             ];
             return view('client.home')->with('data', $data);
         }
@@ -876,6 +886,137 @@ class homeController extends Controller
         return view('client.detail_berita')->with('data', $data);
     }
 
+    public function galeri_foto($page)
+    {
+        $artikel_terbaru = DB::table('artikel')
+            ->take(3)
+            ->get();
+
+        $foto = DB::table('foto')
+            ->skip(($page - 1) * 9)
+            ->take(9)
+            ->get();
+
+        $jumlah = DB::table('foto')
+            ->count();
+
+        $jumlah_page = $jumlah / 9;
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'infoterkini',
+                'submenu' => 'foto',
+                'breadcrumb' => 'Galari Foto',
+                'artikel_terbaru' => $artikel_terbaru,
+                'foto' => $foto,
+                'page' => $page,
+                'jumlah' => $jumlah_page
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'infoterkini',
+                'submenu' => 'foto',
+                'breadcrumb' => 'Galari Foto',
+                'artikel_terbaru' => $artikel_terbaru,
+                'foto' => $foto,
+                'page' => $page,
+                'jumlah' => $jumlah_page
+            ];
+        }
+
+        return view('client.galeri_foto')->with('data', $data);
+    }
+
+    public function galeri_video($page)
+    {
+        $artikel_terbaru = DB::table('artikel')
+            ->take(3)
+            ->get();
+
+        $video = DB::table('video')
+            ->skip(($page - 1) * 4)
+            ->take(4)
+            ->get();
+
+        $jumlah = DB::table('video')
+            ->count();
+
+        $jumlah_page = $jumlah / 4;
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'infoterkini',
+                'submenu' => 'video',
+                'breadcrumb' => 'Galari Video',
+                'artikel_terbaru' => $artikel_terbaru,
+                'video' => $video,
+                'page' => $page,
+                'jumlah' => $jumlah_page
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'infoterkini',
+                'submenu' => 'video',
+                'breadcrumb' => 'Galari Video',
+                'artikel_terbaru' => $artikel_terbaru,
+                'video' => $video,
+                'page' => $page,
+                'jumlah' => $jumlah_page
+            ];
+        }
+
+        return view('client.galeri_video')->with('data', $data);
+    }
+
+    public function layanan_arsip()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'layanan',
+                'submenu' => 'layanan_arsip',
+                'breadcrumb' => 'Layanan Arsip'
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'layanan',
+                'submenu' => 'layanan_arsip',
+                'breadcrumb' => 'Layanan Arsip'
+            ];
+        }
+
+        return view('client.layanan_arsip')->with('data', $data);
+    }
+
+    public function layanan_buku()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $data = (object) [
+                'user' => $user,
+                'menu' => 'layanan',
+                'submenu' => 'layanan_buku',
+                'breadcrumb' => 'Layanan Perpustakaan'
+            ];
+        } else {
+            $data = (object) [
+                'menu' => 'layanan',
+                'submenu' => 'layanan_buku',
+                'breadcrumb' => 'Layanan Perpustakaan'
+            ];
+        }
+
+        return view('client.layanan_buku')->with('data', $data);
+    }
 
     /**
      * Show the form for creating a new resource.

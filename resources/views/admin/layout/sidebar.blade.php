@@ -78,7 +78,7 @@
                         <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Info Kegiatan</a>
                     </li>
                     <li>
-                        <a href="#" class="btn-hover-1 nav-link text-white px-0"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Foto dan Video</a>
+                        <a href="/admin/menu/foto_video/1/2" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Foto Dan Video' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Foto dan Video</a>
                     </li>
                 </ul>
             </li>

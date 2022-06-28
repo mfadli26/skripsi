@@ -41,8 +41,8 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item {{$data->submenu == 'pencarian buku' ? 'link-active' : ''}}" href="/layanan/pencarian buku">E-Book</a></li>
                             <li><a class="dropdown-item {{$data->submenu == 'pencarian arsip' ? 'link-active' : ''}}" href="/layanan/pencarian arsip">E-Archive</a></li>
-                            <li><a class="dropdown-item" href="#">Layanan Umum Perpustakaan</a></li>
-                            <li><a class="dropdown-item" href="#">Layanan Umum Kearsipan</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'layanan_buku' ? 'link-active' : ''}}" href="/layanan_buku">Layanan Umum Perpustakaan</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'layanan_arsip' ? 'link-active' : ''}}" href="/layanan_arsip">Layanan Umum Kearsipan</a></li>
                             <li><a class="dropdown-item {{$data->submenu == 'peminjaman buku' ? 'link-active' : ''}}" href="/buku_pinjam">Peminjaman E-Book</a></li>
                             <li><a class="dropdown-item {{$data->submenu == 'peminjaman arsip' ? 'link-active' : ''}}" href="/archive_pinjam">Peminjaman E-Archive</a></li>
                         </ul>
@@ -53,9 +53,8 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item {{$data->submenu == 'berita' ? 'link-active' : ''}}" href="/berita">Berita</a></li>
-                            <li><a class="dropdown-item" href="#">Galeri Foto</a></li>
-                            <li><a class="dropdown-item" href="#">Galeri Video</a></li>
-                            <li><a class="dropdown-item" href="#">Info Kegiatan</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'foto' ? 'link-active' : ''}}" href="/galeri_foto/1">Galeri Foto</a></li>
+                            <li><a class="dropdown-item {{$data->submenu == 'video' ? 'link-active' : ''}}" href="/galeri_video/1">Galeri Video</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown text-center px-4 border-end">

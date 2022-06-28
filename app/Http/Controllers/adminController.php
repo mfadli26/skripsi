@@ -296,11 +296,11 @@ class adminController extends Controller
     public function edit_kategori(Request $request)
     {
         DB::table('kategori_buku')
-        ->where('id', '=', $request->id)
-        ->update([
-            'kategory' => $request->kategori
-        ]);
-    
+            ->where('id', '=', $request->id)
+            ->update([
+                'kategory' => $request->kategori
+            ]);
+
         alert::success('Berhasil', 'Data kategori berhasil diubah');
         return redirect()->back();
     }
@@ -329,14 +329,14 @@ class adminController extends Controller
     public function edit_tag(Request $request)
     {
         DB::table('tag_buku')
-        ->where('id', '=', $request->id)
-        ->update([
-            'tag' => $request->tag
-        ]);
+            ->where('id', '=', $request->id)
+            ->update([
+                'tag' => $request->tag
+            ]);
 
         $page = $request->page;
         $data_tab = 'tag';
-    
+
         alert::success('Berhasil', 'Data tag berhasil diubah');
 
         return redirect('/admin/menu/kategori_tag_all/' . $page . '/' . $data_tab);
@@ -1072,7 +1072,7 @@ class adminController extends Controller
     public function tambah_artikel(Request $request)
     {
         $path = $request->file('file');
-        $pathname = "IMG_".time() . "_" . "." . $request->file->getClientOriginalExtension();
+        $pathname = "IMG_" . time() . "_" . "." . $request->file->getClientOriginalExtension();
         $path->move(public_path('storage\gambar_artikel'), $pathname);
 
         DB::table('artikel')
@@ -1118,7 +1118,7 @@ class adminController extends Controller
         } else {
             File::delete(public_path('storage\gambar_artikel\\' . $request->old_pict));
             $path = $request->file('file');
-            $pathname = "IMG_".time() . "_" . "." . $request->file->getClientOriginalExtension();
+            $pathname = "IMG_" . time() . "_" . "." . $request->file->getClientOriginalExtension();
             $path->move(public_path('storage\gambar_artikel'), $pathname);
 
             DB::table('artikel')
@@ -1134,6 +1134,162 @@ class adminController extends Controller
 
         alert::success('Berhasil', 'data berhasil diubah!');
         return redirect()->back();
+    }
+
+    public function foto_video($page, $tab)
+    {
+        if ($tab == 2) {
+            $tab = 'foto';
+            $page_video = 1;
+            $video = DB::table('video')
+                ->skip(($page_video - 1) * 2)
+                ->take(2)
+                ->get();
+        } else {
+            $page_video = $page;
+            $video = DB::table('video')
+                ->skip(($page - 1) * 2)
+                ->take(2)
+                ->get();
+        }
+        $video_jumlah = DB::table('video')
+            ->count();
+
+        $page_video_jumlah = $video_jumlah / 2;
+
+        if ($tab == 'video') {
+            $page_foto = 1;
+            $foto = DB::table('foto')
+                ->skip(($page_foto - 1) * 8)
+                ->take(8)
+                ->get();
+        } else {
+            $page_foto = $page;
+            $foto = DB::table('foto')
+                ->skip(($page - 1) * 8)
+                ->take(8)
+                ->get();
+        }
+
+        $foto_jumlah = DB::table('foto')
+            ->count();
+
+        $page_foto_jumlah = $foto_jumlah / 8;
+
+        $data = (object) [
+            'sidebar' => "infoterkini",
+            'breadcrumbsub' => 'Foto Dan Video',
+            'breadcrumb' => 'Info Terkini',
+            'tab' => $tab,
+            'page' => $page,
+            'search' => "",
+            'foto' => $foto,
+            'foto_jumlah' => $page_foto_jumlah,
+            'video' => $video,
+            'video_jumlah' => $page_video_jumlah,
+            'page_foto' => $page_foto,
+            'page_video' => $page_video
+        ];
+
+        return view('admin.foto_video')->with('data', $data);
+    }
+
+    public function tambah_foto(Request $request)
+    {
+        $path = $request->file('file');
+        $pathname = "IMG_" . time() . "_Dinas" . "." . $request->file->getClientOriginalExtension();
+        $path->move(public_path('storage\foto_video\foto'), $pathname);
+
+        DB::table('foto')
+            ->insert([
+                'judul' => $request->judul,
+                'path' => $pathname
+            ]);
+
+        alert::success('Berhasil', 'Foto berhasil ditambahkan');
+        return redirect()->back();
+    }
+
+    public function edit_foto(Request $request)
+    {
+        $query = DB::table('foto')
+            ->where('id', '=', $request->id);
+
+        if (empty($request->file)) {
+            $query
+                ->update([
+                    'judul' => $request->judul
+                ]);
+        } else {
+            File::delete(public_path('storage\foto_video\foto\\' . $request->old_path));
+            $path = $request->file('file');
+            $pathname = "IMG_" . time() . "_Dinas" . "." . $request->file->getClientOriginalExtension();
+            $path->move(public_path('storage\foto_video\foto'), $pathname);
+
+            $query
+                ->update([
+                    'judul' => $request->judul,
+                    'path' => $pathname
+                ]);
+        }
+
+        alert::success('Berhasil', 'Data foto berhasil diperbarui');
+        return redirect()->back();
+    }
+
+    public function hapus_foto($id)
+    {
+        $query = DB::table('foto')
+            ->where('id', '=', $id)
+            ->get();
+
+        File::delete(public_path('storage\foto_video\foto\\' . $query['0']->path));
+
+        DB::table('foto')
+            ->where('id', '=', $id)
+            ->delete();
+
+        alert::success('Berhasil', 'Data foto berhasil dihapus');
+        return redirect()->back();
+    }
+
+    public function tambah_video(Request $request)
+    {
+        DB::table('video')
+            ->insert([
+                'link' => 'https://www.youtube.com/embed/' . $request->link
+            ]);
+
+        $tab = 'video';
+
+        alert::success('Berhasil', 'Link video berhasil ditambah');
+
+        return redirect('/admin/menu/foto_video/1/' . $tab);
+    }
+
+    public function edit_video(Request $request)
+    {
+
+        DB::table('video')
+            ->where('id', '=', $request->id)
+            ->update([
+                'link' => 'https://www.youtube.com/embed/' . $request->link
+            ]);
+
+        $tab = 'video';
+
+        return redirect('/admin/menu/foto_video/' . $request->page . '/' . $tab);
+    }
+
+    public function hapus_video($page_video, $id)
+    {
+        DB::table('video')
+        ->where('id', '=', $id)
+        ->delete();
+
+        $tab = 'video';
+
+        return redirect('/admin/menu/foto_video/' . $page_video . '/' . $tab);
     }
 
     /**

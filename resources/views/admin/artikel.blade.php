@@ -24,7 +24,7 @@
                     @include('admin.layout.navbar')
                     @include('admin.layout.breadcrumb')
                     <div class="wrapper p-4 h-100">
-                    <div class="card box-shadow">
+                        <div class="card box-shadow">
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -62,7 +62,7 @@
                                             <th>{{$artikel->tanggal}}</th>
                                             <td>
                                                 <a href="/admin/artikel/update_artikel/{{$artikel->id}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                <a href="" ><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                <a href=""><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                             </td>
                                         </tr>
                                         @endforeach

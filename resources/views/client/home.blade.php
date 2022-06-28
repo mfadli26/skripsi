@@ -101,40 +101,28 @@
         </div>
         <div class="justify-content-center" style="margin-top: 100px !important;">
             <span class="fs-2"><strong>Video</strong></span>
-            <a href="" class="float-end">Lihat Selangkapnya <i class="bi bi-chevron-double-right"></i></a>
+            <a href="/galeri_video/1" class="float-end">Lihat Selangkapnya <i class="bi bi-chevron-double-right"></i></a>
             <div class="row mt-4">
+                @foreach($data->video AS $video)
                 <div class="col-4 mx-auto">
-                    <iframe width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY">
-                    </iframe>
+                    <iframe width="420" height="315" src="{{$video->link}}" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <div class="col-4 mx-auto">
-                    <iframe width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY">
-                    </iframe>
-                </div>
-                <div class="col-4 mx-auto">
-                    <iframe width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY">
-                    </iframe>
-                </div>
+                @endforeach
             </div>
         </div>
         <div class="justify-content-center" style="margin-top: 100px !important;">
             <div class="mb-4">
                 <span class="fs-2"><strong>Foto</strong></span>
-                <a href="" class="float-end">Lihat Selangkapnya <i class="bi bi-chevron-double-right"></i></a>
+                <a href="/galeri_foto/1" class="float-end">Lihat Selangkapnya <i class="bi bi-chevron-double-right"></i></a>
             </div>
             <div class="row">
+                @foreach($data->foto AS $foto)
                 <div class="col-3 mx-auto">
-                    <img class="w-100" src="{{url('/storage/gambar_artikel/1656337231_117 JCH Sarolangun Berangkat Ke Tanah Suci, PJ Bupati Henrizal Bilang Begini.jpg')}}">
+                    <div class="card">
+                        <img height="200px" src="{{url('/storage/foto_video/foto/'.$foto->path)}}" class="card-img-top" alt="...">
+                    </div>
                 </div>
-                <div class="col-3 mx-auto">
-                    <img class="w-100" src="{{url('/storage/gambar_artikel/1656337231_117 JCH Sarolangun Berangkat Ke Tanah Suci, PJ Bupati Henrizal Bilang Begini.jpg')}}">
-                </div>
-                <div class="col-3 mx-auto">
-                    <img class="w-100" src="{{url('/storage/gambar_artikel/1656337231_117 JCH Sarolangun Berangkat Ke Tanah Suci, PJ Bupati Henrizal Bilang Begini.jpg')}}">
-                </div>
-                <div class="col-3 mx-auto">
-                    <img class="w-100" src="{{url('/storage/gambar_artikel/1656337231_117 JCH Sarolangun Berangkat Ke Tanah Suci, PJ Bupati Henrizal Bilang Begini.jpg')}}">
-                </div>
+                @endforeach
             </div>
         </div>
         <div class="justify-content-center" style="margin-top: 100px !important;">
