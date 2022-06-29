@@ -30,18 +30,18 @@
                         <div class="card box-shadow">
                             <nav class="mb-4">
                                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                    <button class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1" type="button" role="tab" aria-controls="nav-kategori" aria-selected="false">Cari Berdasarkan Kode</button>
-                                    <button class="nav-link" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Menunggu Konfirmasi</button>
-                                    <button class="nav-link" id="nav-3-tab" data-bs-toggle="tab" data-bs-target="#nav-3" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Peminjaman Berlangsung</button>
-                                    <button class="nav-link" id="nav-4-tab" data-bs-toggle="tab" data-bs-target="#nav-4" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Pengambilan</button>
-                                    <button class="nav-link" id="nav-5-tab" data-bs-toggle="tab" data-bs-target="#nav-5" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Selesai</button>
-                                    <button class="nav-link" id="nav-6-tab" data-bs-toggle="tab" data-bs-target="#nav-6" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Dibatalkan</button>
+                                    <button class="nav-link {{$data->tab == '1' ? 'active' : ''}}" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1" type="button" role="tab" aria-controls="nav-kategori" aria-selected="false">Cari Berdasarkan Kode</button>
+                                    <button class="nav-link {{$data->tab == 'konfirmasi' ? 'active' : ''}}" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Menunggu Konfirmasi</button>
+                                    <button class="nav-link {{$data->tab == 'berlangsung' ? 'active' : ''}}" id="nav-3-tab" data-bs-toggle="tab" data-bs-target="#nav-3" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Peminjaman Berlangsung</button>
+                                    <button class="nav-link {{$data->tab == 'pengambilan' ? 'active' : ''}}" id="nav-4-tab" data-bs-toggle="tab" data-bs-target="#nav-4" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Pengambilan</button>
+                                    <button class="nav-link {{$data->tab == 'selesai' ? 'active' : ''}}" id="nav-5-tab" data-bs-toggle="tab" data-bs-target="#nav-5" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Selesai</button>
+                                    <button class="nav-link {{$data->tab == 'batal' ? 'active' : ''}}" id="nav-6-tab" data-bs-toggle="tab" data-bs-target="#nav-6" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Dibatalkan</button>
                                 </div>
                             </nav>
                             <div class="tab-content" id="nav-tabContent">
                                 <!-- Content 1 -->
                                 @if($data->event_cari == '1')
-                                <div class="tab-pane fade active show" id="nav-1" role="tabpanel" aria-labelledby="nav-1-tab">
+                                <div class="tab-pane fade {{$data->tab == '1' ? 'active show' : ''}}" id="nav-1" role="tabpanel" aria-labelledby="nav-1-tab">
                                     <div class="container-fluid mb-5">
                                         <div class="card w-50 m-auto">
                                             <div class="card-header text-center">
@@ -107,10 +107,10 @@
                                                     </td>
                                                     <td>
                                                         @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin' || $peminjaman->status == 'Selesai')
-                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}/1" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                         @elseif($peminjaman->status == 'Menunggu Konfirmasi Admin')
                                                         <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}/1" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                         @elseif($peminjaman->status == 'Peminjaman Berlangsung')
                                                         <form action="/admin/buku/konfirmasi_selesai" method="post">
                                                             {{ csrf_field() }}
@@ -120,7 +120,7 @@
                                                             <button type="submit" class="btn btn-primary text-white selesai-confirm">Konfirmasi Pengembalian</button>
                                                         </form>
                                                         @elseif($peminjaman->status == 'Pengambilan Buku')
-                                                        <a class="btn btn-success text-white ambil-confirm" href="/admin/buku/pengambilan/{{$peminjaman->id_peminjaman}}">Konfirmasi Pengambilan</a>
+                                                        <a class="btn btn-success text-white ambil-confirm" href="/admin/buku/pengambilan/{{$peminjaman->id_peminjaman}}/1">Konfirmasi Pengambilan</a>
                                                         @endif
                                                     </td>
                                                     <!-- Modal Detail Tanggal -->
@@ -312,7 +312,7 @@
                                                                 </div>
                                                                 <div class="modal-body ">
                                                                     <div class="form-check mt-1">
-                                                                        <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                                                        <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" required>
                                                                         <label class="form-check-label" for="flexRadioDefault1">
                                                                             Konfirmasi Peminjaman
                                                                         </label>
@@ -335,6 +335,7 @@
                                                                     </div>
                                                                     <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
                                                                     <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
+                                                                    <input type="hidden" name="tab" value="pencarian">
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
@@ -350,7 +351,7 @@
                                         <nav aria-label="...">
                                             <ul class="pagination">
                                                 <li class="page-item">
-                                                    <a class="page-link" href="/admin/menu/peminjaman_buku/1/default" tabindex="-1" aria-disabled="true">Back</a>
+                                                    <a class="page-link" href="/admin/menu/peminjaman_buku/1/1/default" tabindex="-1" aria-disabled="true">Back</a>
                                                 </li>
                                             </ul>
                                         </nav>
@@ -358,7 +359,7 @@
                                 </div>
                                 @endif
                                 <!-- Content 2 -->
-                                <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab">
+                                <div class="tab-pane fade {{$data->tab == 'konfirmasi' ? 'active show' : ''}}" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab">
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-5">
@@ -382,25 +383,19 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman as $peminjaman)
-                                                @if($peminjaman->status == 'Menunggu Konfirmasi Admin')
-
+                                                @foreach($data->peminjaman_konfirmasi as $peminjaman)
                                                 <tr>
                                                     <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td>{{$peminjaman->created_at_peminjaman}}</td>
                                                     <td>
-                                                        @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin')
-                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @else
-                                                        <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                        <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @endif
+                                                        <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$peminjaman->id_peminjaman}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
+                                                        <a href="/admin/arsip/batal_buku_by_id/{{$peminjaman->id_peminjaman}}/konfirmasi" class="batal-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                     </td>
                                                     <!-- Modal Konfirmasi -->
                                                     <form action="/admin/menu/buku/konfirmasi_peminjaman_buku" method="post">
                                                         {{ csrf_field() }}
-                                                        <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$loop->index}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
+                                                        <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="modal_konfirm_{{$peminjaman->id_peminjaman}}" tabindex="-1" aria-labelledby="label_konfrim_{{$loop->index}}" aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered modal-md">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
@@ -409,7 +404,7 @@
                                                                     </div>
                                                                     <div class="modal-body ">
                                                                         <div class="form-check mt-1">
-                                                                            <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                                                            <input name="konfirm" value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" required>
                                                                             <label class="form-check-label" for="flexRadioDefault1">
                                                                                 Konfirmasi Peminjaman
                                                                             </label>
@@ -432,6 +427,7 @@
                                                                         </div>
                                                                         <input type="hidden" name="id_admin" value="{{Auth::user()->id}}">
                                                                         <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
+                                                                        <input type="hidden" name="tab" value="konfirmasi">
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
@@ -441,30 +437,35 @@
                                                             </div>
                                                         </div>
                                                     </form>
-                                                    @endif
                                                     @endforeach
                                                     @endif
                                             </tbody>
                                         </table>
-                                        <nav aria-label="...">
-                                            <ul class="pagination">
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                                </li>
-                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item" aria-current="page">
-                                                    <a class="page-link" href="#">2</a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#">Next</a>
-                                                </li>
-                                            </ul>
-                                        </nav>
+                                        <div class="card-footer">
+                                            @if($data->jumlah_konfirmasi != 0)
+                                            <nav aria-label="...">
+                                                <ul class="pagination">
+                                                    @if(ceil($data->page_total_konfirmasi) == 1)
+                                                    <li class="page-item disabled">Jumlah Data : {{$data->jumlah_konfirmasi}}</li>
+                                                    @else
+                                                    <li class="page-item {{$data->page_konfirmasi == 1 ? 'disabled' : ''}}">
+                                                        <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_konfirmasi - 1}}/konfirmasi/default" tabindex="-1" aria-disabled="true">Previous</a>
+                                                    </li>
+                                                    @for($j = 0; $j < ceil($data->page_total_konfirmasi); $j++)
+                                                        <li class="page-item {{$data->page_konfirmasi == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/peminjaman_buku/{{$j+1}}/konfirmasi/default">{{$j+1}}</a></li>
+                                                        @endfor
+                                                        <li class="page-item {{$data->page_konfirmasi == ceil($data->page_total_konfirmasi) ? 'disabled' : ''}}">
+                                                            <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_konfirmasi + 1}}/konfirmasi/default">Next</a>
+                                                        </li>
+                                                        @endif
+                                                </ul>
+                                            </nav>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Content 3 -->
-                                <div class="tab-pane fade" id="nav-3" role="tabpanel" aria-labelledby="nav-3-tab">
+                                <div class="tab-pane fade {{$data->tab == 'berlangsung' ? 'active show' : ''}}" id="nav-3" role="tabpanel" aria-labelledby="nav-3-tab">
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-5">
@@ -495,8 +496,7 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman as $peminjaman)
-                                                @if($peminjaman->status == 'Peminjaman Berlangsung')
+                                                @foreach($data->peminjaman_berlangsung as $peminjaman)
                                                 <tr>
                                                     <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
@@ -522,33 +522,39 @@
                                                             <input type="hidden" name="id" value="{{$peminjaman->id_peminjaman}}">
                                                             <input type="hidden" name="id_buku" value="{{$peminjaman->id_buku}}">
                                                             <input type="hidden" name="denda" value="0">
+                                                            <input type="hidden" name="tab" value="berlangsung">
                                                             <button type="submit" value="asda" class="btn btn-primary text-white selesai-confirm">Konfirmasi Pengembalian</button>
                                                         </form>
                                                     </td>
-                                                    @endif
                                                     @endforeach
                                                     @endif
                                             </tbody>
                                         </table>
-                                        <nav aria-label="...">
-                                            <ul class="pagination">
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                                </li>
-                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item" aria-current="page">
-                                                    <a class="page-link" href="#">2</a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#">Next</a>
-                                                </li>
-                                            </ul>
-                                        </nav>
+                                        <div class="card-footer">
+                                            @if($data->jumlah_berlangsung != 0)
+                                            <nav aria-label="...">
+                                                <ul class="pagination">
+                                                    @if(ceil($data->page_total_berlangsung) == 1)
+                                                    <li class="page-item disabled">Jumlah Data : {{$data->jumlah_berlangsung}}</li>
+                                                    @else
+                                                    <li class="page-item {{$data->page_berlangsung == 1 ? 'disabled' : ''}}">
+                                                        <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_berlangsung - 1}}/berlangsung/default" tabindex="-1" aria-disabled="true">Previous</a>
+                                                    </li>
+                                                    @for($j = 0; $j < ceil($data->page_total_berlangsung); $j++)
+                                                        <li class="page-item {{$data->page_berlangsung == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/peminjaman_buku/{{$j+1}}/berlangsung/default">{{$j+1}}</a></li>
+                                                        @endfor
+                                                        <li class="page-item {{$data->page_berlangsung == ceil($data->page_total_berlangsung) ? 'disabled' : ''}}">
+                                                            <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_berlangsung + 1}}/berlangsung/default">Next</a>
+                                                        </li>
+                                                        @endif
+                                                </ul>
+                                            </nav>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Content 4 -->
-                                <div class="tab-pane fade" id="nav-4" role="tabpanel" aria-labelledby="nav-4-tab">
+                                <div class="tab-pane fade {{$data->tab == 'pengambilan' ? 'active show' : ''}}" id="nav-4" role="tabpanel" aria-labelledby="nav-4-tab">
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-5">
@@ -573,40 +579,44 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman as $peminjaman)
-                                                @if($peminjaman->status == 'Pengambilan Buku')
+                                                @foreach($data->peminjaman_pengambilan as $peminjaman)
                                                 <tr>
                                                     <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td>{{$peminjaman->batas_pengambilan}}</td>
                                                     <td>{{$peminjaman->status}}</td>
                                                     <td>
-                                                        <a href="/admin/buku/pengambilan/{{$peminjaman->id_peminjaman}}" class="btn btn-primary text-white ambil-confirm">Konfirmasi Pengambilan</a>
+                                                        <a href="/admin/buku/pengambilan/{{$peminjaman->id_peminjaman}}/pengambilan" class="btn btn-primary text-white ambil-confirm">Konfirmasi Pengambilan</a>
                                                     </td>
-                                                    @endif
                                                     @endforeach
                                                     @endif
                                             </tbody>
                                         </table>
-                                        <nav aria-label="...">
-                                            <ul class="pagination">
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                                </li>
-                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item" aria-current="page">
-                                                    <a class="page-link" href="#">2</a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#">Next</a>
-                                                </li>
-                                            </ul>
-                                        </nav>
+                                        <div class="card-footer">
+                                            @if($data->jumlah_pengambilan != 0)
+                                            <nav aria-label="...">
+                                                <ul class="pagination">
+                                                    @if(ceil($data->page_total_pengambilan) == 1)
+                                                    <li class="page-item disabled">Jumlah Data : {{$data->jumlah_pengambilan}}</li>
+                                                    @else
+                                                    <li class="page-item {{$data->page_pengambilan == 1 ? 'disabled' : ''}}">
+                                                        <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_pengambilan - 1}}/pengambilan/default" tabindex="-1" aria-disabled="true">Previous</a>
+                                                    </li>
+                                                    @for($j = 0; $j < ceil($data->page_total_pengambilan); $j++)
+                                                        <li class="page-item {{$data->page_pengambilan == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/pengambilan/{{$j+1}}/berlangsung/default">{{$j+1}}</a></li>
+                                                        @endfor
+                                                        <li class="page-item {{$data->page_pengambilan == ceil($data->page_total_pengambilan) ? 'disabled' : ''}}">
+                                                            <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_pengambilan + 1}}/pengambilan/default">Next</a>
+                                                        </li>
+                                                        @endif
+                                                </ul>
+                                            </nav>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Content 5 -->
-                                <div class="tab-pane fade" id="nav-5" role="tabpanel" aria-labelledby="nav-5-tab">
+                                <div class="tab-pane fade {{$data->tab == 'selesai' ? 'active show' : ''}}" id="nav-5" role="tabpanel" aria-labelledby="nav-5-tab">
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-5">
@@ -634,8 +644,7 @@
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman as $peminjaman)
-                                                @if ($peminjaman->status == 'Selesai')
+                                                @foreach($data->peminjaman_selesai as $peminjaman)
                                                 <tr>
                                                     <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
@@ -661,33 +670,38 @@
                                                     @endif
                                                     <td>{{$peminjaman->status}}</td>
                                                     <td>
-                                                        <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
+                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}/selesai" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                     </td>
                                                 </tr>
-                                                @endif
                                                 @endforeach
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <nav aria-label="...">
-                                            <ul class="pagination">
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                                </li>
-                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item" aria-current="page">
-                                                    <a class="page-link" href="#">2</a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#">Next</a>
-                                                </li>
-                                            </ul>
-                                        </nav>
+                                        <div class="card-footer">
+                                            @if($data->jumlah_selesai != 0)
+                                            <nav aria-label="...">
+                                                <ul class="pagination">
+                                                    @if(ceil($data->page_total_selesai) == 1)
+                                                    <li class="page-item disabled">Jumlah Data : {{$data->jumlah_selesai}}</li>
+                                                    @else
+                                                    <li class="page-item {{$data->page_selesai == 1 ? 'disabled' : ''}}">
+                                                        <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_selesai - 1}}/selesai/default" tabindex="-1" aria-disabled="true">Previous</a>
+                                                    </li>
+                                                    @for($j = 0; $j < ceil($data->page_total_selesai); $j++)
+                                                        <li class="page-item {{$data->page_selesai == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/selesai/{{$j+1}}/berlangsung/default">{{$j+1}}</a></li>
+                                                        @endfor
+                                                        <li class="page-item {{$data->page_selesai == ceil($data->page_total_selesai) ? 'disabled' : ''}}">
+                                                            <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_selesai + 1}}/selesai/default">Next</a>
+                                                        </li>
+                                                        @endif
+                                                </ul>
+                                            </nav>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Content 6 -->
-                                <div class="tab-pane fade" id="nav-6" role="tabpanel" aria-labelledby="nav-6-tab">
+                                <div class="tab-pane fade {{$data->tab == 'batal' ? 'active show' : ''}}" id="nav-6" role="tabpanel" aria-labelledby="nav-6-tab">
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-5">
@@ -706,24 +720,18 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if($data->jumlah_dibatalkan == 0)
+                                                @if($data->jumlah_batal == 0)
                                                 <tr>
                                                     <td colspan="7">- Data Peminjaman Buku Masih Kosong -</td>
                                                 </tr>
                                                 @else
-                                                @foreach($data->peminjaman as $peminjaman)
-                                                @if($peminjaman->status == 'Dibatalkan Oleh Admin' || $peminjaman->status == 'Dibatalkan Oleh Pengguna')
+                                                @foreach($data->peminjaman_dibatalkan as $peminjaman)
                                                 <tr>
                                                     <td><a data-bs-toggle="modal" href="" data-bs-target="#modal_users_{{$peminjaman->id_peminjaman}}" class="text-decoration-none">{{$peminjaman->name}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td><a data-bs-toggle="modal" data-bs-target="#modal_buku_{{$peminjaman->id_peminjaman}}" href="" class="text-decoration-none">{{$peminjaman->kode_booking}} <i class="bi bi-caret-down-fill"></i></a></td>
                                                     <td>{{$peminjaman->status}}</td>
                                                     <td>
-                                                        @if($peminjaman->status == 'Dibatalkan Oleh Pengguna' || $peminjaman->status == 'Dibatalkan Oleh Admin')
-                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @else
-                                                        <a href="" data-bs-toggle="modal" data-bs-target="#modal_konfirm_{{$loop->index}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                        <a href="/admin/buku/peminjaman_buku_batal_admin/{{$peminjaman->id_peminjaman}}" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
-                                                        @endif
+                                                        <a href="/admin/buku/hapus_peminjaman/{{$peminjaman->id_peminjaman}}/batal" class="delete-confirm"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
                                                     </td>
                                                 </tr>
                                                 <!-- Modal Konfirmasi -->
@@ -770,26 +778,31 @@
                                                         </div>
                                                     </div>
                                                 </form>
-                                                @endif
                                                 @endforeach
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <nav aria-label="...">
-                                            <ul class="pagination">
-                                                <li class="page-item disabled">
-                                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                                </li>
-                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item" aria-current="page">
-                                                    <a class="page-link" href="#">2</a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#">Next</a>
-                                                </li>
-                                            </ul>
-                                        </nav>
+                                        <div class="card-footer">
+                                            @if($data->jumlah_batal != 0)
+                                            <nav aria-label="...">
+                                                <ul class="pagination">
+                                                    @if(ceil($data->page_total_batal) == 1)
+                                                    <li class="page-item disabled">Jumlah Data : {{$data->jumlah_batal}}</li>
+                                                    @else
+                                                    <li class="page-item {{$data->page_batal == 1 ? 'disabled' : ''}}">
+                                                        <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_batal - 1}}/batal/default" tabindex="-1" aria-disabled="true">Previous</a>
+                                                    </li>
+                                                    @for($j = 0; $j < ceil($data->page_total_batal); $j++)
+                                                        <li class="page-item {{$data->page_batal == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/batal/{{$j+1}}/berlangsung/default">{{$j+1}}</a></li>
+                                                        @endfor
+                                                        <li class="page-item {{$data->page_batal == ceil($data->page_total_batal) ? 'disabled' : ''}}">
+                                                            <a class="page-link" href="/admin/menu/peminjaman_buku/{{$data->page_batal + 1}}/batal/default">Next</a>
+                                                        </li>
+                                                        @endif
+                                                </ul>
+                                            </nav>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -921,6 +934,21 @@
             swal({
                 title: 'Apakah Anda Yakin Menghapus Data Peminjaman?',
                 text: 'Data Peminjaman Akan Dihapus Secara Permanent!',
+                icon: 'warning',
+                buttons: ["Cancel", "Yes!"],
+            }).then(function(value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        $('.batal-confirm').on('click', function(event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Konfirmasi Pembatalan',
+                text: 'Status Peminjaman Buku Akan Dibatalkan Oleh Admin!',
                 icon: 'warning',
                 buttons: ["Cancel", "Yes!"],
             }).then(function(value) {

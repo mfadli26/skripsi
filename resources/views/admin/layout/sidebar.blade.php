@@ -61,7 +61,7 @@
                         <a href="/admin/menu/peminjaman_arsip/1/1/default" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Peminjaman Arsip' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman Arsip</a>
                     </li>
                     <li>
-                        <a href="/admin/menu/peminjaman_buku/1/default" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Peminjaman Buku' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman E-Book</a>
+                        <a href="/admin/menu/peminjaman_buku/1/1/default" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Peminjaman Buku' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Peminjaman E-Book</a>
                     </li>
                 </ul>
             </li>

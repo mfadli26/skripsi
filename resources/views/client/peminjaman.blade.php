@@ -170,6 +170,7 @@
                                                                 <div class="col-md-6">
                                                                     <input type="file" class="form-control-sm" name="file" required>
                                                                     <input type="hidden" name="id" value="{{$archive->id}}">
+                                                                    <input type="hidden" name="file_old" value="{{$archive->file_izin}}">
                                                                 </div>
                                                             </div>
                                                             @endif

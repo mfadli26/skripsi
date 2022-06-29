@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use App\Models\User;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 // setlocale(LC_TIME, 'Indonesia');
@@ -239,6 +240,7 @@ class homeController extends Controller
             $query = DB::table('peminjaman_arsip')
                 ->where('id', '=', $request->id);
 
+            File::delete(public_path('storage\bukti_izin\\' . $request->file_old));
             $file = $request->file('file');
             $filename = time() . "_File Arsip." . $request->file->getClientOriginalExtension();
             $file->move(base_path('\storage\app\public\bukti_izin'), $filename);

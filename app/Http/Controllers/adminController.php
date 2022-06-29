@@ -110,7 +110,7 @@ class adminController extends Controller
             alert::warning('Kode Pemesanan Tidak Ditemukan', 'Pastikan Huruf Besar Dan Kecil Sesuai');
             return redirect('/admin/menu/peminjaman_buku/1/zero');
         } else {
-            return redirect('/admin/menu/peminjaman_buku/1/' . $search);
+            return redirect('/admin/menu/peminjaman_buku/1/1/' . $search);
         }
     }
 
@@ -255,9 +255,9 @@ class adminController extends Controller
         $jumlah_tag = DB::table('tag_buku')
             ->count();
 
-        $page_kategori_jumlah = $jumlah / 2;
+        $page_kategori_jumlah = $jumlah / 10;
 
-        $page_tag_jumlah = $jumlah_tag / 2;
+        $page_tag_jumlah = $jumlah_tag / 10;
 
         if ($tab == 2) {
             $tab = 'kategori';
@@ -272,13 +272,13 @@ class adminController extends Controller
         }
 
         $kategori = DB::table('kategori_buku')
-            ->skip(($page_kat - 1) * 2)
-            ->take(2)
+            ->skip(($page_kat - 1) * 10)
+            ->take(10)
             ->get();
 
         $tag = DB::table('tag_buku')
-            ->skip(($page_tag - 1) * 2)
-            ->take(2)
+            ->skip(($page_tag - 1) * 10)
+            ->take(10)
             ->get();
 
         $data = (object) [
@@ -458,15 +458,134 @@ class adminController extends Controller
 
     public function peminjaman_arsip($tab, $page, $search)
     {
+        if ($tab == 'konfirmasi') {
+            $page_konfirmasi = $page;
+            $page_unggah = 1;
+            $page_pengambilan = 1;
+            $page_selesai = 1;
+            $page_batal = 1;
+        } elseif ($tab == 'unggah') {
+            $page_konfirmasi = 1;
+            $page_unggah = $page;
+            $page_pengambilan = 1;
+            $page_selesai = 1;
+            $page_batal = 1;
+        } elseif ($tab == 'pengambilan') {
+            $page_konfirmasi = 1;
+            $page_unggah = 1;
+            $page_pengambilan = $page;
+            $page_selesai = 1;
+            $page_batal = 1;
+        } elseif ($tab == 'selesai') {
+            $page_konfirmasi = 1;
+            $page_unggah = 1;
+            $page_pengambilan = 1;
+            $page_selesai = $page;
+            $page_batal = 1;
+        } elseif ($tab == 'batal') {
+            $page_konfirmasi = 1;
+            $page_unggah = 1;
+            $page_pengambilan = 1;
+            $page_selesai = 1;
+            $page_batal = $page;
+        } else {
+            $page_konfirmasi = 1;
+            $page_unggah = 1;
+            $page_pengambilan = 1;
+            $page_selesai = 1;
+            $page_batal = 1;
+        }
+        $peminjaman_konfirmasi = DB::table('peminjaman_arsip')
+            ->select('archive.*', 'peminjaman_arsip.update_at AS update_peminjaman', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin', 'peminjaman_arsip.id AS id_peminjaman')
+            ->where('status', '=', 'Menunggu Konfirmasi')
+            ->join('users', 'peminjaman_arsip.id_users', '=', 'users.id')
+            ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+            ->leftjoin('users AS users_admin', 'peminjaman_arsip.id_admin', '=', 'users_admin.id')
+            ->orderByDesc('update_peminjaman')
+            ->skip(($page_konfirmasi - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $peminjaman_unggahfile = DB::table('peminjaman_arsip')
+            ->select('archive.*', 'peminjaman_arsip.update_at AS update_peminjaman', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin', 'peminjaman_arsip.id AS id_peminjaman')
+            ->where('status', '=', 'Unggah Izin')
+            ->orWhere('status', '=', 'File Izin Ditolak')
+            ->join('users', 'peminjaman_arsip.id_users', '=', 'users.id')
+            ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+            ->leftjoin('users AS users_admin', 'peminjaman_arsip.id_admin', '=', 'users_admin.id')
+            ->orderByDesc('update_peminjaman')
+            ->skip(($page_unggah - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $peminjaman_pengambilan = DB::table('peminjaman_arsip')
+            ->select('archive.*', 'peminjaman_arsip.update_at AS update_peminjaman', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin', 'peminjaman_arsip.id AS id_peminjaman')
+            ->where('status', '=', 'Pengambilan Arsip')
+            ->join('users', 'peminjaman_arsip.id_users', '=', 'users.id')
+            ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+            ->leftjoin('users AS users_admin', 'peminjaman_arsip.id_admin', '=', 'users_admin.id')
+            ->orderByDesc('update_peminjaman')
+            ->skip(($page_pengambilan - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $peminjaman_selesai = DB::table('peminjaman_arsip')
+            ->select('archive.*', 'peminjaman_arsip.update_at AS update_peminjaman', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin', 'peminjaman_arsip.id AS id_peminjaman')
+            ->where('status', '=', 'Selesai')
+            ->join('users', 'peminjaman_arsip.id_users', '=', 'users.id')
+            ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+            ->leftjoin('users AS users_admin', 'peminjaman_arsip.id_admin', '=', 'users_admin.id')
+            ->orderByDesc('update_peminjaman')
+            ->skip(($page_selesai - 1) * 20)
+            ->take(20)
+            ->get();
+
+        $peminjaman_dibatalkan = DB::table('peminjaman_arsip')
+            ->select('archive.*', 'peminjaman_arsip.update_at AS update_peminjaman', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin', 'peminjaman_arsip.id AS id_peminjaman')
+            ->where('status', '=', 'Dibatalkan Oleh Admin')
+            ->orWhere('status', '=', 'Dibatalkan Oleh Pengguna')
+            ->join('users', 'peminjaman_arsip.id_users', '=', 'users.id')
+            ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
+            ->leftjoin('users AS users_admin', 'peminjaman_arsip.id_admin', '=', 'users_admin.id')
+            ->orderByDesc('update_peminjaman')
+            ->skip(($page_batal - 1) * 20)
+            ->take(20)
+            ->get();
+
         $peminjaman = DB::table('peminjaman_arsip')
             ->select('archive.*', 'peminjaman_arsip.update_at AS update_peminjaman', 'peminjaman_arsip.*', 'users.*', 'users_admin.name AS name_admin', 'peminjaman_arsip.id AS id_peminjaman')
             ->join('users', 'peminjaman_arsip.id_users', '=', 'users.id')
             ->join('archive', 'peminjaman_arsip.id_archive', '=', 'archive.id')
             ->leftjoin('users AS users_admin', 'peminjaman_arsip.id_admin', '=', 'users_admin.id')
-            ->orderByDesc('update_peminjaman')
-            ->skip(($page - 1) * 20)
-            ->take(20)
             ->get();
+
+        $count_check_konfirmasi = DB::table('peminjaman_arsip')
+            ->where('status', '=', 'Menunggu Konfirmasi')
+            ->count();
+
+        $count_check_unggahfile = DB::table('peminjaman_arsip')
+            ->where('status', '=', 'Unggah Izin')
+            ->orWhere('status', '=', 'File Izin Ditolak')
+            ->count();
+
+        $count_check_pengambilan = DB::table('peminjaman_arsip')
+            ->where('status', '=', 'Pengambilan Arsip')
+            ->count();
+
+        $count_check_selesai = DB::table('peminjaman_arsip')
+            ->where('status', '=', 'Selesai')
+            ->count();
+
+        $count_check_dibatalkan = DB::table('peminjaman_arsip')
+            ->where('status', '=', 'Dibatalkan Oleh Admin')
+            ->orwhere('status', '=', 'Dibatalkan Oleh Pengguna')
+            ->count();
+
+        $page_total_konfirmasi = $count_check_konfirmasi / 20;
+        $page_total_unggah = $count_check_unggahfile / 20;
+        $page_total_pengambilan = $count_check_pengambilan / 20;
+        $page_total_selesai = $count_check_selesai / 20;
+        $page_total_batal = $count_check_dibatalkan / 20;
 
         if ($search == 'default') {
             $event_cari = '1';
@@ -493,28 +612,6 @@ class adminController extends Controller
             }
         }
 
-        $count_check_konfirmasi = DB::table('peminjaman_arsip')
-            ->where('status', '=', 'Menunggu Konfirmasi')
-            ->count();
-
-        $count_check_unggahfile = DB::table('peminjaman_arsip')
-            ->where('status', '=', 'Unggah Izin')
-            ->orWhere('status', '=', 'File Izin Ditolak')
-            ->count();
-
-        $count_check_pengambilan = DB::table('peminjaman_arsip')
-            ->where('status', '=', 'Pengambilan Arsip')
-            ->count();
-
-        $count_check_selesai = DB::table('peminjaman_arsip')
-            ->where('status', '=', 'Selesai')
-            ->count();
-
-        $count_check_dibatalkan = DB::table('peminjaman_arsip')
-            ->where('status', '=', 'Dibatalkan Oleh Admin')
-            ->orwhere('status', '=', 'Dibatalkan Oleh Pengguna')
-            ->count();
-
 
         $data = (object) [
             'count_check_dibatalkan' => $count_check_dibatalkan,
@@ -523,27 +620,130 @@ class adminController extends Controller
             'count_check_unggahfile' => $count_check_unggahfile,
             'count_check_konfirmasi' => $count_check_konfirmasi,
             'sidebar' => "pelayanan",
+            'peminjaman' => $peminjaman,
+            'peminjaman_konfirmasi' => $peminjaman_konfirmasi,
+            'peminjaman_unggahfile' => $peminjaman_unggahfile,
+            'peminjaman_pengambilan' => $peminjaman_pengambilan,
+            'peminjaman_selesai' => $peminjaman_selesai,
+            'peminjaman_dibatalkan' => $peminjaman_dibatalkan,
             'breadcrumbsub' => 'Peminjaman Arsip',
             'breadcrumb' => 'Pelayanan',
-            'peminjaman' => $peminjaman,
             'page' => $page,
+            'page_konfirmasi' => $page_konfirmasi,
+            'page_unggah' => $page_unggah,
+            'page_pengambilan' => $page_pengambilan,
+            'page_selesai' => $page_selesai,
+            'page_batal' => $page_batal,
             'search' => "",
             'tab_menu' => $tab,
-            'event_cari' => $event_cari
+            'event_cari' => $event_cari,
+            'page_total_konfirmasi' => $page_total_konfirmasi,
+            'page_total_unggah' => $page_total_unggah,
+            'page_total_pengambilan' => $page_total_pengambilan,
+            'page_total_selesai' => $page_total_selesai,
+            'page_total_batal' => $page_total_batal
         ];
 
         return view('admin.peminjaman_arsip')->with('data', $data);
     }
 
-    public function peminjaman_buku($page, $search)
+    public function peminjaman_buku($page, $tab, $search)
     {
+        if ($tab == 'konfirmasi') {
+            $page_konfirmasi = $page;
+            $page_berlangsung = 1;
+            $page_pengambilan = 1;
+            $page_selesai = 1;
+            $page_batal = 1;
+        } elseif ($tab == 'berlangsung') {
+            $page_konfirmasi = 1;
+            $page_berlangsung = $page;
+            $page_pengambilan = 1;
+            $page_selesai = 1;
+            $page_batal = 1;
+        } elseif ($tab == 'pengambilan') {
+            $page_konfirmasi = 1;
+            $page_berlangsung = 1;
+            $page_pengambilan = $page;
+            $page_selesai = 1;
+            $page_batal = 1;
+        } elseif ($tab == 'selesai') {
+            $page_konfirmasi = 1;
+            $page_berlangsung = 1;
+            $page_pengambilan = 1;
+            $page_selesai = $page;
+            $page_batal = 1;
+        } elseif ($tab == 'batal') {
+            $page_konfirmasi = 1;
+            $page_berlangsung = 1;
+            $page_pengambilan = 1;
+            $page_selesai = 1;
+            $page_batal = $page;
+        } else {
+            $page_konfirmasi = 1;
+            $page_berlangsung = 1;
+            $page_pengambilan = 1;
+            $page_selesai = 1;
+            $page_batal = 1;
+        }
         $peminjaman = DB::table('peminjaman_buku')
             ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
             ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
             ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
             ->orderByDesc('created_at_peminjaman')
-            ->skip(($page - 1) * 20)
-            ->take(20)
+            ->skip(($page - 1) * 1)
+            ->take(1)
+            ->get();
+
+        $peminjaman_konfirmasi = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->where('status', 'like', 'Menunggu Konfirmasi Admin')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page_konfirmasi - 1) * 1)
+            ->take(1)
+            ->get();
+
+        $peminjaman_berlangsung = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->where('status', 'like', 'Peminjaman Berlangsung')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page_berlangsung - 1) * 1)
+            ->take(1)
+            ->get();
+
+        $peminjaman_pengambilan = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->where('status', 'like', 'Pengambilan Buku')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page_pengambilan - 1) * 1)
+            ->take(1)
+            ->get();
+
+        $peminjaman_selesai = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->where('status', 'like', 'Selesai')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page_selesai - 1) * 1)
+            ->take(1)
+            ->get();
+
+        $peminjaman_dibatalkan = DB::table('peminjaman_buku')
+            ->select('*', 'peminjaman_buku.created_at AS created_at_peminjaman', 'peminjaman_buku.id AS id_peminjaman', 'peminjaman_buku.created_at AS tanggal_mulai')
+            ->where('status', 'like', 'Dibatalkan Oleh Admin')
+            ->orWhere('status', 'like', 'Dibatalkan Oleh Pengguna')
+            ->join('buku', 'buku.id', '=', 'peminjaman_buku.id_buku')
+            ->leftJoin('users', 'users.id', '=', 'peminjaman_buku.id_users')
+            ->orderByDesc('created_at_peminjaman')
+            ->skip(($page_batal - 1) * 1)
+            ->take(1)
             ->get();
 
         $jumlah_konfirmasi = DB::table('peminjaman_buku')
@@ -566,6 +766,12 @@ class adminController extends Controller
             ->where('status', 'like', 'Dibatalkan Oleh Admin')
             ->orWhere('status', 'like', 'Dibatalkan Oleh Pengguna')
             ->count();
+
+        $page_total_konfirmasi = $jumlah_konfirmasi / 1;
+        $page_total_berlangsung = $jumlah_berlangsung / 1;
+        $page_total_pengambilan = $jumlah_pengambilan / 1;
+        $page_total_selesai = $jumlah_selesai / 1;
+        $page_total_batal = $jumlah_dibatalkan / 1;
 
         if ($search == 'default') {
             $event_cari = '1';
@@ -597,12 +803,29 @@ class adminController extends Controller
             'peminjaman' => $peminjaman,
             'page' => $page,
             'search' => "",
+            'tab' => $tab,
+            'page_konfirmasi' => $page_konfirmasi,
+            'page_berlangsung' => $page_berlangsung,
+            'page_pengambilan' => $page_pengambilan,
+            'page_selesai' => $page_selesai,
+            'page_batal' => $page_batal,
             'jumlah_konfirmasi' => $jumlah_konfirmasi,
             'jumlah_berlangsung' => $jumlah_berlangsung,
             'jumlah_pengambilan' => $jumlah_pengambilan,
             'jumlah_selesai' => $jumlah_selesai,
-            'jumlah_dibatalkan' => $jumlah_dibatalkan,
-            'event_cari' => $event_cari
+            'jumlah_batal' => $jumlah_dibatalkan,
+            'event_cari' => $event_cari,
+            'peminjaman_konfirmasi' => $peminjaman_konfirmasi,
+            'peminjaman_berlangsung' => $peminjaman_berlangsung,
+            'peminjaman_pengambilan' => $peminjaman_pengambilan,
+            'peminjaman_selesai' => $peminjaman_selesai,
+            'peminjaman_dibatalkan' => $peminjaman_dibatalkan,
+            'page_total_konfirmasi' => $page_total_konfirmasi,
+            'page_total_berlangsung' => $page_total_berlangsung,
+            'page_total_pengambilan' => $page_total_pengambilan,
+            'page_total_selesai' => $page_total_selesai,
+            'page_total_batal' => $page_total_batal
+
         ];
 
         return view('admin.peminjaman_buku')->with('data', $data);
@@ -884,7 +1107,11 @@ class adminController extends Controller
             ]);
 
         Alert::success('Berhasil', 'Data Peminjaman Pengguna Berhasil Dikonfirmasi');
-        return redirect()->back();
+        if ($request->tab == 'konfirmasi') {
+            return redirect('admin/menu/peminjaman_arsip/' . $request->tab . '/1/default');
+        } else {
+            return redirect()->back();
+        }
     }
 
     public function konfirmasi_peminjaman_buku(Request $request)
@@ -916,7 +1143,11 @@ class adminController extends Controller
         };
 
         Alert::success('Berhasil', 'Data Peminjaman Pengguna Berhasil Dikonfirmasi');
-        return redirect()->back();
+        if ($request->tab == 'konfirmasi') {
+            return redirect('admin/menu/peminjaman_buku/1/'.$request->tab.'/default');
+        } else {
+            return redirect()->back();
+        }
     }
 
     public function konfirmasi_peminjaman_buku_by_id($id, $konfirm)
@@ -944,7 +1175,7 @@ class adminController extends Controller
         };
     }
 
-    public function konfirmasi_peminjaman_arsip_selesai($id)
+    public function konfirmasi_peminjaman_arsip_selesai($id, $tab)
     {
         DB::table('peminjaman_arsip')
             ->where('id', '=', $id)
@@ -954,7 +1185,60 @@ class adminController extends Controller
             ]);
 
         alert::success('Berhasil', 'Pengambilan Arsip Berhasil Dikonfirmasi!');
-        return redirect()->back();
+        if ($tab == 'pengambilan') {
+            return redirect('admin/menu/peminjaman_arsip/' . $tab . '/1/default');
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function konfirmasi_peminjaman_arsip_batal($id, $tab)
+    {
+        DB::table('peminjaman_arsip')
+            ->where('id', '=', $id)
+            ->update([
+                'status' => 'Dibatalkan Oleh Admin',
+                'update_at' => Carbon::now()->toDateTimeString()
+            ]);
+
+        alert::success('Berhasil', 'Peminjaman Arsip Berhasil Dibatalkan!');
+        if ($tab == 'konfirmasi' || $tab == 'unggah' || $tab == 'pengambilan') {
+            return redirect('admin/menu/peminjaman_arsip/' . $tab . '/1/default');
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function konfirmasi_peminjaman_buku_batal($id, $tab)
+    {
+        DB::table('peminjaman_buku')
+            ->where('id', '=', $id)
+            ->update([
+                'status' => 'Dibatalkan Oleh Admin',
+                'update_at' => Carbon::now()->toDateTimeString()
+            ]);
+
+        alert::success('Berhasil', 'Peminjaman Buku Berhasil Dibatalkan!');
+        if ($tab == 'konfirmasi') {
+            return redirect('admin/menu/peminjaman_buku/1/'.$tab.'/default');
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function konfirmasi_hapus_peminjaman_arsip(Request $request)
+    {
+        File::delete(public_path('storage\bukti_izin\\' . $request->file));
+        DB::table('peminjaman_arsip')
+            ->where('id', '=', $request->id)
+            ->delete();
+
+        alert::success('Berhasil', 'Data Peminjaman Arsip Berhasil Dihapus!');
+        if ($request->tab == 'selesai' || $request->tab == 'batal') {
+            return redirect('admin/menu/peminjaman_arsip/' . $request->tab . '/1/default');
+        } else {
+            return redirect('admin/menu/peminjaman_arsip/1/1/default');
+        }
     }
 
     public function konfirmasi_selesai(Request $request)
@@ -977,20 +1261,28 @@ class adminController extends Controller
             ]);
 
         Alert::success('Berhasil', 'Status Peminjaman Berhasil Diubah');
-        return redirect()->back();
+        if ($request->tab == 'berlangsung') {
+            return redirect('admin/menu/peminjaman_buku/1/'.$request->tab.'/default');
+        } else {
+            return redirect()->back();
+        }
     }
 
-    public function hapus_peminjaman($id)
+    public function hapus_peminjaman($id, $tab)
     {
         DB::table('peminjaman_buku')
             ->where('id', '=', $id)
             ->delete();
 
         alert::success('Berhasil', 'Data Peminjaman Berhasil Dihapus');
-        return redirect()->back();
+        if ($tab == 'selesai' || $tab == 'batal') {
+            return redirect('admin/menu/peminjaman_buku/1/'.$tab.'/default');
+        } else {
+            return redirect('admin/menu/peminjaman_buku/1/1/default');
+        }
     }
 
-    public function pengambilan_buku($id)
+    public function pengambilan_buku($id, $tab)
     {
         $query = DB::table('peminjaman_buku')
             ->where('id', '=', $id);
@@ -1004,7 +1296,11 @@ class adminController extends Controller
             ]);
 
         alert::success('Berhasil', 'Pengambilan Buku Berhasil Dikonformasi');
-        return redirect()->back();
+        if ($tab == 'pengambilan') {
+            return redirect('admin/menu/peminjaman_buku/1/'.$tab.'/default');
+        } else {
+            return redirect()->back();
+        }
     }
 
     public function contact_us_admin()

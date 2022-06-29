@@ -42,23 +42,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <a class="btn btn-primary float-end text-white" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Tambah Data Arsip</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Modal Tambah Archive -->
-                            <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalToggleLabel">Tambah Data Arsip</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body text-center">
-                                            <button class="btn btn-primary" data-bs-target="#Modal2" data-bs-toggle="modal" data-bs-dismiss="modal">Manual</button>
-                                            <hr>
-                                            <button class="btn btn-primary" data-bs-target="#Modal3" data-bs-toggle="modal" data-bs-dismiss="modal">+ File</button>
-                                        </div>
+                                        <a class="btn btn-primary float-end text-white" data-bs-target="#Modal2" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Tambah Data Arsip</a>
                                     </div>
                                 </div>
                             </div>
