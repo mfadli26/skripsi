@@ -191,13 +191,13 @@ Route::get('/admin/buku/hapus_peminjaman/{id}/{tab}', [adminController::class, '
 
 Route::get('/admin/buku/pengambilan/{id}/{tab}', [adminController::class, 'pengambilan_buku'])->middleware('admin');
 
-Route::get('/admin/contact_us', [adminController::class, 'contact_us_admin'])->middleware('admin');
+Route::get('/admin/contact_us/{page}', [adminController::class, 'contact_us_admin'])->middleware('admin');
 
 Route::post('/admin/home_content_edit', [adminController::class, 'edit_content'])->middleware('admin');
 
 Route::get('/admin/konten_status/{id}/{status}', [adminController::class, 'konten_status'])->middleware('admin');
 
-Route::get('/admin/artikel', [adminController::class, 'artikel_admin'])->middleware('admin');
+Route::get('/admin/artikel/{page}', [adminController::class, 'artikel_admin'])->middleware('admin');
 
 Route::get('/admin/artikel/tambah', [adminController::class, 'artikel_admin_tambah_page'])->middleware('admin');
 
@@ -206,6 +206,8 @@ Route::post('/admin/artikel/tambah_baru', [adminController::class, 'tambah_artik
 Route::get('/admin/artikel/update_artikel/{id}', [adminController::class, 'update_page_artikel'])->middleware('admin');
 
 Route::post('/admin/artikel/update', [adminController::class, 'update_artikel'])->middleware('admin');
+
+Route::get('/admin/artikel/hapus/{id}', [adminController::class, 'hapus_artikel'])->middleware('admin');
 
 Route::get('/admin/menu/foto_video/{page}/{tab}', [adminController::class, 'foto_video'])->middleware('admin');
 
@@ -220,6 +222,7 @@ Route::post('/admin/video/tambah', [adminController::class, 'tambah_video'])->mi
 Route::post('/admin/video/edit', [adminController::class, 'edit_video'])->middleware('admin');
 
 Route::get('/admin/video/hapus/{page_video}/{id}', [adminController::class, 'hapus_video'])->middleware('admin');
+
 
 
 

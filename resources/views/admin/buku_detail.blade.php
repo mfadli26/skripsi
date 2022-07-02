@@ -34,11 +34,14 @@
 
                                 </div>
                                 @foreach($data->buku as $buku)
-                                <form action="/admin/buku/update_buku" method="post">
+                                <form action="/admin/buku/update_buku" method="post" enctype="multipart/form-data">
                                     {{ csrf_field() }}
                                     <div class="row">
                                         <div class="col-4">
-                                            <img src="{{url('/storage/cover_buku/'.$buku->cover)}}" class="w-100">
+                                            <img src="{{url('/storage/cover_buku/'.$buku->cover)}}" class="w-100 mb-3">
+                                            <label for="judul" class="form-label">Cover Baru :</label>
+                                            <input type="hidden" name="old_cover" value="{{$buku->cover}}">
+                                            <input class="form-control" type="file" name="cover">
                                         </div>
                                         <div class="col-4 mt-5">
 

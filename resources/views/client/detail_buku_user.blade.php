@@ -77,13 +77,17 @@
                                 <form action="/buku/pinjam_buku" method="post">
                                     {{ csrf_field() }}
                                     <input type="hidden" name="id_buku" value="{{$buku->id_buku}}">
-                                    <input type="hidden" name="id_users" value="{{$data->user->id}}">
                                     @if ($buku->stock_buku == 0)
                                     <span class="d-inline-block float-end" tabindex="0" data-bs-toggle="tooltip1" title="Stock Buku Tidak Tersedia Untuk Dipinjam Saat Ini">
                                         <button class="btn btn-primary text-white fs-5" type="button" disabled>Pinjam</button>
                                     </span>
                                     @else
-                                    <button type="submit" class="btn btn-primary text-white float-end fs-5">Pinjam</button>
+                                        @if ($data->user == null)
+                                        <a class="btn btn-primary text-white fs-5 float-end not-login" href="/masuk">Pinjam</a>
+                                        @else
+                                        <input type="hidden" name="id_users" value="{{$data->user->id}}">
+                                        <button type="submit" class="btn btn-primary text-white float-end fs-5">Pinjam</button>
+                                        @endif
                                     @endif
                                 </form>
                             </div>
@@ -106,6 +110,21 @@
     var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+    $('.not-login').on('click', function(event) {
+            event.preventDefault();
+            const url = $(this).attr('href');
+            swal({
+                title: 'Anda Harus Masuk Terlebih Dahulu',
+                icon: 'warning',
+                buttons: 'Masuk',
+            }).then(function(value) {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
+
 </script>
 
 </html>

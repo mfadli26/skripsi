@@ -80,11 +80,20 @@ class homeController extends Controller
 
     public function search_home($submenu)
     {
+        if($submenu == 'pencarian buku'){
+            $buku = DB::table('buku')
+            ->take(5)
+            ->orderByDesc('created_at')
+            ->get();
+        }else {
+            $buku = null;
+        }
         $user = Auth::user();
         $data = (object) [
             'menu' => 'layanan',
             'user' => $user,
-            'submenu' => $submenu
+            'submenu' => $submenu,
+            'buku' => $buku
         ];
 
         return view('client.archive')->with('data', $data);
@@ -317,7 +326,11 @@ class homeController extends Controller
 
     public function detail_buku($id)
     {
-        $user = Auth::user();
+        if(!Auth::check()){
+            $user = null;
+        }else {
+            $user = Auth::user();
+        }
         $buku = DB::table('buku')
             ->select('buku.*', 'kategori_buku.*', 'buku.id AS id_buku')
             ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')

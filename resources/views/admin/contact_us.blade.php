@@ -25,28 +25,37 @@
                     @include('admin.layout.breadcrumb')
                     <div class="wrapper p-4 h-100">
                         <div class="row d-flex justify-content-center">
-                            @foreach($data->contact_data as $data)
+                            @foreach($data->contact_data as $contact)
                             <div class="card border-dark mb-3 me-3 col-md-4" style="padding : 0px !important; width : 30%;">
-                                <div class="card-header bg-secondary text-white">{{$data->email}}</div>
+                                <div class="card-header bg-secondary text-white">{{$contact->email}}</div>
                                 <div class="card-body text-dark">
-                                    <P class="card-text fs-5">{{$data->nama_depan}} {{$data->nama_belakang}}</P>
-                                    <p class="card-text">{{$data->msg}}</p>
+                                    <P class="card-text fs-5">{{$contact->nama_depan}} {{$contact->nama_belakang}}</P>
+                                    <p class="card-text">{{$contact->msg}}</p>
                                 </div>
                                 <div class="card-footer">
-                                    No Hp: {{$data->phone}} <span class="float-end">Tanggal</span>
+                                    No Hp: {{$contact->phone}} <span class="float-end">{{\Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y')}}</span>
                                 </div>
                             </div>
                             @endforeach
                         </div>
-                        <nav aria-label="Page navigation example ">
+                        @if($data->total != 0)
+                        <nav aria-label="...">
                             <ul class="pagination d-flex justify-content-center">
-                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                @if(ceil($data->total_page) == 1)
+                                @else
+                                <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
+                                    <a class="page-link" href="/admin/contact_us/{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
+                                </li>
+                                @for($j = 0; $j < ceil($data->total_page); $j++)
+                                    <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/contact_us/{{$j+1}}">{{$j+1}}</a></li>
+                                    @endfor
+                                    <li class="page-item {{$data->page == ceil($data->total_page) ? 'disabled' : ''}}">
+                                        <a class="page-link" href="/admin/contact_us/{{$data->page + 1}}">Next</a>
+                                    </li>
+                                    @endif
                             </ul>
                         </nav>
+                        @endif
                     </div>
                     @include('admin.layout.footer')
                 </div>

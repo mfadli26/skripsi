@@ -411,14 +411,33 @@ class adminController extends Controller
         $query = DB::table('buku')
             ->where('id', '=', $id);
 
-        $query->update([
-            'judul' => $request->judul,
-            'penerbit' => $request->penerbit,
-            'penulis' => $request->penulis,
-            'tahun_terbit' => $request->tahun,
-            'id_kategori' => $request->id_kategori,
-            'stock_buku' => $request->stock_buku
-        ]);
+        if (empty($request->cover)) {
+            $query->update([
+                'judul' => $request->judul,
+                'penerbit' => $request->penerbit,
+                'penulis' => $request->penulis,
+                'tahun_terbit' => $request->tahun,
+                'id_kategori' => $request->id_kategori,
+                'stock_buku' => $request->stock_buku
+            ]);
+        } else {
+            if ($request->old_cover != 'cover-buku-default.jpg') {
+                File::delete(public_path('storage\cover_buku\\' . $request->old_cover));
+            }
+            $path = $request->file('cover');
+            $pathname = "cover_" . time() . "_" . "." . $request->cover->getClientOriginalExtension();
+            $path->move(public_path('storage\cover_buku'), $pathname);
+
+            $query->update([
+                'judul' => $request->judul,
+                'penerbit' => $request->penerbit,
+                'penulis' => $request->penulis,
+                'tahun_terbit' => $request->tahun,
+                'id_kategori' => $request->id_kategori,
+                'stock_buku' => $request->stock_buku,
+                'cover' => $pathname
+            ]);
+        }
 
         Alert::success('Berhasil', 'Data buku berhasil diubah');
         return redirect()->back();
@@ -1144,7 +1163,7 @@ class adminController extends Controller
 
         Alert::success('Berhasil', 'Data Peminjaman Pengguna Berhasil Dikonfirmasi');
         if ($request->tab == 'konfirmasi') {
-            return redirect('admin/menu/peminjaman_buku/1/'.$request->tab.'/default');
+            return redirect('admin/menu/peminjaman_buku/1/' . $request->tab . '/default');
         } else {
             return redirect()->back();
         }
@@ -1220,7 +1239,7 @@ class adminController extends Controller
 
         alert::success('Berhasil', 'Peminjaman Buku Berhasil Dibatalkan!');
         if ($tab == 'konfirmasi') {
-            return redirect('admin/menu/peminjaman_buku/1/'.$tab.'/default');
+            return redirect('admin/menu/peminjaman_buku/1/' . $tab . '/default');
         } else {
             return redirect()->back();
         }
@@ -1262,7 +1281,7 @@ class adminController extends Controller
 
         Alert::success('Berhasil', 'Status Peminjaman Berhasil Diubah');
         if ($request->tab == 'berlangsung') {
-            return redirect('admin/menu/peminjaman_buku/1/'.$request->tab.'/default');
+            return redirect('admin/menu/peminjaman_buku/1/' . $request->tab . '/default');
         } else {
             return redirect()->back();
         }
@@ -1276,7 +1295,7 @@ class adminController extends Controller
 
         alert::success('Berhasil', 'Data Peminjaman Berhasil Dihapus');
         if ($tab == 'selesai' || $tab == 'batal') {
-            return redirect('admin/menu/peminjaman_buku/1/'.$tab.'/default');
+            return redirect('admin/menu/peminjaman_buku/1/' . $tab . '/default');
         } else {
             return redirect('admin/menu/peminjaman_buku/1/1/default');
         }
@@ -1297,22 +1316,32 @@ class adminController extends Controller
 
         alert::success('Berhasil', 'Pengambilan Buku Berhasil Dikonformasi');
         if ($tab == 'pengambilan') {
-            return redirect('admin/menu/peminjaman_buku/1/'.$tab.'/default');
+            return redirect('admin/menu/peminjaman_buku/1/' . $tab . '/default');
         } else {
             return redirect()->back();
         }
     }
 
-    public function contact_us_admin()
+    public function contact_us_admin($page)
     {
         $contact_data = DB::table('contact_us')
+            ->skip(($page - 1) * 1)
+            ->take(1)
             ->get();
+
+        $total = DB::table('contact_us')
+            ->count();
+
+        $total_page = $total / 1;
 
         $data = (object) [
             'sidebar' => 'contact_us',
             'breadcrumb' => 'Contact Us',
             'breadcrumbsub' => '1',
-            'contact_data' => $contact_data
+            'contact_data' => $contact_data,
+            'page' => $page,
+            'total' => $total,
+            'total_page' => $total_page
         ];
 
 
@@ -1362,15 +1391,24 @@ class adminController extends Controller
         return redirect()->back();
     }
 
-    public function artikel_admin()
+    public function artikel_admin($page)
     {
         $artikel = DB::table('artikel')
-            ->skip((1 - 1) * 20)
-            ->take(20)
+            ->skip(($page - 1) * 10)
+            ->take(10)
+            ->orderByDesc('tanggal')
             ->get();
+
+        $jumlah = DB::table('artikel')
+            ->count();
+
+        $jumlah_all = $jumlah / 10;
 
         $data = (object) [
             'sidebar' => 'infoterkini',
+            'page' => $page,
+            'jumlah' => $jumlah,
+            'jumlah_all' => $jumlah_all,
             'breadcrumb' => 'Info Terkini',
             'breadcrumbsub' => 'Berita',
             'artikel' => $artikel
@@ -1455,6 +1493,30 @@ class adminController extends Controller
         }
 
         alert::success('Berhasil', 'data berhasil diubah!');
+        return redirect()->back();
+    }
+
+    public function hapus_artikel($id)
+    {
+        $check = DB::table('artikel')
+            ->count();
+
+        if ($check <= 4) {
+            alert::warning('Gagal', 'Data artikel tidak boleh kurang dari 4');
+        } else {
+            $query = DB::table('artikel')
+                ->where('id', '=', $id)
+                ->get();
+
+            File::delete(public_path('storage\gambar_artikel\\' . $query['0']->gambar));
+
+            DB::table('artikel')
+                ->where('id', '=', $id)
+                ->delete();
+
+            alert::success('Berhasil', 'Data artikel berhasil dihapus');
+        }
+
         return redirect()->back();
     }
 
@@ -1561,17 +1623,25 @@ class adminController extends Controller
 
     public function hapus_foto($id)
     {
-        $query = DB::table('foto')
-            ->where('id', '=', $id)
-            ->get();
+        $check = DB::table('foto')
+            ->count();
 
-        File::delete(public_path('storage\foto_video\foto\\' . $query['0']->path));
+        if ($check <= 4) {
+            alert::warning('Gagal', 'Data foto tidak boleh kurang dari 4');
+        } else {
+            $query = DB::table('foto')
+                ->where('id', '=', $id)
+                ->get();
 
-        DB::table('foto')
-            ->where('id', '=', $id)
-            ->delete();
+            File::delete(public_path('storage\foto_video\foto\\' . $query['0']->path));
 
-        alert::success('Berhasil', 'Data foto berhasil dihapus');
+            DB::table('foto')
+                ->where('id', '=', $id)
+                ->delete();
+
+            alert::success('Berhasil', 'Data foto berhasil dihapus');
+        }
+
         return redirect()->back();
     }
 
@@ -1605,9 +1675,18 @@ class adminController extends Controller
 
     public function hapus_video($page_video, $id)
     {
-        DB::table('video')
-            ->where('id', '=', $id)
-            ->delete();
+        $check = DB::table('video')
+            ->count();
+
+        if ($check <= 4) {
+            alert::warning('Gagal', 'Data artikel tidak boleh kurang dari 4 artikel');
+        } else {
+            DB::table('video')
+                ->where('id', '=', $id)
+                ->delete();
+            alert::success('Berhasil', 'Data artikel berhasil dihapus');
+        }
+
 
         $tab = 'video';
 

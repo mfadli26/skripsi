@@ -5,6 +5,10 @@
         border-color: #357ebd;
         /*set the color you want here*/
     }
+    .btn-hover-1.active {
+        background-color: transparent !important;
+        border-bottom: #0495c9 5px solid !important;
+    }
 
     .btn-hover-1:hover,
     .btn-hover-1:focus,
@@ -72,7 +76,7 @@
                 </a>
                 <ul class="collapse nav flex-column ms-1 {{$data->sidebar == 'infoterkini' ? 'show' : ''}}" id="sub-infoterkini">
                     <li class="w-100">
-                        <a href="/admin/artikel" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Berita' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Berita</a>
+                        <a href="/admin/artikel/1" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Berita' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Berita</a>
                     </li>
                     <li>
                         <a href="/admin/menu/foto_video/1/2" class="btn-hover-1 nav-link text-white px-0 {{$data->breadcrumbsub == 'Foto Dan Video' ? 'active' : ''}}"> <span class="d-none d-sm-inline"><i class="bi bi-caret-right-fill"></i> Foto dan Video</a>
@@ -80,7 +84,7 @@
                 </ul>
             </li>
             <li class="nav-item custom-w-100 border-bottom">
-                <a href="/admin/contact_us" class="btn-hover-1 nav-link px-2 text-white {{$data->sidebar == 'contact_us' ? 'active' : ''}}">
+                <a href="/admin/contact_us/1" class="btn-hover-1 nav-link px-2 text-white {{$data->sidebar == 'contact_us' ? 'active' : ''}}">
                     <i class="bi bi-chat-right-dots-fill"></i>
                     <span class="ms-1 d-none d-sm-inline">Contact Us</span>
                 </a>
