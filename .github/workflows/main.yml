@@ -29,8 +29,12 @@ jobs:
       - name: Compile assets for production
         run: npm run production
       # deploy
-      - name: git status
+      - name: Check generated files
         run: git status -uno --porcelain
+      - name: Add generated files
+        run: git add *
+      - name: Commit generated files
+        run: git commit "stash changes"
       - name: Deploy to CPanel
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
