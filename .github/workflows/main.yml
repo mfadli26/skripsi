@@ -44,6 +44,8 @@ jobs:
         run: npm install
       - name: Compile assets for production
         run: npm run production
+      - name: Checkout
+        uses: actions/checkout@v2
       # deploy
       - name: Deploy to CPanel
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
