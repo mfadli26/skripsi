@@ -36,6 +36,7 @@
 
 <body class="antialiased d-flex flex-column h-100">
     <main class="flex-shrink-0">
+        
         @include('sweetalert::alert')
         @include('client.layout.header_arsip')
         @include('client.layout.breadcrumb_arsip')
