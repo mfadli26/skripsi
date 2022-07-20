@@ -34,9 +34,9 @@ jobs:
       - name: Add generated files
         run: git add * -f
       - name: Git setup temporary user name
-        run: git config user.name="Test"
+        run: git config user.name "Test"
       - name: Git setup temporary user password
-        run: git config user.email="test@example.com"
+        run: git config user.email "test@example.com"
       - name: Commit generated files
         run: git commit -m "stash changes"
       - name: Deploy to CPanel
