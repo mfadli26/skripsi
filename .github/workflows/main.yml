@@ -33,8 +33,10 @@ jobs:
         run: git status -uno --porcelain
       - name: Add generated files
         run: git add * -f
-#       - name: Commit generated files
-#         run: git commit -m "stash changes"
+      - name: Git setup temporary user
+        run: git -c user.name='Test' -c user.email='test@example.com'
+      - name: Commit generated files
+        run: git commit -m "stash changes"
       - name: Deploy to CPanel
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
