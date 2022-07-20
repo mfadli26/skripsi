@@ -33,8 +33,10 @@ jobs:
         run: git status -uno --porcelain
       - name: Add generated files
         run: git add * -f
-      - name: Git setup temporary user
-        run: git -c user.name='Test' -c user.email='test@example.com'
+      - name: Git setup temporary user name
+        run: git config user.name="Test"
+      - name: Git setup temporary user password
+        run: git config user.email="test@example.com"
       - name: Commit generated files
         run: git commit -m "stash changes"
       - name: Deploy to CPanel
