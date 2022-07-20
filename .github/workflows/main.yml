@@ -32,7 +32,7 @@ jobs:
       - name: Check generated files
         run: git status -uno --porcelain
       - name: Add generated files
-        run: git add *
+        run: git add * -f
       - name: Commit generated files
         run: git commit "stash changes"
       - name: Deploy to CPanel
