@@ -17,6 +17,7 @@
 
 <body>
     <main>
+        @include('sweetalert::alert')
         <div class="container-fluid overflow-hidden">
             <div class="row vh-100 overflow-auto">
                 @include('admin.layout.sidebar')
@@ -67,60 +68,91 @@
                                             @endif
                                             <td>
                                                 <a data-bs-toggle="modal" data-bs-target="#modal_{{$loop->index}}" href="#"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
-                                                <i class="fas fa-trash-alt text-danger fs-5"></i>
                                             </td>
                                         </tr>
                                         <!-- Modal -->
-                                        <div class="modal fade" id="modal_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Nama Lengkap</span>
-                                                            </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$user->name}}</span>
+                                        <form action="/admin/menu/user/edit" method="get">
+                                            {{ csrf_field() }}
+                                            <div class="modal fade" id="modal_{{$loop->index}}" tabindex="-1" aria-labelledby="label_{{$loop->index}}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="label_{{$loop->index}}">Informasi Detail Pengguna</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Email</span>
+                                                        <div class="modal-body">
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Nama Lengkap</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$user->name}}</span>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$user->email}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Nomor KTP</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Email</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$user->email}}</span>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$user->ktp_number}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Tempat, Tanggal Lahir</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Nomor KTP</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$user->ktp_number}}</span>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$user->birth_city}}, {{\Carbon\Carbon::parse($user->birth_date)->translatedFormat('d F Y')}}</span>
-                                                        </div>
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                <span class="form-label m-0">Alamat</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Tempat, Tanggal Lahir</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$user->birth_city}}, {{\Carbon\Carbon::parse($user->birth_date)->translatedFormat('d F Y')}}</span>
                                                             </div>
-                                                            <span class="form-label m-0 col-md-1">:</span>
-                                                            <span class="form-label m-0 col-md-8">{{$user->address}}</span>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Alamat</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                <span class="form-label m-0 col-md-8">{{$user->address}}</span>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <div class="col-md-3 d-flex align-items-center">
+                                                                    <span class="form-label m-0">Status Pengguna</span>
+                                                                </div>
+                                                                <span class="form-label m-0 col-md-1">:</span>
+                                                                @if($data->userlogin['admin'] == 2 )
+                                                                <div class="col-md-3">
+                                                                    <input type="hidden" name="id" value="{{$user->id}}">
+                                                                    <select class="form-select" name="status">
+                                                                        @if($user->admin == 1)
+                                                                        <option value="1" selected>Admin</option>
+                                                                        <option value="0">Pengunjung</option>
+                                                                        @elseif($user->admin == 0)
+                                                                        <option value="0" selected>Pengunjung</option>
+                                                                        <option value="1">Admin</option>
+                                                                        @endif
+                                                                    </select>
+                                                                </div>
+                                                                @else
+                                                                    @if($user->admin == 0)
+                                                                    <span class="form-label m-0 col-md-8">Pengunjung</span>
+                                                                    @else
+                                                                    <span class="form-label m-0 col-md-8">Admin</span>
+                                                                    @endif
+                                                                @endif
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                            @if($data->userlogin['admin'] == 2)
+                                                            <button type="submit" class="btn btn-primary text-white" data-bs-dismiss="modal">Save</button>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </form>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -173,5 +205,21 @@
     </main>
     {{ Html::script('js/app.js') }}
 </body>
+<script>
+    $('.delete-confirm').on('click', function(event) {
+        event.preventDefault();
+        const url = $(this).attr('href');
+        swal({
+            title: 'Apakah Anda Yakin Menghapus Data?',
+            text: 'Data akan terhapus secara permanent!',
+            icon: 'warning',
+            buttons: ["Cancel", "Yes!"],
+        }).then(function(value) {
+            if (value) {
+                window.location.href = url;
+            }
+        });
+    });
+</script>
 
 </html>

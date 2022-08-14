@@ -35,7 +35,7 @@
                                         <form action="" method="post">
                                             {{ csrf_field() }}
                                             <div class="input-group">
-                                                <a href="/admin/artikel/tambah" class="btn btn-primary text-white rounded-0 ms-1">Tambah Artikel</a>
+                                                <a href="/admin/artikel_page/tambah" class="btn btn-primary text-white rounded-0 ms-1">Tambaha Artikel</a>
                                             </div>
                                         </form>
                                     </div>

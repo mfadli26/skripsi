@@ -75,11 +75,17 @@
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="kategori" class="col-form-label">Kategori:</label>
+                                                            @if($data->kategori_count == 0)
+                                                            <select class="form-select" name="id_kategori" disabled>
+                                                                <option selected>- Data Kategori Buku Tidak Tersedia -</option>
+                                                            </select>
+                                                            @else
                                                             <select class="form-select" name="id_kategori">
                                                                 @foreach ($data->kategori as $kategori)
                                                                 <option value="{{$kategori->id}}">{{$kategori->kategory}}</option>
                                                                 @endforeach
                                                             </select>
+                                                            @endif
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="cover" class="col-form-label">Foto Cover Buku:</label>
@@ -116,7 +122,11 @@
                                                 <td>{{ $buku->penulis }}</td>
                                                 <td>{{ $buku->penerbit }}</td>
                                                 <td>{{ $buku->tahun_terbit }}</td>
+                                                @if($buku->kategory == null)
+                                                <td> - </td>
+                                                @else
                                                 <td>{{ $buku->kategory }}</td>
+                                                @endif
                                                 <td>
                                                     <a href="/admin/buku/detail/{{$buku->id}}"><i class="fas fa-edit text-success me-2 fs-5"></i></a>
                                                     <a class="delete-confirm" href="/admin/buku/hapus_buku/{{$buku->id}}/"><i class="fas fa-trash-alt text-danger me-2 fs-5"></i></a>
@@ -137,140 +147,6 @@
                                                                 <button class="nav-link col-md-6" id="nav-tag-tab" data-bs-toggle="tab" data-bs-target="#nav-tag" type="button" role="tab" aria-controls="nav-tag" aria-selected="true">Tag Buku</button>
                                                             </div>
                                                         </nav>
-                                                        <div class="tab-content" id="nav-tabContent">
-                                                            <!-- Tab Content 1-->
-                                                            <form action="/admin/buku/update_buku" method="post">
-                                                                {{ csrf_field() }}
-                                                                <div class="tab-pane fade active show" id="nav-kategori" role="tabpanel" aria-labelledby="nav-kategori-tab">
-                                                                    <div class="modal-body">
-                                                                        <div class="row mb-3">
-                                                                            <div class="col-md-3">
-                                                                                <span class="form-label m-0">Judul</span>
-                                                                            </div>
-                                                                            <div class="col-md-1">
-                                                                                <span class="form-label">:</span>
-                                                                            </div>
-                                                                            <div class="col-md-8">
-                                                                                <input type="text" class="form-control" id="judul" name="judul" value="{{$buku->judul}}">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                                <span class="form-label m-0">Penulis</span>
-                                                                            </div>
-                                                                            <div class="col-md-1">
-                                                                                <span class="form-label">:</span>
-                                                                            </div>
-                                                                            <div class="col-md-8">
-                                                                                <input type="text" class="form-control" id="penulis" name="penulis" value="{{$buku->penulis}}">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                                <span class="form-label m-0">Penerbit</span>
-                                                                            </div>
-                                                                            <div class="col-md-1">
-                                                                                <span class="form-label">:</span>
-                                                                            </div>
-                                                                            <div class="col-md-8">
-                                                                                <input type="text" class="form-control" id="penerbit" name="penerbit" value="{{$buku->penerbit}}">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                                <span class="form-label m-0">
-                                                                                    <a data-bs-toggle="tooltip1" data-bs-placement="top" title="Jika Kategori Tidak Ada, Silahkan Tambahkan Kategori Baru Dihalaman Kategori Dan Tag">
-                                                                                        <span class="bi bi-info-circle"></span>
-                                                                                    </a>Kategori</span>
-                                                                            </div>
-                                                                            <div class="col-md-1">
-                                                                                <span class="form-label">:</span>
-                                                                            </div>
-                                                                            <div class="col-md-8">
-                                                                                <select class="form-select" name="id_kategori">
-                                                                                    <option value="{{$kategori->id}}">{{$buku->kategory}}</option>
-                                                                                    @foreach ($data->kategori as $kategori)
-                                                                                    @if($kategori->kategory != $buku->kategory)
-                                                                                    <option type="hidden" value="{{$kategori->id}}">{{$kategori->kategory}}</option>
-                                                                                    @endif
-                                                                                    @endforeach
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                                <span class="form-label m-0">Stock Buku</span>
-                                                                            </div>
-                                                                            <div class="col-md-1">
-                                                                                <span class="form-label">:</span>
-                                                                            </div>
-                                                                            <div class="col-md-8">
-                                                                                <input type="number" class="form-control" id="stock_buku" name="stock_buku" value="{{$buku->stock_buku}}">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3">
-                                                                            <div class="col-md-3 d-flex align-items-center">
-                                                                                <span class="form-label m-0">Tahun</span>
-                                                                            </div>
-                                                                            <div class="col-md-1">
-                                                                                <span class="form-label">:</span>
-                                                                            </div>
-                                                                            <div class="col-md-8">
-                                                                                <input type="number" class="form-control" id="tahun" name="tahun" value="{{$buku->tahun_terbit}}">
-                                                                            </div>
-                                                                        </div>
-                                                                        <input type="hidden" name="id" value="{{$buku->id}}">
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
-                                                                        <button type="submit" class="btn btn-primary text-white">Save</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                            <!-- Tab Content 2 -->
-                                                            <div class="tab-pane fade" id="nav-tag" role="tabpanel" aria-labelledby="nav-tag-tab">
-                                                                <form action="/admin/buku/tambah_tagtobuku" method="get">
-                                                                    {{ csrf_field() }}
-                                                                    <div class="modal-body">
-                                                                        <div class="row mb-3">
-                                                                            <div class="col-md-3">
-                                                                                <span class="form-label m-0">Judul</span>
-                                                                            </div>
-                                                                            <div class="col-md-1">
-                                                                                <span class="form-label">:</span>
-                                                                            </div>
-                                                                            <div class="col-md-8">
-                                                                                <span>{{$buku->judul}}</span>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row mb-3 pb-2" style="border-bottom : solid black 2px;">
-                                                                            <div class="col-md-3">
-                                                                                <span class="form-label m-0">Tag</span>
-                                                                            </div>
-                                                                            <div class="col-md-1">
-                                                                                <span class="form-label">:</span>
-                                                                            </div>
-                                                                            <div class="col-md-8">
-                                                                                <span> - </span>
-                                                                            </div>
-                                                                        </div>
-                                                                        @foreach($data->tag as $tag)
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" value="{{$tag->id}}" type="radio" name="id_tag" id="flexRadioDefault1">
-                                                                            <label class="form-check-label" for="flexRadioDefault1">
-                                                                                {{$tag->tag}}
-                                                                            </label>
-                                                                        </div>
-                                                                        @endforeach
-                                                                        <input type="hidden" name="id_buku" value="{{$buku->id}}">
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <a class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal">Back</i></a>
-                                                                        <button type="submit" class="btn btn-primary text-white">Save</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -285,17 +161,60 @@
                                         <ul class="pagination">
                                             @if(ceil($data->jumlah_page) == 1)
                                             <li class="page-item disabled">Jumlah Data : {{$data->check_count}}</li>
-                                            @else
+                                            @elseif(ceil($data->jumlah_page) > 5)
                                             <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
-                                                <a class="page-link" href="/admin/menu/buku_all/{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
+                                                <a class="page-link" href="{{$data->target}}{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
                                             </li>
-                                            @for($j = 0; $j < ceil($data->jumlah_page); $j++)
-                                                <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/buku_all/{{$j+1}}">{{$j+1}}</a></li>
+                                            @if($data->page == 1)
+                                            @for($j = 0; $j < 3; $j++) <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{$j+1}}">{{$j+1}}</a></li>
                                                 @endfor
-                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
-                                                    <a class="page-link" href="/admin/menu/buku_all/{{$data->page + 1}}">Next</a>
-                                                </li>
+                                                <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page)}}">{{ceil($data->jumlah_page)}}</a></li>
+                                                @elseif($data->page == ceil($data->jumlah_page))
+                                                <li class="page-item {{$data->page == 1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}1">1</a></li>
+                                                <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                @for($j = 3; $j != 0; $j--)
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) - $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page) - $j+1}}">{{ceil($data->jumlah_page) - $j+1}}</a></li>
+                                                @endfor
+                                                @else
+                                                @if($data->page-1 == 1)
+                                                <li class="page-item {{$data->page == 1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}1">1</a></li>
+                                                @for($j = $data->page-1; $j != $data->page + 2; $j++)
+                                                <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{$j+1}}">{{$j+1}}</a></li>
+                                                @endfor
+                                                <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page)}}">{{ceil($data->jumlah_page)}}</a></li>
+                                                @elseif($data->page+1 == ceil($data->jumlah_page))
+                                                <li class="page-item {{$data->page == 1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}1">1</a></li>
+                                                <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                @for($j = 4; $j != 0; $j--)
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) - $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page) - $j+1}}">{{ceil($data->jumlah_page) - $j+1}}</a></li>
+                                                @endfor
+                                                @else
+                                                <li class="page-item {{$data->page == 1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}1">1</a></li>
+                                                <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                @for($j = $data->page-2; $j != $data->page + 1; $j++)
+                                                <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{$j+1}}">{{$j+1}}</a></li>
+                                                @endfor
+                                                <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page)}}">{{ceil($data->jumlah_page)}}</a></li>
                                                 @endif
+                                                @endif
+                                                <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
+                                                    <a class="page-link" href="{{$data->target}}{{$data->page + 1}}">Next</a>
+                                                </li>
+                                                @else
+                                                <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
+                                                    <a class="page-link" href="{{$data->target}}{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
+                                                </li>
+
+                                                @for($j = 0; $j < ceil($data->jumlah_page); $j++)
+                                                    <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{$j+1}}">{{$j+1}}</a></li>
+                                                    @endfor
+                                                    <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
+                                                        <a class="page-link" href="{{$data->target}}{{$data->page + 1}}">Next</a>
+                                                    </li>
+                                                    @endif
                                         </ul>
                                     </nav>
                                     @endif

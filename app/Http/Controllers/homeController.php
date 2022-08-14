@@ -108,6 +108,7 @@ class homeController extends Controller
                 ->where('id_users', '=', $user->id)
                 ->skip(($page - 1) * 20)
                 ->take(20)
+                ->orderByDesc('update_at')
                 ->get();
 
             $jumlah_peminjaman = DB::table('archive')
@@ -618,7 +619,7 @@ class homeController extends Controller
 
         $this->validate($request, [
             'name' => 'required|regex:/^[\pL\s\-]+$/u',
-            'ktp_number' => 'required|numeric|unique:users|digits:17',
+            'ktp_number' => 'required|numeric|unique:users|digits:16',
             'phone_number' => 'required|numeric',
             'sex' => 'required',
             'birth_city' => 'required',

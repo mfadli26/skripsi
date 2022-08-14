@@ -302,7 +302,7 @@
 
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Batal</button>
+                                                            <button type="button" class="btn btn-primary text-white" data-bs-dismiss="modal">Batal</button>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -320,15 +320,59 @@
                                     <ul class="pagination">
                                         @if(ceil($data->jumlah_page) == 1)
                                         <li class="page-item disabled">Jumlah Data : {{$data->check_count}}</li>
+                                        @elseif(ceil($data->jumlah_page) > 5)
+                                        <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
+                                            <a class="page-link" href="{{$data->target}}{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
+                                        </li>
+                                            @if($data->page == 1)
+                                            @for($j = 0; $j < 3; $j++)
+                                            <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{$j+1}}">{{$j+1}}</a></li>
+                                            @endfor
+                                            <li class="page-item"><a class="page-link disabled">...</a></li>
+                                            <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page)}}">{{ceil($data->jumlah_page)}}</a></li>
+                                            @elseif($data->page == ceil($data->jumlah_page))
+                                            <li class="page-item {{$data->page == 1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}1">1</a></li>
+                                            <li class="page-item"><a class="page-link disabled">...</a></li>
+                                            @for($j = 3; $j != 0; $j--)
+                                            <li class="page-item {{$data->page == ceil($data->jumlah_page) - $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page) - $j+1}}">{{ceil($data->jumlah_page) - $j+1}}</a></li>
+                                            @endfor
+                                            @else
+                                                @if($data->page-1 == 1)
+                                                    <li class="page-item {{$data->page == 1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}1">1</a></li>
+                                                    @for($j = $data->page-1; $j != $data->page + 2; $j++)
+                                                        <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{$j+1}}">{{$j+1}}</a></li>
+                                                    @endfor
+                                                    <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                    <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page)}}">{{ceil($data->jumlah_page)}}</a></li>
+                                                @elseif($data->page+1 == ceil($data->jumlah_page))
+                                                    <li class="page-item {{$data->page == 1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}1">1</a></li>
+                                                    <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                    @for($j = 4; $j != 0; $j--)
+                                                    <li class="page-item {{$data->page == ceil($data->jumlah_page) - $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page) - $j+1}}">{{ceil($data->jumlah_page) - $j+1}}</a></li>
+                                                    @endfor
+                                                @else
+                                                    <li class="page-item {{$data->page == 1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}1">1</a></li>
+                                                    <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                    @for($j = $data->page-2; $j != $data->page + 1; $j++)
+                                                        <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{$j+1}}">{{$j+1}}</a></li>
+                                                    @endfor
+                                                    <li class="page-item"><a class="page-link disabled">...</a></li>
+                                                    <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{ceil($data->jumlah_page)}}">{{ceil($data->jumlah_page)}}</a></li>
+                                                @endif
+                                            @endif
+                                        <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
+                                                <a class="page-link" href="{{$data->target}}{{$data->page + 1}}">Next</a>
+                                            </li>
                                         @else
                                         <li class="page-item {{$data->page == 1 ? 'disabled' : ''}}">
-                                            <a class="page-link" href="/admin/menu/archive_all/{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
+                                            <a class="page-link" href="{{$data->target}}{{$data->page - 1}}" tabindex="-1" aria-disabled="true">Previous</a>
                                         </li>
+
                                         @for($j = 0; $j < ceil($data->jumlah_page); $j++)
-                                            <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="/admin/menu/archive_all/{{$j+1}}">{{$j+1}}</a></li>
+                                            <li class="page-item {{$data->page == $j+1 ? 'active' : ''}}"><a class="page-link" href="{{$data->target}}{{$j+1}}">{{$j+1}}</a></li>
                                             @endfor
                                             <li class="page-item {{$data->page == ceil($data->jumlah_page) ? 'disabled' : ''}}">
-                                                <a class="page-link" href="/admin/menu/archive_all/{{$data->page + 1}}">Next</a>
+                                                <a class="page-link" href="{{$data->target}}{{$data->page + 1}}">Next</a>
                                             </li>
                                             @endif
                                     </ul>

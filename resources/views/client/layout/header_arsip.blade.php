@@ -77,7 +77,7 @@
                     </li>
                     @guest
                     <li class="nav-item text-center px-4 border-end">
-                        <a class="nav-link text-dark btn-hover {{$data->submenu == 'masuk' ? 'link-active' : ''}}" aria-current="page" href="/masuk">Masuk</a>
+                        <a class="nav-link text-dark btn-hover {{$data->submenu == 'masuk' ? 'link-active' : ''}}" aria-current="page" href="/masuk">Login</a>
                     </li>
                     @endguest
                     @auth

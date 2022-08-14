@@ -60,7 +60,7 @@
                                                             <span class="form-label m-0">Alamat Email :</span>
                                                         </div>
                                                         <div class="col-md-9">
-                                                            <input type="email" class="form-control" placeholder="example@email.com" name="email">
+                                                            <input type="text" class="form-control" placeholder="example@email.com" name="email">
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3 d-flex justify-content-center align-items-center">

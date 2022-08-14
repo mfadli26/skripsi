@@ -62,11 +62,61 @@ class adminController extends Controller
         if (Auth::check()) {
             if (Auth::user()->admin == 0) {
                 $user = Auth::user();
-                $data = (object) ['user' => $user];
+                $buku1 = DB::table('buku')
+                    ->take(4)
+                    ->get();
 
-                return view('client.home')->with('data', $data);
+                $buku2 = DB::table('buku')
+                    ->skip(4)
+                    ->take(4)
+                    ->get();
+
+                $content = DB::table('content_home')
+                    ->where('status', '=', '1')
+                    ->get();
+
+                $artikel = DB::table('artikel')
+                    ->take(4)
+                    ->get();
+
+                $video = DB::table('video')
+                    ->take(3)
+                    ->get();
+                $foto = DB::table('foto')
+                    ->take(4)
+                    ->get();
+                if (Auth::check()) {
+                    $user = Auth::user();
+
+                    $data = (object) [
+                        'user' => $user,
+                        'menu' => 'beranda',
+                        'submenu' => 'none',
+                        'content' => $content,
+                        'buku1' => $buku1,
+                        'buku2' => $buku2,
+                        'artikel' => $artikel,
+                        'video' => $video,
+                        'foto' => $foto
+                    ];
+
+                    return view('client.home')->with('data', $data);
+                } else {
+                    $data = (object) [
+                        'menu' => 'beranda',
+                        'submenu' => 'none',
+                        'content' => $content,
+                        'buku1' => $buku1,
+                        'buku2' => $buku2,
+                        'artikel' => $artikel,
+                        'video' => $video,
+                        'foto' => $foto,
+                        'user' => $user
+                    ];
+                    return view('client.home')->with('data', $data);
+                }
             } else {
-                return $this->index();;
+                return redirect('/admin');
             }
         } else {
             return redirect()->back()->with('fail', 'gagal');
@@ -103,6 +153,24 @@ class adminController extends Controller
         }
     }
 
+    public function cari_kategori_tag(Request $request)
+    {
+        $search = $request->search;
+        if ($request->tab == 'kategori') {
+            if ($search == "") {
+                return redirect('/admin/menu/kategori_tag_all/1/kategori');
+            } else {
+                return redirect('admin/menu/kategori_tag/' . $search . '/1/kategori');
+            }
+        } elseif ($request->tab == 'tag') {
+            if ($search == "") {
+                return redirect('/admin/menu/kategori_tag_all/1/tag');
+            } else {
+                return redirect('admin/menu/kategori_tag/' . $search . '/1/tag');
+            }
+        }
+    }
+
     public function cari_buku_peminjaman(Request $request)
     {
         $search = $request->search;
@@ -128,14 +196,18 @@ class adminController extends Controller
     public function archive_all($page)
     {
         $archive = DB::table('archive')
+            ->Where('stat_active', '=', null)
             ->skip(($page - 1) * 20)
             ->take(20)
             ->get();
 
         $jumlah = DB::table('archive')
+            ->Where('stat_active', '=', null)
             ->count();
 
         $page_jumlah = $jumlah / 20;
+
+        $target = "/admin/menu/archive_all/";
 
         $data = (object) [
             'sidebar' => "pelayanan",
@@ -144,6 +216,7 @@ class adminController extends Controller
             'archive' => $archive,
             'page' => $page,
             'search' => "",
+            'target' => $target,
             'check_count' => $jumlah,
             'jumlah_page' => $page_jumlah,
         ];
@@ -153,29 +226,33 @@ class adminController extends Controller
 
     public function buku_all($page)
     {
-        $limit = ($page - 1) * 2;
+        $limit = ($page - 1) * 20;
         $buku = DB::select(
             DB::raw('
             SELECT buku.*, kategory, tag
-            FROM buku 
+            FROM buku
             LEFT JOIN kategori_buku ON buku.id_kategori = kategori_buku.id
             LEFT JOIN detail_buku_tag ON buku.id = detail_buku_tag.id_buku
-            LEFT JOIN (SELECT tag_buku.id, GROUP_CONCAT(tag) AS tag FROM tag_buku) AS tag_buku ON tag_buku.id = detail_buku_tag.id_tag
+            LEFT JOIN (SELECT tag_buku.id, GROUP_CONCAT(tag) AS tag FROM tag_buku) AS tag_buku ON tag_buku.id = detail_buku_tag.id_tag 
+            WHERE buku.stat_buku is null
             GROUP BY buku.id limit 20 offset ' . $limit . '')
         );
 
-        $buku_count = DB::table('buku')
+        $jumlah = DB::table('buku')
+            ->where('stat_buku', 'is', null)
             ->count();
 
-        $page_jumlah = $buku_count / 20;
+        $page_jumlah = $jumlah / 20;
+
+        $target = "/admin/menu/buku_all/";
+        $kategori_count = DB::table('kategori_buku')
+            ->count();
         $kategori = DB::table('kategori_buku')
             ->get();
 
         $tag = DB::table('tag_buku')
+            ->where('tag_status', '=', null)
             ->get();
-
-        $jumlah = DB::table('buku')
-            ->count();
 
         $data = (object) [
             'sidebar' => "pelayanan",
@@ -189,6 +266,8 @@ class adminController extends Controller
             'tag' => $tag,
             'check_count' => $jumlah,
             'jumlah_page' => $page_jumlah,
+            'target' => $target,
+            'kategori_count' => $kategori_count
         ];
 
         return view('admin.buku')->with('data', $data);
@@ -215,6 +294,7 @@ class adminController extends Controller
             ->get();
 
         $tag = DB::table('tag_buku')
+            ->where('tag_status', '=', null)
             ->whereNotIn('tag_buku.id', function ($query) use ($id) {
                 $query->select('detail_buku_tag.id_tag')->from('detail_buku_tag')
                     ->where('detail_buku_tag.id_buku', '=', $id);
@@ -253,11 +333,14 @@ class adminController extends Controller
             ->count();
 
         $jumlah_tag = DB::table('tag_buku')
+            ->where('tag_status', '=', null)
             ->count();
 
         $page_kategori_jumlah = $jumlah / 10;
 
         $page_tag_jumlah = $jumlah_tag / 10;
+
+        $target_kat = "/admin/menu/kategori_tag_all/";
 
         if ($tab == 2) {
             $tab = 'kategori';
@@ -277,6 +360,7 @@ class adminController extends Controller
             ->get();
 
         $tag = DB::table('tag_buku')
+            ->where('tag_status', '=', null)
             ->skip(($page_tag - 1) * 10)
             ->take(10)
             ->get();
@@ -295,7 +379,8 @@ class adminController extends Controller
             'jumlah_tag' => $jumlah_tag,
             'kategori' => $kategori,
             'jumlah_page' => $page_kategori_jumlah,
-            'jumlah_page_tag' => $page_tag_jumlah
+            'jumlah_page_tag' => $page_tag_jumlah,
+            'target_kat' => $target_kat
         ];
 
         return view('admin.kategori_tag')->with('data', $data);
@@ -334,6 +419,7 @@ class adminController extends Controller
     public function tambah_tag(Request $request)
     {
         $query = DB::table('tag_buku')
+            ->where('tag_status', '=', null)
             ->where('tag', '=', $request->tag)
             ->count();
 
@@ -355,6 +441,7 @@ class adminController extends Controller
     public function edit_tag(Request $request)
     {
         DB::table('tag_buku')
+            ->where('tag_status', '=', null)
             ->where('id', '=', $request->id)
             ->update([
                 'tag' => $request->tag
@@ -457,7 +544,7 @@ class adminController extends Controller
     {
         DB::table('tag_buku')
             ->where('id', '=', $id)
-            ->delete();
+            ->update(['tag_status' => 'inactive']);
 
         $data_tab = 'tag';
         Alert::success('Berhasil!', 'Data tag berhasil dihapus');
@@ -853,12 +940,16 @@ class adminController extends Controller
     public function user_all($page)
     {
         $users = DB::table('users')
+            ->where('admin', '!=', 2)
             ->skip(($page - 1) * 20)
             ->take(20)
             ->get();
 
         $jumlah = DB::table('users')
+            ->where('admin', '!=', 2)
             ->count();
+
+        $userlogin = Auth::user();
 
         $data = (object) [
             'sidebar' => "user",
@@ -867,15 +958,27 @@ class adminController extends Controller
             'user' => $users,
             'page' => $page,
             'search' => "",
-            'jumlah' => $jumlah
+            'jumlah' => $jumlah,
+            'userlogin' => $userlogin
         ];
 
         return view('admin.user')->with('data', $data);
     }
 
+    public function user_edit(Request $request)
+    {
+        DB::table('users')
+            ->where('id', '=', $request->id)
+            ->update(['admin' => $request->status]);
+
+        alert('Berhasil', 'Status pengguna berhasil diperbarui!');
+        return redirect()->back();
+    }
+
     public function archive($search, $page)
     {
         $archive = DB::table('archive')
+            ->Where('stat_active', '=', null)
             ->where('nomor_arsip', 'like', '%' . $search . '%')
             ->orWhere('nomor_surat', 'like', '%' . $search . '%')
             ->orWhere('kode_klasifikasi', 'like', '%' . $search . '%')
@@ -884,10 +987,15 @@ class adminController extends Controller
             ->get();
 
         $jumlah = DB::table('archive')
+            ->Where('stat_active', '=', null)
             ->where('nomor_arsip', 'like', '%' . $search . '%')
             ->orWhere('nomor_surat', 'like', '%' . $search . '%')
             ->orWhere('kode_klasifikasi', 'like', '%' . $search . '%')
             ->count();
+
+        $page_jumlah = $jumlah / 20;
+
+        $target = '/admin/menu/archive/' . $search . '/';
 
         $data = (object) [
             'sidebar' => 'pelayanan',
@@ -896,7 +1004,10 @@ class adminController extends Controller
             'archive' => $archive,
             'page' => $page,
             'search' => $search,
-            'jumlah' => $jumlah
+            'jumlah' => $jumlah,
+            'target' => $target,
+            'check_count' => $jumlah,
+            'jumlah_page' => $page_jumlah
         ];
 
         return view('admin.archive')->with('data', $data);
@@ -907,25 +1018,35 @@ class adminController extends Controller
         $buku = DB::table('buku')
             ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')
             ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->where('stat_buku', 'is', null)
             ->where('judul', 'like', '%' . $search . '%')
             ->orWhere('penulis', 'like', '%' . $search . '%')
             ->orWhere('penerbit', 'like', '%' . $search . '%')
             ->orWhere('tahun_terbit', '=',  $search)
+            ->skip(($page - 1) * 20)
+            ->take(20)
             ->get();
 
         $jumlah = DB::table('buku')
             ->select('buku.*', 'kategori_buku.id AS id_kategori', 'kategori_buku.kategory AS kategory')
             ->leftjoin('kategori_buku', 'buku.id_kategori', '=', 'kategori_buku.id')
+            ->where('stat_buku', 'is', null)
             ->where('judul', 'like', '%' . $search . '%')
             ->orWhere('penulis', 'like', '%' . $search . '%')
             ->orWhere('penerbit', 'like', '%' . $search . '%')
             ->orWhere('tahun_terbit', '=',  $search)
             ->count();
 
+        $page_jumlah = $jumlah / 20;
+
+        $target = "/admin/menu/buku/$search/";
+        $kategori_count = DB::table('kategori_buku')
+            ->count();
         $kategori = DB::table('kategori_buku')
             ->get();
 
         $tag = DB::table('tag_buku')
+            ->where('tag_status', '=', null)
             ->get();
 
         $data = (object) [
@@ -936,14 +1057,101 @@ class adminController extends Controller
             'buku' => $buku,
             'page' => $page,
             'search' => $search,
-            'jumlah' => $jumlah
+            'jumlah' => $jumlah,
+            'check_count' => $jumlah,
+            'tag' => $tag,
+            'jumlah_page' => $page_jumlah,
+            'target' => $target,
+            'kategori_count' => $kategori_count
         ];
 
         return view('admin.buku')->with('data', $data);
     }
 
+    public function tag_kategori($search, $page, $tab)
+    {
+        if ($tab == 'kategori') {
+            $page_kat = $page;
+            $page_tag = 1;
+            $kategori = DB::table('kategori_buku')
+                ->where('kategory', 'like', '%' . $search . '%')
+                ->skip(($page_kat - 1) * 10)
+                ->take(10)
+                ->get();
+
+            $tag = DB::table('tag_buku')
+                ->where('tag_status', '=', null)
+                ->skip(($page_tag - 1) * 10)
+                ->take(10)
+                ->get();
+
+            $jumlah = DB::table('kategori_buku')
+                ->where('kategory', 'like', '%' . $search . '%')
+                ->count();
+
+            $jumlah_tag = DB::table('tag_buku')
+                ->where('tag_status', '=', null)
+                ->count();
+
+            $page_kategori_jumlah = $jumlah / 10;
+
+            $page_tag_jumlah = $jumlah_tag / 10;
+
+            $target_kat = "/admin/menu/kategori_tag_all/";
+        } elseif ($tab == 'tag') {
+            $page_kat = 1;
+            $page_tag = $page;
+            $kategori = DB::table('kategori_buku')
+                ->skip(($page_kat - 1) * 10)
+                ->take(10)
+                ->get();
+
+            $tag = DB::table('tag_buku')
+                ->where('tag_status', '=', null)
+                ->where('tag', 'like', '%' . $search . '%')
+                ->skip(($page_tag - 1) * 10)
+                ->take(10)
+                ->get();
+
+            $jumlah = DB::table('kategori_buku')
+                ->count();
+
+            $jumlah_tag = DB::table('tag_buku')
+                ->where('tag_status', '=', null)
+                ->where('tag', 'like', '%' . $search . '%')
+                ->count();
+
+            $page_kategori_jumlah = $jumlah / 10;
+
+            $page_tag_jumlah = $jumlah_tag / 10;
+
+            $target_kat = "/admin/menu/kategori_tag_all/";
+        }
+
+        $data = (object) [
+            'sidebar' => "pelayanan",
+            'breadcrumbsub' => 'Kategori & Tag E-Book',
+            'breadcrumb' => 'Pelayanan',
+            'tab' => $tab,
+            'tag' => $tag,
+            'page' => $page,
+            'page_kat' => $page_kat,
+            'page_tag' => $page_tag,
+            'search' => "",
+            'jumlah' => $jumlah,
+            'jumlah_tag' => $jumlah_tag,
+            'kategori' => $kategori,
+            'jumlah_page' => $page_kategori_jumlah,
+            'jumlah_page_tag' => $page_tag_jumlah,
+            'target_kat' => $target_kat
+        ];
+
+        return view('admin.kategori_tag')->with('data', $data);
+    }
+
     public function user($search, $page)
     {
+        $userlogin = Auth::user();
         $users = DB::table('users')
             ->where('name', 'like', '%' . $search . '%')
             ->orWhere('ktp_number', 'like', '%' . $search . '%')
@@ -961,10 +1169,12 @@ class adminController extends Controller
         $data = (object) [
             'sidebar' => 'user',
             'breadcrumb' => 'User',
+            'breadcrumbsub' => 'Pencarian User',
             'user' => $users,
             'page' => $page,
             'search' => $search,
-            'jumlah' => $jumlah
+            'jumlah' => $jumlah,
+            'userlogin' => $userlogin
         ];
 
         return view('admin.user')->with('data', $data);
@@ -1053,7 +1263,7 @@ class adminController extends Controller
         $filename = $query->first()->file;
 
         File::delete(public_path('storage\file_arsip\\' . $filename));
-        $query->delete();
+        $query->update(['stat_active' => 'inactive']);
 
         Alert::success('Berhasil', 'Data berhasil dihapus');
         return redirect()->back();

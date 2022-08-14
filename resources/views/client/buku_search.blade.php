@@ -76,7 +76,7 @@
                                         <td><a href="/buku/detail_buku/{{$buku->id}}" class="btn btn-primary text-white">Pilih</a></td>
                                         @endauth
                                         @guest
-                                        <td scope="row"><a href="/masuk" class="text-decoration-none">Masuk</a> Untuk Melakukan Peminjaman</td>
+                                        <td><a href="/buku/detail_buku/{{$buku->id}}" class="btn btn-primary text-white">Detail Buku</a></td>
                                         @endguest
                                     </tr>
 

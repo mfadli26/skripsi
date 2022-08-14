@@ -132,7 +132,7 @@
                                         <div class="modal-body">
                                             <div class="mb-3">
                                                 <label for="formFileSm" class="form-label">Foto Konten</label>
-                                                <input class="form-control form-control-sm" id="formFileSm" name="file" type="file">
+                                                <input class="form-control form-control-sm" id="formFileSm" name="file" type="file" accept="image/png , image/jpg">
                                                 <input type="hidden" name="old_file" value="{{$konten->path}}">
                                                 <input type="hidden" name="id" value="{{$konten->id}}">
                                                 <input type="hidden" name="id_admin" value="1">

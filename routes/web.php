@@ -109,6 +109,8 @@ Route::get('/keluar_admin', [adminController::class, 'logout_admin'])->middlewar
 
 Route::post('/admin/menu/user/main', [adminController::class, 'users_main'])->middleware('admin');
 
+Route::get('/admin/menu/user/edit', [adminController::class, 'user_edit'])->middleware('admin');
+
 Route::get('/admin/menu/all_user/{page}', [adminController::class, 'user_all'])->middleware('admin');
 
 Route::get('/admin/menu/user/{search}/{page}', [adminController::class, 'user'])->middleware('admin');
@@ -116,6 +118,8 @@ Route::get('/admin/menu/user/{search}/{page}', [adminController::class, 'user'])
 Route::get('/admin/menu/archive/{search}/{page}', [adminController::class, 'archive'])->middleware('admin');
 
 Route::get('/admin/menu/buku/{search}/{page}', [adminController::class, 'e_book'])->middleware('admin');
+
+Route::get('/admin/menu/kategori_tag/{search}/{page}/{tab}', [adminController::class, 'tag_kategori'])->middleware('admin');
 
 Route::get('/admin/menu/archive_all/{page}', [adminController::class, 'archive_all'])->middleware('admin');
 
@@ -128,6 +132,8 @@ Route::get('/admin/menu/peminjaman_arsip/{tab}/{page}/{search}', [adminControlle
 Route::get('/admin/menu/peminjaman_buku/{page}/{tab}/{search}', [adminController::class, 'peminjaman_buku'])->middleware('admin');
 
 Route::post('/admin/menu/archive/tambah_archive', [adminController::class, 'tambah_archive_baru'])->middleware('admin');
+
+Route::post('/admin/menu/cari_kategori_tag_all/cari', [adminController::class, 'cari_kategori_tag'])->middleware('admin');
 
 Route::post('/admin/menu/archive/cari', [adminController::class, 'cari_arsip'])->middleware('admin');
 
@@ -199,7 +205,7 @@ Route::get('/admin/konten_status/{id}/{status}', [adminController::class, 'konte
 
 Route::get('/admin/artikel/{page}', [adminController::class, 'artikel_admin'])->middleware('admin');
 
-Route::get('/admin/artikel/tambah', [adminController::class, 'artikel_admin_tambah_page'])->middleware('admin');
+Route::get('/admin/artikel_page/tambah', [adminController::class, 'artikel_admin_tambah_page'])->middleware('admin');
 
 Route::post('/admin/artikel/tambah_baru', [adminController::class, 'tambah_artikel'])->middleware('admin');
 

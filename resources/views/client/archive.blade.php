@@ -62,6 +62,7 @@
                         </form>
                         @endif
                     </div>
+                    @if($data->submenu == 'pencarian buku')
                     <div class="row col-12">
                         <span class="fs-1 fw-bold">Buku Terbaru</span>
                         @foreach($data->buku AS $buku)
@@ -77,6 +78,7 @@
                         </div>
                         @endforeach
                     </div>
+                    @endif
                     <div class="col-md-7 mx-auto mt-5">
                         @if($data->submenu == 'pencarian arsip')
                         <img id="giftest" src="" class="w-100 border border-secondary" style="border-width: 10px">
